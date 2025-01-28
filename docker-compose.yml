@@ -1,0 +1,109 @@
+
+services:
+  web:
+    build: 
+      context: ./fad_backend
+    container_name: fed-backend
+    command: python fad_backend/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"  
+    depends_on:
+      - db  
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+      DJANGO_DB_NAME: django_project
+      DJANGO_DB_USER: django_user
+      DJANGO_DB_PASSWORD: django_password
+
+  migrate:
+    build:
+      context: ./fad_backend
+    container_name: fed-migrate
+    command: python fad_backend/manage.py migrate  # Run migrations
+    profiles:
+      - migration
+    volumes:
+      - .:/app
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+      DJANGO_DB_NAME: django_project
+      DJANGO_DB_USER: django_user
+      DJANGO_DB_PASSWORD: django_password
+    depends_on:
+      - db 
+
+  make_migrations:
+      build:
+        context: ./fad_backend
+      container_name: make_migrations_fed
+      command: python fad_backend/manage.py makemigrations 
+      profiles:
+      - make_migrations
+      volumes:
+      - .:/app
+      environment:
+        DJANGO_DB_HOST: db
+        DJANGO_DB_PORT: 5432
+        DJANGO_DB_NAME: django_project
+        DJANGO_DB_USER: django_user
+        DJANGO_DB_PASSWORD: django_password
+      depends_on:
+        - db
+  
+  add_app:
+    build:
+        context: ./fad_backend
+    container_name: make_migrations_fed
+    working_dir: /app/fad_backend
+    command: python manage.py startapp demo
+    profiles:
+      - add_app
+    volumes:
+      - .:/app
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+      DJANGO_DB_NAME: django_project
+      DJANGO_DB_USER: django_user
+      DJANGO_DB_PASSWORD: django_password
+    depends_on:
+        - db
+
+  tests:
+    build:
+        context: ./fad_backend
+    container_name: tests
+    working_dir: /app/fad_backend
+    command: python manage.py test 
+    profiles:
+    - tests
+    volumes:
+    - .:/app
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+      DJANGO_DB_NAME: django_project
+      DJANGO_DB_USER: django_user
+      DJANGO_DB_PASSWORD: django_password
+    depends_on:
+        - db
+        
+  db:
+    image: postgres:15  # Use PostgreSQL 15 as the database image
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: django_project        # Name of the database
+      POSTGRES_USER: django_user         # Database user
+      POSTGRES_PASSWORD: django_password # Password for the user
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
