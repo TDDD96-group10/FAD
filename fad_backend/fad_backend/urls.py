@@ -28,5 +28,8 @@ def installed_apps_view(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('installed-apps/', installed_apps_view, name='installed_apps')
+    path('installed-apps/', installed_apps_view, name='installed_apps'),
+    path('installed-apps2/', installed_apps_view, name='installed_apps'),
+    path('installed-apps123123122/', installed_apps_view, name='installed_apps'),
+    
 ]

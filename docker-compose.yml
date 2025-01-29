@@ -14,16 +14,28 @@ x-common-config: &common-config
 
 
 services:
+
+  frontend:
+    container_name: fad-frontend
+    build:
+      context: ./fad_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./fad_frontend:/app
+    depends_on:
+      - web
+
   web:
-    container_name: fed-backend
+    container_name: fad-backend
     command: python fad_backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     <<: *common-config
-    
+
 
   migrate:    
-    container_name: fed-migrate
+    container_name: fad-migrate
     command: python fad_backend/manage.py migrate  # Run migrations
     profiles:
       - migration
@@ -31,7 +43,7 @@ services:
     
 
   make_migrations:
-      container_name: make_migrations_fed
+      container_name: make_migrations_fad
       command: python fad_backend/manage.py makemigrations 
       profiles:
         - make_migrations
@@ -39,7 +51,7 @@ services:
   
 
   add_app:
-    container_name: make_migrations_fed
+    container_name: make_migrations_fad
     working_dir: /app/fad_backend
     command: python manage.py startapp demo
     profiles:
@@ -55,7 +67,8 @@ services:
       - tests
     <<: *common-config
     
-        
+  
+    
   db:
     image: postgres:15  # Use PostgreSQL 15 as the database image
     container_name: postgres-db
