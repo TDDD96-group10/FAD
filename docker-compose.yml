@@ -19,6 +19,8 @@ services:
     command: python fad_backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
+    profiles:
+      - web
     <<: *common-config
     
 
@@ -41,7 +43,7 @@ services:
   add_app:
     container_name: make_migrations_fed
     working_dir: /app/fad_backend
-    command: python manage.py startapp demo
+    command: python manage.py startapp security
     profiles:
       - add_app
     <<: *common-config

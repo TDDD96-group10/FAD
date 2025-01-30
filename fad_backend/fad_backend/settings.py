@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'demo'
+    'rest_framework',
+    'rest_framework_simplejwt', 
+    'security',
+    'demo', 
+    'drf_yasg'
     
 ]
 
@@ -51,6 +55,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 ROOT_URLCONF = 'fad_backend.urls'
 
@@ -94,6 +104,8 @@ DATABASES = {
     }
 }
 
+
+AUTH_USER_MODEL = 'security.AdminUser'  # Default user model is AdminUser
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

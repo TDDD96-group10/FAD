@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install psycopg
+RUN pip install djangorestframework-simplejwt
 
 COPY . /app/
 
