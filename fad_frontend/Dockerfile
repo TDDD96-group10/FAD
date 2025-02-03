@@ -1,5 +1,5 @@
 # Use the latest LTS version of Node.js
-FROM node:18-alpine
+FROM node:18
  
 # Set the working directory inside the container
 WORKDIR /app
@@ -9,6 +9,13 @@ COPY package*.json ./
  
 # Install dependencies
 RUN npm install
+
+RUN npm install react-router-dom
+
+RUN npm install -g openapi-typescript
+
+RUN npm install -g swagger-typescript-api
+
  
 # Copy the rest of your application files
 COPY . .

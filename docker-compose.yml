@@ -15,17 +15,40 @@ x-common-config: &common-config
 
 services:
   web:
-    container_name: fed-backend
+    container_name: fad-backend
     command: python fad_backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
-    profiles:
-      - web
-    <<: *common-config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8000/swagger.json"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
     
+    <<: *common-config
+  
+  frontend:
+    container_name: fad-frontend
+    command: >
+      sh -c "npx swagger-typescript-api -p http://web:8000/swagger.json -o src/api && npm run dev"
+    build:
+      context: ./fad_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      web:
+        condition: service_healthy
 
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./fad_frontend:/app
+      -  /app/node_modules
+    
+        
+    
   migrate:    
-    container_name: fed-migrate
+    container_name: fad-migrate
     command: python fad_backend/manage.py migrate  # Run migrations
     profiles:
       - migration
@@ -33,7 +56,7 @@ services:
     
 
   make_migrations:
-      container_name: make_migrations_fed
+      container_name: make_migrations_fad
       command: python fad_backend/manage.py makemigrations 
       profiles:
         - make_migrations
@@ -41,7 +64,7 @@ services:
   
 
   add_app:
-    container_name: make_migrations_fed
+    container_name: make_migrations_fad
     working_dir: /app/fad_backend
     command: python manage.py startapp security
     profiles:
@@ -57,7 +80,8 @@ services:
       - tests
     <<: *common-config
     
-        
+  
+    
   db:
     image: postgres:15  # Use PostgreSQL 15 as the database image
     container_name: postgres-db

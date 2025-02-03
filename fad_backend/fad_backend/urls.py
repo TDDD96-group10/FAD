@@ -55,6 +55,7 @@ urlpatterns = [
     path('api/register/admin/', views.AdminRegisterView.as_view(), name='register_admin'),
     path('api/register/user/', views.RegularUserRegisterView.as_view(), name='register_user'),
     path('api/check/test', views.ProtectedView.as_view()),
+    path('test/',views.TestSwaggerView.as_view(),name="Test swagger"),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
