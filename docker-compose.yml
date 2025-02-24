@@ -42,11 +42,11 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     volumes:
-      - ./fad_frontend:/app
-      -  /app/node_modules
-    
-        
-    
+      - ./fad_frontend:/fad_frontend
+      - /fad_frontend/node_modules
+
+
+
   migrate:    
     container_name: fad-migrate
     command: python fad_backend/manage.py migrate  # Run migrations

@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /app
  
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package*.json .
  
 # Install dependencies
 RUN npm install
@@ -16,9 +16,17 @@ RUN npm install -g openapi-typescript
 
 RUN npm install -g swagger-typescript-api
 
- 
+RUN npm install -g @mantine/core @mantine/hooks
+
+RUN npm install -g --save-dev postcss postcss-preset-mantine postcss-simple-vars
+
+RUN npm list -g --depth=0 --json
+
+RUN pwd
+
 # Copy the rest of your application files
 COPY . .
+ 
  
 # Expose the port your app runs on
 EXPOSE 3000
