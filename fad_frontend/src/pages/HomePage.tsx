@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../styles/pages/Home.css";
 import { apiClient } from "../api/ApiClient";
 import { RegularUserRegister } from "../api/Api";
 import { useApi } from "../hooks/useApi";
