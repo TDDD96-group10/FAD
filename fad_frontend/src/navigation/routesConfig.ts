@@ -11,6 +11,6 @@ interface RouteType {
 export const routes: RouteType[] = [
   { path: "/", element: HomePage },
   { path: "/home", element: HomePage },
-  { path: "*", element:  NotFoundPage },
+  { path: "*", element: HomePage },
   { path: "/test", element: Logintest}
 ];

@@ -6,7 +6,7 @@ import FADfooter from '../footer';
 
 const AppRoutes = () => {
   return (
-    <>
+    <div>
     <FADheader />
     <BrowserRouter>
       <Routes>
@@ -15,8 +15,7 @@ const AppRoutes = () => {
         ))}
       </Routes>
     </BrowserRouter>
-    <FADfooter />
-    </>
+    </div>
   );
 };
 
