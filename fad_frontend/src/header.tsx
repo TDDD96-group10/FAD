@@ -1,4 +1,4 @@
-import { AppShell, AppShellSection, Burger, Flex, Group, NavLink, Paper, Stack, Text } from '@mantine/core';
+import { AppShell, Burger, Button, Group, NavLink} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 
@@ -23,14 +23,21 @@ const FADheader: React.FC = () => {
               hiddenFrom="sm"
               size="sm"
             />
-          <div>FAD</div>
+            <Group justify='space-between'> 
+              <div>FAD</div>
+              <Button>Byt Theme</Button>
+            </Group>
+
           </AppShell.Header>
           <AppShell.Navbar p="md">
             <NavLink label ="Home" href='/home'></NavLink>
               <NavLink label ="Test" href='/test'></NavLink>
               <NavLink label ="Contact" href='/#'></NavLink>
             </AppShell.Navbar>
-          <AppShell.Main>Main</AppShell.Main>
+          <AppShell.Main>
+            <Button>HEJHEJEHJEHJE</Button>
+
+          </AppShell.Main>
         </AppShell>
       </div>
 
