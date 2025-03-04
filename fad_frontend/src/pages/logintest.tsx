@@ -34,15 +34,18 @@ function AuthenticationTitle() {
         mode: 'uncontrolled',
         validateInputOnChange: true,
         initialValues: { email: ''},
-
         
-    
+        
+        
         // functions will be used to validate values at corresponding key
         validate: {
             // Check for Liu-mail format
           email: (value) => (/^[A-Za-z_-]{5}[0-9_-]{3}@student.liu.se$/.test(value) ? null : 'Invalid email'),
         },
       });
+
+
+
 
     return (    
         <Container size={840} my={40}>
@@ -55,9 +58,17 @@ function AuthenticationTitle() {
             key={form.key('email')}
             {...form.getInputProps('email')} 
             />
-            <Button  mt="xl" radius="md" color="gray" onClick={handleClick}>
-            Skicka mail
-            </Button>
+            
+            {form.isValid() ? 
+                <Button mt="xl" radius="md" color="gray" onClick={handleClick}>
+                Skicka mail
+                </Button>
+            :
+                <Button disabled mt="xl" radius="md" color="gray" onClick={handleClick}>
+                Skicka mail
+                </Button>    
+            }
+
         </Paper>
         </Container>
     );
