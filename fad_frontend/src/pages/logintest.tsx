@@ -31,7 +31,7 @@ function AuthenticationTitle() {
     }
 
     const form = useForm({
-        mode: 'onChange',
+        mode: 'uncontrolled',
         validateInputOnChange: true,
         initialValues: { email: ''},
 
