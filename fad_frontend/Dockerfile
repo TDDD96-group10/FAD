@@ -16,7 +16,7 @@ RUN npm install -g openapi-typescript
 
 RUN npm install -g swagger-typescript-api
 
-RUN npm install -g @mantine/core @mantine/hooks
+RUN npm install -g @mantine/core @mantine/hooks @mantine/form
 
 RUN npm install -g --save-dev postcss postcss-preset-mantine postcss-simple-vars
 
