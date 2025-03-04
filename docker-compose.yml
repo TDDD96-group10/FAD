@@ -43,7 +43,10 @@ services:
       - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./fad_frontend:/fad_frontend
+<<<<<<< HEAD
       
+=======
+>>>>>>> 83283ad2a46d751d15644be911fc8e2c4965f09c
 
 
 
