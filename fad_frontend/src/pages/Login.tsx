@@ -1,22 +1,15 @@
 
-/*import {
-  Anchor,
+import {
   Button,
-  Checkbox,
   Container,
   Group,
   Paper,
-  PasswordInput,
-  Text,
   TextInput,
   Title,} from '@mantine/core';
 
 
 import '../styles/pages/Login.css'
 
-function Demo() {
-    return <Button variant="filled" color="pink" radius="md">Button</Button>;
-  }
 
 const Logintest: React.FC = () => {
 
@@ -40,4 +33,4 @@ const Logintest: React.FC = () => {
     );
 };
 
-export default Logintest;*/
+export default Logintest;

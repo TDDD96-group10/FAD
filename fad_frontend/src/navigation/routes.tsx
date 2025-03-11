@@ -1,8 +1,6 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { routes } from './routesConfig';
-import Logintest from '../pages/logintest';
-import AuthenticationTitle from '../pages/Loginkod';
-import HomePage from '../pages/HomePage';
+import Logintest from '../pages/Login';
 import NotFoundPage from '../pages/NotFoundPage';
 import FADheader from '../header';
 import Loginkod from '../pages/Loginkod';

@@ -37,7 +37,6 @@ const FADheader: React.FC = () => {
             <NavLink label ="Logout" href='/'></NavLink>
           </AppShell.Navbar>
           <AppShell.Main>
-            <Button>HEJHEJEHJEHJE</Button>
             <Outlet/>
           </AppShell.Main>
         </AppShell>

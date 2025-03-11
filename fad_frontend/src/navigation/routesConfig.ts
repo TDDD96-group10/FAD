@@ -1,5 +1,5 @@
-import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
+import StartPage from '../pages/StartPage';
 
 interface RouteType {
   path: string;
@@ -7,6 +7,6 @@ interface RouteType {
 }
 
 export const routes: RouteType[] = [
-  { path: "", element: HomePage },
+  { path: "", element: StartPage },
   { path: "*", element: NotFoundPage }
 ];

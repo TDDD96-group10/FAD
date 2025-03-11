@@ -1,18 +1,14 @@
 
 import {
-    Anchor,
     Button,
     Checkbox,
     Container,
     Group,
     Paper,
-    PasswordInput,
-    Text,
     TextInput,
     Title,
 } from '@mantine/core';
 
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { useForm } from '@mantine/form';
 
