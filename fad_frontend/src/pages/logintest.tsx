@@ -9,14 +9,15 @@ import {
   PasswordInput,
   Text,
   TextInput,
-  Title,
-} from '@mantine/core';
+  Title,} from '@mantine/core';
 
 import '../styles/pages/Login.css'
 
 
-function AuthenticationTitle() {
-    return (    
+const Logintest: React.FC = () => {
+
+    return (
+        <>
         <Container size={840} my={40}>
         <Title ta="center" className="title">
             Welcome back!
@@ -37,25 +38,14 @@ function AuthenticationTitle() {
                 Forgot password?
             </Anchor>
             </Group>
-            <Button fullWidth mt="xl" onClick={() => console.log('Login clicked')}>
-            Sign in
-            </Button>
+            <a href="/home">
+                <Button fullWidth mt="xl" onClick={() => console.log('Login clicked')}>
+                Sign in
+                </Button>
+            </a>
         </Paper>
         </Container>
-    );
-}
-
-
-const Logintest: React.FC = () => {
-
-    return (
-        <div className="container">
-            <main className="content">
-
-                <AuthenticationTitle />
-            </main>
-
-        </div>
+        </>
     );
 };
 

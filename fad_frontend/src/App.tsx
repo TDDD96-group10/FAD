@@ -17,7 +17,7 @@ function App() {
   return (
     <MantineProvider defaultColorScheme='dark' >
     <>
-     <AppRoutes/>
+      <AppRoutes/>
     </>
     </MantineProvider>
 

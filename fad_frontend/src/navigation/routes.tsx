@@ -1,21 +1,23 @@
-import { Route, Routes,BrowserRouter } from 'react-router-dom';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { routes } from './routesConfig';
-
+import Logintest from '../pages/logintest';
+import HomePage from '../pages/HomePage';
+import NotFoundPage from '../pages/NotFoundPage';
 import FADheader from '../header';
-import FADfooter from '../footer';
 
-const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
   return (
-    <div>
-    <FADheader />
     <BrowserRouter>
       <Routes>
-        {routes.map(({ path, element: Element }) => (
-          <Route key={path} path={path} element={<Element />} />
-        ))}
+        <Route path="/" element={<Logintest />} />
+        <Route path="*" element={<NotFoundPage />} />
+        <Route path="home" element={<FADheader />}>
+          {routes.map(({ path, element: Element }) => (
+            <Route key={path} path={path} element={<Element />} />
+          ))}
+        </Route>
       </Routes>
     </BrowserRouter>
-    </div>
   );
 };
 
