@@ -32,8 +32,9 @@ const FADheader: React.FC = () => {
           </AppShell.Header>
           <AppShell.Navbar p="md">
             <NavLink label ="Home" href='/home'></NavLink>
-            <NavLink label ="Test" href='/home/test'></NavLink>
-            <NavLink label ="Contact" href='/home/#'></NavLink>
+            <NavLink label ="Shareinfo" href='/home/shareinfo'></NavLink>
+            <NavLink label ="Test404" href='/home/test'></NavLink>
+            <NavLink label ="Contact (#)" href='/home/#'></NavLink>
             <NavLink label ="Logout" href='/'></NavLink>
           </AppShell.Navbar>
           <AppShell.Main>
