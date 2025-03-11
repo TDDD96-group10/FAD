@@ -43,8 +43,6 @@ services:
       - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./fad_frontend:/fad_frontend
-      - /fad_frontend/node_modules
-      
 
 
 

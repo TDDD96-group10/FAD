@@ -27,14 +27,9 @@ const Logintest: React.FC = () => {
         </Title>
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
             <TextInput label="Email" placeholder="you@mantine.dev" required />
-            <PasswordInput label="Password" placeholder="Your password" required mt="md" />
             <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
-                Forgot password?
-            </Anchor>
             </Group>
-            <a href="/home">
+            <a href="/code">
                 <Button fullWidth mt="xl" onClick={() => console.log('Login clicked')}>
                 Sign in
                 </Button>
