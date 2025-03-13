@@ -43,6 +43,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./fad_frontend:/fad_frontend
+      - node_modules:/fad_frontend/node_modules
 
 
 
@@ -97,3 +98,4 @@ services:
 
 volumes:
   postgres_data:
+  node_modules:

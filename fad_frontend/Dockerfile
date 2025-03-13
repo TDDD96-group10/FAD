@@ -1,5 +1,5 @@
 # Use the latest LTS version of Node.js
-FROM node:22
+FROM node:lts
 
 # Set the working directory inside the container
 WORKDIR /fad_frontend
