@@ -1,42 +1,48 @@
 import { useState, useMemo } from 'react';
-import { Group, Select, Table, Text, Stack, ScrollArea } from '@mantine/core';
+import { Group, Select, Table, Text, Stack, ScrollArea, Button } from '@mantine/core';
 
 const OverView = () => {
   const [sortBy, setSortBy] = useState('fadder');
+  const [summaryType, setSummaryType] = useState('specialkost'); // New state for summary table
 
   // Sorting options for the dropdown
   const sortOptions = [
     { value: 'fadder', label: 'Fadder' },
     { value: 'specialkost', label: 'Specialkost' },
     { value: 'tröjstorlek', label: 'Tröjstorlek' },
+    { value: 'faddertyp', label: 'Faddertyp' },
+  ];
+  const summaryOptions = [
+    { value: 'specialkost', label: 'Specialkost' },
+    { value: 'tröjstorlek', label: 'Tröjstorlek' },
   ];
 
   // Sample data
   const sampleData = [
-    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M' },
-    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L' },
-    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S' },
-    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XL' },
-    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'S' },
-    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'L' },
-    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'S' },
-    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'M' },
-    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M' },
-    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L' },
-    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S' },
-    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XL' },
-    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'S' },
-    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'L' },
-    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'S' },
-    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'M' },
-    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M' },
-    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L' },
-    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S' },
-    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XXXL' },
-    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'XXL' },
-    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'XL' },
-    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'SS' },
-    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'XXS' },
+    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M', faddertyp: 'Klassfadder' },
+    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L', faddertyp: 'Överfadder' },
+    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'Hävffadder' },
+    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XL', faddertyp: 'Överhävffadder' },
+    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'S', faddertyp: 'Klassfadder' },
+    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'L', faddertyp: 'Specialfadder' },
+    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'S', faddertyp: 'Fadder' },
+    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'M', faddertyp: 'Fadder' },
+    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M', faddertyp: 'Klassfadder' },
+    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L', faddertyp: 'Överfadder' },
+    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'Överfadder' },
+    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XL', faddertyp: 'Överhävffadder' },
+    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'S', faddertyp: 'Klassfadder' },
+    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'L', faddertyp: 'Överhävffadder' },
+    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'S', faddertyp: 'Hävffadder' },
+    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'M', faddertyp: 'Klassfadder' },
+    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M', faddertyp: 'Specialfadder' },
+    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L', faddertyp: 'Fadder' },
+    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'Klassfadder' },
+    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XXXL', faddertyp: 'Specialfadder' },
+    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'XXL', faddertyp: 'Klassfadder' },
+    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'XL', faddertyp: 'Fadder' },
+    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'XS', faddertyp: 'Överfadder' },
+    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'XXS', faddertyp: 'Hävffadder' },
   ];
 
   // Define the correct order of shirt sizes
@@ -59,7 +65,7 @@ const OverView = () => {
   }, [sortBy, sampleData]);
 
   // Define table columns
-  const columns = ['fadder', 'specialkost', 'tröjstorlek'];
+  const columns = ['fadder', 'specialkost', 'tröjstorlek', 'faddertyp'];
 
   // Generate table rows for main table
   const rows = sortedData.map((element, index) => (
@@ -67,6 +73,7 @@ const OverView = () => {
       {columns.includes('fadder') && <Table.Td>{element.fadder}</Table.Td>}
       {columns.includes('specialkost') && <Table.Td>{element.specialkost}</Table.Td>}
       {columns.includes('tröjstorlek') && <Table.Td>{element.tröjstorlek}</Table.Td>}
+      {columns.includes('faddertyp') && <Table.Td>{element.faddertyp}</Table.Td>}
     </Table.Tr>
   ));
 
@@ -84,10 +91,65 @@ const OverView = () => {
     return indexA - indexB;
   });
 
+  // Compute unique faddertyp
+  const uniqueFaddertyp = [...new Set(sampleData.map(item => item.faddertyp))].sort();
 
-  const fadderSummaryTable = () => (
+  // Compute counts by size and faddertyp
+  const countsBySizeAndType = sampleData.reduce((acc, curr) => {
+    const size = curr.tröjstorlek;
+    const type = curr.faddertyp;
+    if (!acc[size]) {
+      acc[size] = {};
+    }
+    acc[size][type] = (acc[size][type] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Summary table component for shirt sizes by faddertyp
+  const TröjstorlekSummaryTable = () => (
+    <Stack spacing="xs">
+      <Table
+        horizontalSpacing="md"
+        verticalSpacing="sm"
+        striped
+        highlightOnHover
+        withTableBorder
+      >
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Storlek</Table.Th>
+            {uniqueFaddertyp.map(type => (
+              <Table.Th key={type}>{type}</Table.Th>
+            ))}
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {sortedSizes.map(size => (
+            <Table.Tr key={size}>
+              <Table.Td>{size}</Table.Td>
+              {uniqueFaddertyp.map(type => (
+                <Table.Td key={type}>{countsBySizeAndType[size]?.[type] || 0}</Table.Td>
+              ))}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Stack>
+  );
+
+  const SpecialkostSummaryTable = () => {
+    const specialkostColumns = ['fadder', 'specialkost'];
+    const specialkostRows = sortedData.map((element, index) => (
+      <Table.Tr key={`${element.fadder}-${index}`}>
+        {specialkostColumns.includes('fadder') && <Table.Td>{element.fadder}</Table.Td>}
+        {specialkostColumns.includes('specialkost') && <Table.Td>{element.specialkost}</Table.Td>}
+      </Table.Tr>
+    ));
+
+    return (
       <Stack spacing="xs">
         <Table
+          style={{ minWidth: '600px' }}
           horizontalSpacing="md"
           verticalSpacing="sm"
           striped
@@ -96,21 +158,23 @@ const OverView = () => {
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Size</Table.Th>
-              <Table.Th>Count</Table.Th>
+              {specialkostColumns.includes('fadder') && <Table.Th>Fadder</Table.Th>}
+              {specialkostColumns.includes('specialkost') && <Table.Th>Specialkost</Table.Th>}
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {sortedSizes.map((size) => (
-              <Table.Tr key={size}>
-                <Table.Td>{size}</Table.Td>
-                <Table.Td>{shirtSizeCounts[size]}</Table.Td>
+            {specialkostRows.length > 0 ? (
+              specialkostRows
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={2}>No data</Table.Td>
               </Table.Tr>
-            ))}
+            )}
           </Table.Tbody>
         </Table>
       </Stack>
-  );
+    );
+  };
 
   return (
     <Stack>
@@ -125,9 +189,9 @@ const OverView = () => {
         />
       </Group>
       
-      <ScrollArea style={{ maxHeight: 400, overflow: 'auto' }}>
+      <ScrollArea style={{ maxHeight: 400, overflow: 'auto' }} p="md">
         <Table
-          style={{ minWidth: '600px' }} // Set minimum width for horizontal scrolling
+          style={{ minWidth: '600px' }}
           horizontalSpacing="md"
           verticalSpacing="sm"
           striped
@@ -139,25 +203,36 @@ const OverView = () => {
               {columns.includes('fadder') && <Table.Th>Fadder</Table.Th>}
               {columns.includes('specialkost') && <Table.Th>Specialkost</Table.Th>}
               {columns.includes('tröjstorlek') && <Table.Th>Tröjstorlek</Table.Th>}
+              {columns.includes('faddertyp') && <Table.Th>Faddertyp</Table.Th>}
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
             {rows.length > 0 ? rows : (
               <Table.Tr>
-                <Table.Td colSpan={3}>No data</Table.Td>
+                <Table.Td colSpan={4}>No data</Table.Td>
               </Table.Tr>
             )}
           </Table.Tbody>
         </Table>
       </ScrollArea>
-        {/* Call the extracted function/component for the first table */}
-      <Text>Sammanställning</Text>
-      {/* Call the extracted function/component for the second table */}
-      <ScrollArea style={{ maxHeight: 400, overflow: 'auto' }}>
-        {fadderSummaryTable()}
+
+      <Group>
+        <Text>Sammanställ för: </Text>
+        <Select
+          data={summaryOptions}
+          value={summaryType}
+          onChange={(value) => {
+            if (value) setSummaryType(value);
+          }}
+        />
+        <Button variant="filled">Exportera Sammanställning</Button>
+      </Group>
+
+      <ScrollArea style={{ maxHeight: 400, overflow: 'auto' }} p="md">
+        {summaryType === 'tröjstorlek' ? <TröjstorlekSummaryTable /> : <SpecialkostSummaryTable />}
       </ScrollArea>
     </Stack>
   );
-}
+};
 
 export default OverView;
