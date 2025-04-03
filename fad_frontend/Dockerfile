@@ -16,6 +16,9 @@ RUN npm install -g openapi-typescript
 
 RUN npm install -g swagger-typescript-api
 
+RUN npm install tailwindcss 
+
+
  
 # Copy the rest of your application files
 COPY . .

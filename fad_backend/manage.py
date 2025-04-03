@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import subprocess
 
 
 def main():
@@ -18,17 +19,17 @@ def main():
     execute_from_command_line(sys.argv)
 
 
+class Flake8LintError(Exception):
+    pass
+
+
+def lint():
+    result = subprocess.run(['flake8', '.'], capture_output=True, text=True)
+
+    if result.returncode != 0:
+        raise Flake8LintError(f"Flake8 found issues:\n{result.stdout}")
+
+
 if __name__ == '__main__':
-    import pkg_resources
-
-    installed_packages = {pkg.key: pkg.version for pkg in pkg_resources.working_set}
-
-    for package, version in installed_packages.items():
-        print(f"{package}=={version}")
-
-    print()
-    print()
-
-    print()
-    print()
+    #lint()
     main()

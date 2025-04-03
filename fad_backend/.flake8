@@ -1,0 +1,8 @@
+# .flake8
+[flake8]
+exclude =
+    */__init__.py,
+    migrations/,
+    env/,
+    __pycache__/
+ignore = E501

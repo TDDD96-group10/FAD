@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../styles/pages/Home.css";
 import { apiClient } from "../api/ApiClient";
 import { RegularUserRegister } from "../api/Api";
-import { useApi } from "../hooks/useApi";
+import { useApi,callApi } from "../hooks/useApi";
 
 // Define the type for user data
 
@@ -18,8 +18,14 @@ const HomePage: React.FC = () => {
     username: "new_user",
     password: "securePass123",
   };
-  const { data , loading, error } = useApi<RegularUserRegister>(() => apiClient.api.apiRegisterUserCreate(newUser))
+  const { data , loading, error } = useApi<void>(() => apiClient.api.apiCheckTestList())
 
+  const { data: apiData, loading: apiLoading, error: apiError, callApi: api } = callApi<RegularUserRegister>(() =>
+    apiClient.api.apiRegisterUserCreate(newUser)
+  );
+
+ apiData
+  
   return (
     <div className="container">
       {/* Header */}
@@ -40,11 +46,15 @@ const HomePage: React.FC = () => {
         <p>This is a simple homepage built with React and TypeScript.</p>
       </section>
 
+      <button onClick={() => apiClient.api.apiRegisterUserCreate(newUser)} disabled={apiLoading}>
+        {apiLoading ? "Loading..." : "Fetch Data"}
+      </button>
+
       {/* Main Content */}
       <main className="content">
         <h3>User List</h3>
         {loading && <p>Loading users...</p>}
-        {error && <p className="error">{error}</p>}
+        {apiError && <p className="error">{apiError}</p>}
         <ul>
           
         </ul>

@@ -19,6 +19,7 @@ services:
     command: python fad_backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
+      - "587:587"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:8000/swagger.json"]
       interval: 5s
@@ -49,7 +50,7 @@ services:
     
   migrate:    
     container_name: fad-migrate
-    command: python fad_backend/manage.py migrate  # Run migrations
+    command: python fad_backend/manage.py migrate  # Run migrations python manage.py migrate
     profiles:
       - migration
     <<: *common-config
@@ -57,7 +58,7 @@ services:
 
   make_migrations:
       container_name: make_migrations_fad
-      command: python fad_backend/manage.py makemigrations 
+      command: python fad_backend/manage.py makemigrations  
       profiles:
         - make_migrations
       <<: *common-config
@@ -66,7 +67,7 @@ services:
   add_app:
     container_name: make_migrations_fad
     working_dir: /app/fad_backend
-    command: python manage.py startapp security
+    command: python manage.py startapp demo
     profiles:
       - add_app
     <<: *common-config
@@ -78,6 +79,8 @@ services:
     command: python manage.py test 
     profiles:
       - tests
+
+
     <<: *common-config
     
   

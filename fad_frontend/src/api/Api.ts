@@ -9,25 +9,41 @@
  * ---------------------------------------------------------------
  */
 
-export interface RegularUserRegister {
+export interface TokenRefresh {
   /**
-   * Email
-   * @format email
+   * Refresh
    * @minLength 1
-   * @maxLength 254
    */
-  email: string;
+  refresh: string;
+  /**
+   * Access
+   * @minLength 1
+   */
+  access?: string;
+}
+
+export interface CodeSubmit {
+  /**
+   * Code
+   * @minLength 1
+   * @maxLength 6
+   */
+  code: string;
+  /**
+   * Username
+   * @minLength 1
+   * @maxLength 8
+   */
+  username: string;
+}
+
+export interface Username {
   /**
    * Username
    * @minLength 1
    * @maxLength 150
    */
   username: string;
-  /**
-   * Password
-   * @minLength 1
-   */
-  password: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -253,48 +269,16 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
     /**
-     * @description Protected endpoint that requires JWT authentication
+     * @description Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
      *
      * @tags api
-     * @name ApiCheckTestList
-     * @request GET:/api/check/test
+     * @name ApiTokenRefreshCreate
+     * @request POST:/api/token/refresh/
      * @secure
      */
-    apiCheckTestList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/check/test`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags api
-     * @name ApiRegisterAdminCreate
-     * @request POST:/api/register/admin/
-     * @secure
-     */
-    apiRegisterAdminCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/register/admin/`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Belmin
-     *
-     * @tags api
-     * @name ApiRegisterUserCreate
-     * @request POST:/api/register/user/
-     * @secure
-     */
-    apiRegisterUserCreate: (data: RegularUserRegister, params: RequestParams = {}) =>
-      this.request<RegularUserRegister, any>({
-        path: `/api/register/user/`,
+    apiTokenRefreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
+      this.request<TokenRefresh, any>({
+        path: `/api/token/refresh/`,
         method: "POST",
         body: data,
         secure: true,
@@ -303,98 +287,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
-  test = {
+  auth = {
     /**
-     * @description Retrieve admin details
+     * No description
      *
-     * @tags test
-     * @name TestList
-     * @request GET:/test/
+     * @tags auth
+     * @name AuthCodeCreate
+     * @request POST:/auth/code
      * @secure
      */
-    testList: (
-      adminId: number,
-      query?: {
-        /** Role of the admin (e.g., superuser, staff) */
-        role?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<RegularUserRegister, any>({
-        path: `/test/`,
-        method: "GET",
-        query: query,
+    authCodeCreate: (data: CodeSubmit, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/auth/code`,
+        method: "POST",
+        body: data,
         secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
 
     /**
-     * @description Register a new admin user
+     * No description
      *
-     * @tags test
-     * @name TestCreate
-     * @request POST:/test/
+     * @tags auth
+     * @name AuthLoginCreate
+     * @request POST:/auth/login
      * @secure
      */
-    testCreate: (
-      data: {
-        /** Admin username */
-        username: string;
-        /** Admin password */
-        password: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/test/`,
+    authLoginCreate: (data: Username, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/auth/login`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Update an admin user
-     *
-     * @tags test
-     * @name TestUpdate
-     * @request PUT:/test/
-     * @secure
-     */
-    testUpdate: (
-      adminId: number,
-      data: {
-        /** New admin username */
-        username: string;
-        /** New admin email */
-        email: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/test/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Delete an admin user
-     *
-     * @tags test
-     * @name TestDelete
-     * @request DELETE:/test/
-     * @secure
-     */
-    testDelete: (adminId: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/test/`,
-        method: "DELETE",
-        secure: true,
+        format: "json",
         ...params,
       }),
   };
