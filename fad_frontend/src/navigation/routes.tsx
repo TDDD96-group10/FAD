@@ -1,13 +1,17 @@
-import { Route, Routes,BrowserRouter } from 'react-router-dom';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { routes } from './routesConfig';
 
-const AppRoutes = () => {
+
+
+const AppRoutes: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {routes.map(({ path, element: Element }) => (
-          <Route key={path} path={path} element={<Element />} />
-        ))}
+        
+          {routes.map(({ path, element: Element }) => (
+            <Route key={path} path={path} element={<Element />} />
+          ))}
+        
       </Routes>
     </BrowserRouter>
   );

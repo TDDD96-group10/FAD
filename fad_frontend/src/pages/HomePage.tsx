@@ -18,15 +18,18 @@ const HomePage: React.FC = () => {
     username: "new_user",
     password: "securePass123",
   };
-  const { data , loading, error } = useApi<void>(() => apiClient.api.apiCheckTestList())
+  //const { data , loading, error } = useApi<void>(() => apiClient.api.apiCheckTestList())
 
-  const { data: apiData, loading: apiLoading, error: apiError, callApi: api } = callApi<RegularUserRegister>(() =>
-    apiClient.api.apiRegisterUserCreate(newUser)
-  );
+  //const { data: apiData, loading: apiLoading, error: apiError, callApi: api } = callApi<RegularUserRegister>(() =>
+    //apiClient.api.apiRegisterUserCreate(newUser)
+  //);
 
- apiData
+
   
   return (
+    <>
+    
+  
     <div className="container">
       {/* Header */}
       <header className="header">
@@ -40,31 +43,18 @@ const HomePage: React.FC = () => {
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="hero">
-        <h2>Welcome to My Website</h2>
-        <p>This is a simple homepage built with React and TypeScript.</p>
-      </section>
-
-      <button onClick={() => apiClient.api.apiRegisterUserCreate(newUser)} disabled={apiLoading}>
-        {apiLoading ? "Loading..." : "Fetch Data"}
-      </button>
-
-      {/* Main Content */}
+    
       <main className="content">
         <h3>User List</h3>
-        {loading && <p>Loading users...</p>}
-        {apiError && <p className="error">{apiError}</p>}
+        
         <ul>
           
         </ul>
       </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <p>© 2025 My Website. All rights reserved.</p>
-      </footer>
+    
     </div>
+    </>
   );
 };
 

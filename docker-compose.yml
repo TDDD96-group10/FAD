@@ -31,7 +31,7 @@ services:
   frontend:
     container_name: fad-frontend
     command: >
-      sh -c "npx swagger-typescript-api -p http://web:8000/swagger.json -o src/api && npm run dev"
+      sh -c "npm install swagger-typescript-api && npx swagger-typescript-api generate -p http://web:8000/swagger.json -o src/api && npm run dev"
     build:
       context: ./fad_frontend
     ports:
@@ -43,11 +43,11 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     volumes:
-      - ./fad_frontend:/app
-      -  /app/node_modules
-    
-        
-    
+      - ./fad_frontend:/fad_frontend
+      - node_modules:/fad_frontend/node_modules
+
+
+
   migrate:    
     container_name: fad-migrate
     command: python fad_backend/manage.py migrate  # Run migrations python manage.py migrate
@@ -79,8 +79,6 @@ services:
     command: python manage.py test 
     profiles:
       - tests
-
-
     <<: *common-config
     
   
@@ -101,3 +99,4 @@ services:
 
 volumes:
   postgres_data:
+  node_modules:

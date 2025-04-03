@@ -1,6 +1,8 @@
-import HomePage from '../pages/HomePage.tsx';
 import NotFoundPage from '../pages/NotFoundPage.tsx';
-import { ReactNode } from "react";
+import ShareInfo from '../pages/ShareInfo.tsx';
+import StartPage from '../pages/StartPage';
+import Loginkod from '../pages/Loginkod';
+import Logintest from '../pages/Login';
 
 interface RouteType {
   path: string;
@@ -8,7 +10,10 @@ interface RouteType {
 }
 
 export const routes: RouteType[] = [
-  { path: "/home", element: HomePage },
-  {path: "*", element :  NotFoundPage }
-  
+  { path: "", element: StartPage },
+  { path: "*", element: NotFoundPage },
+  { path: "/shareinfo", element: ShareInfo},
+  { path:"/code", element:Loginkod },
+  { path:"/login", element:Logintest}
+
 ];
