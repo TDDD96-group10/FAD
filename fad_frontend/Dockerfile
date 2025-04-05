@@ -19,6 +19,7 @@ RUN npm install openapi-typescript
 RUN npm install swagger-typescript-api
 RUN npm install @mantine/core @mantine/hooks @mantine/form
 RUN npm install --save-dev postcss postcss-preset-mantine postcss-simple-vars
+RUN npm install xlsx
 
 # Copy the rest of your application files
 COPY . .
