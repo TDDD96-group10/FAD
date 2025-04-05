@@ -2,36 +2,73 @@ import { useState, useMemo } from 'react';
 import { Group, Select, Table, Text, Stack, ScrollArea, Button, Notification, Transition } from '@mantine/core';
 import * as XLSX from 'xlsx';
 
-const OverView = () => {
-  const [sortBy, setSortBy] = useState('fadder');
-  const [summaryType, setSummaryType] = useState('specialkost');
-  const [showNotification, setShowNotification] = useState(false); // State for notification
+// Define interface for select options
+interface Option {
+  value: string;
+  label: string;
+}
 
-  const sortOptions = [
+// Define interface for data items
+interface DataItem {
+  fadder: string;
+  specialkost: string;
+  tröjstorlek: string;
+  faddertyp: string;
+}
+
+const OverView = () => {
+  // State with explicit types
+  const [sortBy, setSortBy] = useState<keyof DataItem>('fadder');
+  const [summaryType, setSummaryType] = useState<'specialkost' | 'tröjstorlek'>('specialkost');
+  const [showNotification, setShowNotification] = useState<boolean>(false);
+
+  // Sort options with type
+  const sortOptions: Option[] = [
     { value: 'fadder', label: 'Fadder' },
     { value: 'specialkost', label: 'Specialkost' },
     { value: 'tröjstorlek', label: 'Tröjstorlek' },
     { value: 'faddertyp', label: 'Faddertyp' },
   ];
-  const summaryOptions = [
+
+  // Summary options with type
+  const summaryOptions: Option[] = [
     { value: 'specialkost', label: 'Specialkost' },
     { value: 'tröjstorlek', label: 'Tröjstorlek' },
   ];
 
-  const sampleData = [
+  // Sample data with type
+  const sampleData: DataItem[] = [
     { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M', faddertyp: 'Klassfadder' },
     { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'L', faddertyp: 'Överfadder' },
-    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'Hävffadder' },
-    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XL', faddertyp: 'Överhävffadder' },
+    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'häfvfadder' },
+    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XL', faddertyp: 'Överhäfvfadder' },
     { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'S', faddertyp: 'Klassfadder' },
     { fadder: 'Svante', specialkost: '-', tröjstorlek: 'L', faddertyp: 'Specialfadder' },
     { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'S', faddertyp: 'Fadder' },
     { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'M', faddertyp: 'Fadder' },
+    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'XXS', faddertyp: 'Klassfadder' },
+    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'XL', faddertyp: 'Överfadder' },
+    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'häfvfadder' },
+    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XXL', faddertyp: 'Överhäfvfadder' },
+    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'XXS', faddertyp: 'Klassfadder' },
+    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'XL', faddertyp: 'Specialfadder' },
+    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'S', faddertyp: 'Fadder' },
+    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'M', faddertyp: 'Fadder' },
+    { fadder: 'Elliot', specialkost: 'Kött', tröjstorlek: 'M', faddertyp: 'Klassfadder' },
+    { fadder: 'Rikard', specialkost: 'Fisk', tröjstorlek: 'XL', faddertyp: 'Överfadder' },
+    { fadder: 'Olle', specialkost: 'Nötter', tröjstorlek: 'S', faddertyp: 'häfvfadder' },
+    { fadder: 'Valdemar', specialkost: '-', tröjstorlek: 'XXL', faddertyp: 'Överhäfvfadder' },
+    { fadder: 'Disa', specialkost: 'Fläsk', tröjstorlek: 'XS', faddertyp: 'Klassfadder' },
+    { fadder: 'Svante', specialkost: '-', tröjstorlek: 'L', faddertyp: 'Specialfadder' },
+    { fadder: 'Lovisa', specialkost: 'Vegan', tröjstorlek: 'XXS', faddertyp: 'Fadder' },
+    { fadder: 'Belmin', specialkost: 'Vegetarian', tröjstorlek: 'XXXL', faddertyp: 'Fadder' },
   ];
 
-  const shirtSizeOrder = ['XXXS', 'XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-  const sizeOrderMap = new Map(shirtSizeOrder.map((size, index) => [size, index]));
+  // Shirt size order with type
+  const shirtSizeOrder: string[] = ['XXXS', 'XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  const sizeOrderMap = new Map<string, number>(shirtSizeOrder.map((size, index) => [size, index]));
 
+  // Memoized sorted data with type inferred as DataItem[]
   const sortedData = useMemo(() => {
     return [...sampleData].sort((a, b) => {
       if (sortBy === 'tröjstorlek') {
@@ -44,8 +81,10 @@ const OverView = () => {
     });
   }, [sortBy, sampleData]);
 
-  const columns = ['fadder', 'specialkost', 'tröjstorlek', 'faddertyp'];
+  // Columns with type
+  const columns: (keyof DataItem)[] = ['fadder', 'specialkost', 'tröjstorlek', 'faddertyp'];
 
+  // Table rows
   const rows = sortedData.map((element, index) => (
     <Table.Tr key={`${element.fadder}-${index}`}>
       {columns.includes('fadder') && <Table.Td>{element.fadder}</Table.Td>}
@@ -55,21 +94,25 @@ const OverView = () => {
     </Table.Tr>
   ));
 
-  const shirtSizeCounts = sampleData.reduce((acc, curr) => {
+  // Shirt size counts with explicit type
+  const shirtSizeCounts: Record<string, number> = sampleData.reduce((acc, curr) => {
     const size = curr.tröjstorlek;
     acc[size] = (acc[size] || 0) + 1;
     return acc;
-  }, {});
+  }, {} as Record<string, number>);
 
+  // Sorted sizes with type inferred as string[]
   const sortedSizes = Object.keys(shirtSizeCounts).sort((a, b) => {
     const indexA = shirtSizeOrder.indexOf(a);
     const indexB = shirtSizeOrder.indexOf(b);
     return indexA - indexB;
   });
 
-  const uniqueFaddertyp = [...new Set(sampleData.map(item => item.faddertyp))].sort();
+  // Unique faddertyp with type
+  const uniqueFaddertyp: string[] = [...new Set(sampleData.map(item => item.faddertyp))].sort();
 
-  const countsBySizeAndType = sampleData.reduce((acc, curr) => {
+  // Counts by size and type with explicit type
+  const countsBySizeAndType: Record<string, Record<string, number>> = sampleData.reduce((acc, curr) => {
     const size = curr.tröjstorlek;
     const type = curr.faddertyp;
     if (!acc[size]) {
@@ -77,8 +120,9 @@ const OverView = () => {
     }
     acc[size][type] = (acc[size][type] || 0) + 1;
     return acc;
-  }, {});
+  }, {} as Record<string, Record<string, number>>);
 
+  // Tröjstorlek summary table component
   const TröjstorlekSummaryTable = () => (
     <Stack spacing="xs">
       <Table
@@ -110,8 +154,9 @@ const OverView = () => {
     </Stack>
   );
 
+  // Specialkost summary table component
   const SpecialkostSummaryTable = () => {
-    const specialkostColumns = ['fadder', 'specialkost'];
+    const specialkostColumns = ['fadder', 'specialkost'] as const;
     const specialkostRows = sortedData.map((element, index) => (
       <Table.Tr key={`${element.fadder}-${index}`}>
         {specialkostColumns.includes('fadder') && <Table.Td>{element.fadder}</Table.Td>}
@@ -147,7 +192,7 @@ const OverView = () => {
     );
   };
 
-  // Export function for Excel with notification
+  // Export function for Excel
   const exportSummaryToExcel = () => {
     if (summaryType === 'tröjstorlek') {
       const headers = ['Storlek', ...uniqueFaddertyp];
@@ -170,16 +215,12 @@ const OverView = () => {
       XLSX.writeFile(wb, 'specialkost_summary.xlsx');
     }
 
-    // Show notification and hide after 5 seconds
     setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 5000);
+    setTimeout(() => setShowNotification(false), 5000);
   };
 
   return (
     <Stack>
-      {/* Notification Pop-Up with Sliding Effect */}
       <Transition
         mounted={showNotification}
         transition="slide-left"
@@ -212,7 +253,7 @@ const OverView = () => {
           data={sortOptions}
           value={sortBy}
           onChange={(value) => {
-            if (value) setSortBy(value);
+            if (value) setSortBy(value as keyof DataItem);
           }}
         />
       </Group>
@@ -250,7 +291,7 @@ const OverView = () => {
           data={summaryOptions}
           value={summaryType}
           onChange={(value) => {
-            if (value) setSummaryType(value);
+            if (value) setSummaryType(value as 'specialkost' | 'tröjstorlek');
           }}
         />
         <Button variant="filled" onClick={exportSummaryToExcel}>
