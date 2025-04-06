@@ -21,4 +21,7 @@ jobs:
         run: docker run --rm my-django-app flake8 ./fad_backend
 
       - name: Run tests
-        run: docker run --rm my-django-app coverage run manage.py test && coverage report --fail-under=90
+        run: |
+          docker run --rm \
+          my-django-app \
+          bash -c "coverage run manage.py test && coverage report --fail-under=90"
