@@ -14,11 +14,13 @@ RUN npm cache clean --force
 RUN npm install
 
 # Install additional dependencies locally
-RUN npm install react-router-dom
-RUN npm install openapi-typescript
-RUN npm install swagger-typescript-api
-RUN npm install @mantine/core @mantine/hooks @mantine/form
-RUN npm install --save-dev postcss postcss-preset-mantine postcss-simple-vars
+# RUN npm install react-router-dom
+# RUN npm install openapi-typescript
+# RUN npm install swagger-typescript-api
+# RUN npm install @mantine/core @mantine/hooks @mantine/form
+# RUN npm install --save-dev postcss postcss-preset-mantine postcss-simple-vars
+
+
 
 # Copy the rest of your application files
 COPY . .

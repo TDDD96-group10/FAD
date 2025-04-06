@@ -19,7 +19,7 @@ const Logintest: React.FC = () => {
         <Title ta="center" className="title">
         </Title>
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-            <TextInput label="Email" placeholder="you@mantine.dev" required />
+            <TextInput label="Email" placeholder="you@mantine.dev"   defaultValue="test@example.com" required />
             <Group justify="space-between" mt="lg">
             </Group>
             <a href="/code">

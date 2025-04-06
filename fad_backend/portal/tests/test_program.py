@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from ..models.program import Program
@@ -6,16 +7,16 @@ from ..models.program import Program
 class ProgramModelTest(TestCase):
     def setUp(self):
         self.valid_attributes = {"size": ["m", "s", "l"]}
-        self.program = Program.objects.create(name="D-Sek", atributes=self.valid_attributes)
+        self.program = Program.objects.create(name="D-Sek", attributes=self.valid_attributes)
 
     def test_create_object(self):
         self.assertEqual(Program.objects.count(), 1)
 
         retrieved_program = Program.objects.get(id=self.program.id)
         self.assertEqual(retrieved_program.name, "D-Sek")
-        self.assertEqual(retrieved_program.atributes, self.valid_attributes)
-        self.assertIsInstance(retrieved_program.atributes, dict)
-        self.assertIn("size", retrieved_program.atributes)
+        self.assertEqual(retrieved_program.attributes, self.valid_attributes)
+        self.assertIsInstance(retrieved_program.attributes, dict)
+        self.assertIn("size", retrieved_program.attributes)
 
     def test_validate_attributes_valid(self):
         try:
@@ -32,9 +33,3 @@ class ProgramModelTest(TestCase):
         with self.assertRaises(ValidationError) as context:
             self.program.validate_attributes({"size_invaild": "ms"})
         self.assertIn("size", str(context.exception))
-
-
-
-
-
-

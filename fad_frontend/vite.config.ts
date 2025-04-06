@@ -1,9 +1,14 @@
-import { defineConfig } from 'vite'
+import { defineConfig, UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './tests/setup.js',
+  },
   server: {
     host: true,
     port: 3000,
@@ -11,4 +16,5 @@ export default defineConfig({
       usePolling: true, // Enable polling to detect file changes
     },
   }
-})
+  
+} as UserConfig)

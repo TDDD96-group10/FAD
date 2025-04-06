@@ -17,5 +17,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t my-django-app ./fad_backend
 
+      - name: Run lint(flake8)
+        run: docker run --rm my-django-app flake8 ./fad_backend
+
       - name: Run tests
-        run: docker run --rm my-django-app python manage.py test
+        run: docker run --rm my-django-app coverage run manage.py test && coverage report --fail-under=90
