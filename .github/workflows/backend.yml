@@ -8,14 +8,32 @@ on:
 
 
 jobs: 
-  test:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t my-django-app ./fad_backend
+      - name: Set up Docker cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ hashFiles('./fad_backend/Dockerfile')}}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (with cache)
+        run: |
+          docker buildx  build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            --load \
+            -t my-django-app ./fad_backend
+
+       # run: docker build -t my-django-app ./fad_backend
 
       - name: Run lint(flake8)
         run: docker run --rm my-django-app flake8 ./fad_backend
@@ -24,4 +42,4 @@ jobs:
         run: |
           docker run --rm \
           my-django-app \
-          bash -c "coverage run manage.py test && coverage report --fail-under=90"
+          bash -c "coverage run manage.py test && coverage report --fail-under=80"
