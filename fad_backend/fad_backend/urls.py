@@ -52,6 +52,7 @@ urlpatterns = [
     path('installed-apps/', installed_apps_view, name='installed_apps'),
     path("health/", include("health_check.urls")),
     path("auth/", include("security.urls")),
+    path("portal/",include("portal.urls")),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

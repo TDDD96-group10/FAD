@@ -47,6 +47,26 @@ export interface Username {
   username: string;
 }
 
+export interface User {
+  /** Id */
+  id: number;
+  /**
+   * Username
+   * @minLength 1
+   */
+  username: string;
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   */
+  email: string;
+}
+
+export interface UserOnly {
+  user: User;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -319,6 +339,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authLoginCreate: (data: Username, params: RequestParams = {}) =>
       this.request<void, void>({
         path: `/auth/login`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  portal = {
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalHelloWorldList
+     * @request GET:/portal/hello-world
+     * @secure
+     */
+    portalHelloWorldList: (params: RequestParams = {}) =>
+      this.request<UserOnly, any>({
+        path: `/portal/hello-world`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalHelloWorldCreate
+     * @request POST:/portal/hello-world
+     * @secure
+     */
+    portalHelloWorldCreate: (data: UserOnly, params: RequestParams = {}) =>
+      this.request<UserOnly, any>({
+        path: `/portal/hello-world`,
         method: "POST",
         body: data,
         secure: true,

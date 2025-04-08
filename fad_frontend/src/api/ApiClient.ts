@@ -1,4 +1,4 @@
-import { Api} from "../api/Api";
+import { Api} from "./Api";
 
 export const apiClient = new Api({ securityWorker: () => {
     const token = localStorage.getItem("authToken");
