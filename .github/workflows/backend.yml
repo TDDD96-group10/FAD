@@ -3,8 +3,8 @@ name: Run Django Tests in Docker Compose
 on:
   push:
     branches: [dev]
-    paths:
-      - 'fad_backend/**' 
+    #paths:
+    #  - 'fad_backend/**' 
 
 
 jobs: 
@@ -23,7 +23,7 @@ jobs:
       
       - name: Tag and push Docker image to GHCR
         run: |
-          IMAGE_OWNER=${{ github.repository_owner,, }}
+          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           docker tag my-django-app ghcr.io/$IMAGE_OWNER/my-django-app:latest
           docker push ghcr.io/$IMAGE_OWNER/my-django-app:latest
   ci:
