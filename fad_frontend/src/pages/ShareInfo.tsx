@@ -103,7 +103,7 @@ const ShareInfo: React.FC = () => {
     });
   };
 
-  //FIGURER: 📁   📎 
+  //FIGURER: 📁📎 
 
   return (
     <Container size={800} my={40}>
@@ -111,14 +111,14 @@ const ShareInfo: React.FC = () => {
         Dela Information
       </Title>
       <Text c="dimmed" ta="center" mb={20}>
-        Här kan du skapa mappar och lägga till filer för ditt fadderi
+        Här kan du skapa mappar och lägga till pdf'er för ditt fadderi
       </Text>
 
     <Group justify="center" mb="md">
-      <Button variant="outline" color="blue" size="md" onClick={handleShareClick}>
-        Lägg ut fil/pdf
+      <Button variant="outline" color="blue" size="xl" onClick={handleShareClick}>
+        Lägg ut pdf
       </Button>
-      <Button variant="outline" color="blue" size="md" onClick={handleCreateFolderClick}>
+      <Button variant="outline" color="blue" size="xl" onClick={handleCreateFolderClick}>
         Skapa ny mapp
       </Button>
     </Group>
@@ -155,15 +155,20 @@ const ShareInfo: React.FC = () => {
             mb="md"
             accept="application/pdf"
           />
-          <Select
-            label="Mapp"
-            placeholder="Välj en mapp"
-            data={folders}
-            value={selectedFolder}
-            onChange={setSelectedFolder}
-            disabled={folders.length === 0}
-            mb="md"
-          />
+         <Select
+          label="Mapp"
+          placeholder="Välj en mapp"
+          data={[...folders, '➕ Skapa ny mapp...']}
+          value={selectedFolder}
+          onChange={(value) => {
+            if (value === '➕ Skapa ny mapp...') {
+              setShowFolderForm(true);  // öppna mappformuläret
+            } else {
+              setSelectedFolder(value);
+            }
+          }}
+          mb="md"
+        />
           <Button fullWidth onClick={handlePublish} color="blue">Publicera</Button>
         </Paper>
       )}
@@ -171,7 +176,7 @@ const ShareInfo: React.FC = () => {
       {folders.length > 0 && (
         <Paper withBorder p="md" radius="md" mb="md">
           <Group justify="apart">
-            <Title order={5}>Mappar</Title>
+            <Title order={5} size="xl">Mappar</Title>
             <ActionIcon onClick={() => setEditFolders((prev) => !prev)}>
               <IconPencil size={18} />
             </ActionIcon>
@@ -181,7 +186,13 @@ const ShareInfo: React.FC = () => {
             {folders.map((folder) => (
               <List.Item key={folder} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span
-                  style={{ cursor: 'pointer', fontWeight: activeFolder === folder ? 'bold' : 'normal', color: '#0077cc' }}
+                   style={{
+                    cursor: 'pointer',
+                    fontWeight: activeFolder === folder ? 'bold' : 'normal',
+                    color: '#0077cc',
+                    fontSize: '1.2rem',       
+                    flex: 1,                   
+                  }}
                   onClick={() => {
                     setActiveFolder(prev => (prev === folder ? null : folder));
                     setEditFiles(false);
@@ -190,7 +201,8 @@ const ShareInfo: React.FC = () => {
                   📁 {folder}
                 </span>
                 {editFolders && (
-                  <ActionIcon color="red" onClick={() => deleteFolder(folder)}>
+                  <ActionIcon color="red" onClick={() => deleteFolder(folder)}
+                  style={{ marginLeft: '1rem' }}>
                     <IconTrash size={16} />
                   </ActionIcon>
                 )}
@@ -222,7 +234,8 @@ const ShareInfo: React.FC = () => {
                     📄 {entry.title} ({entry.fileName})
                   </a>
                   {editFiles && (
-                    <ActionIcon color="red" onClick={() => deleteFile(activeFolder, index)}>
+                    <ActionIcon color="red" onClick={() => deleteFile(activeFolder, index)}
+                    style={{ marginLeft: '1rem' }}>
                       <IconTrash size={16} />
                     </ActionIcon>
                   )}
