@@ -1,46 +1,241 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
-  Flex,
-  FileInput
-}
-  from '@mantine/core';
+  TextInput,
+  FileInput,
+  Title,
+  Select,
+  Group,
+  Text,
+  List,
+  ActionIcon,
+  Container,
+  Paper,
+  Divider,
+} from '@mantine/core';
+import { IconPencil, IconTrash } from '@tabler/icons-react';
+import '../styles/pages/ShareInfo.css';
 
+type FileEntry = {
+  title: string;
+  fileName: string;
+  fileUrl: string;
+};
 
 const ShareInfo: React.FC = () => {
-  // Skapar ett state som styr om den nya knappen ska visas
-  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [title, setTitle] = useState('');
+  const [file, setFile] = useState<File | null>(null);
 
-  // Funktion som triggas vid klick på "Dela information"-knappen
-  const handleShareInfoClick = () => {
-    setShowLinkInput(prev => !prev); // Växlar mellan true och false för att visa/dölja knappen
+  const [folders, setFolders] = useState<string[]>([]);
+  const [folderContents, setFolderContents] = useState<Record<string, FileEntry[]>>({});
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+
+  const [showFolderForm, setShowFolderForm] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
+
+  const [activeFolder, setActiveFolder] = useState<string | null>(null);
+  const [editFolders, setEditFolders] = useState(false);
+  const [editFiles, setEditFiles] = useState(false);
+
+  const handleShareClick = () => setShowForm((prev) => !prev);
+  const handleCreateFolderClick = () => setShowFolderForm((prev) => !prev);
+
+  const handleCreateFolder = () => {
+    if (!newFolderName.trim()) {
+      alert('Ange ett namn för mappen.');
+      return;
+    }
+    if (folders.includes(newFolderName)) {
+      alert('En mapp med detta namn finns redan.');
+      return;
+    }
+
+    setFolders((prev) => [...prev, newFolderName]);
+    setFolderContents((prev) => ({ ...prev, [newFolderName]: [] }));
+    setNewFolderName('');
+    setShowFolderForm(false);
   };
+
+  const handlePublish = () => {
+    if (!title || !file || !selectedFolder) {
+      alert('Fyll i titel, välj en fil och en mapp');
+      return;
+    }
+
+    const fileUrl = URL.createObjectURL(file);
+
+    const newEntry: FileEntry = {
+      title,
+      fileName: file.name,
+      fileUrl,
+    };
+
+    setFolderContents((prev) => ({
+      ...prev,
+      [selectedFolder]: [...(prev[selectedFolder] || []), newEntry],
+    }));
+
+    alert(`Fil publicerad med titel: ${title} i mapp "${selectedFolder}"`);
+
+    setTitle('');
+    setFile(null);
+    setSelectedFolder(null);
+    setShowForm(false);
+  };
+
+  const deleteFolder = (folderName: string) => {
+    if (!window.confirm(`Vill du ta bort mappen "${folderName}"?`)) return;
+    setFolders((prev) => prev.filter((f) => f !== folderName));
+    setFolderContents((prev) => {
+      const updated = { ...prev };
+      delete updated[folderName];
+      return updated;
+    });
+    if (activeFolder === folderName) setActiveFolder(null);
+  };
+
+  const deleteFile = (folder: string, index: number) => {
+    setFolderContents((prev) => {
+      const updated = [...(prev[folder] || [])];
+      updated.splice(index, 1);
+      return { ...prev, [folder]: updated };
+    });
+  };
+
+  //FIGURER: 📁   📎 
+
   return (
+    <Container size={800} my={40}>
+      <Title ta="center" mb={10}>
+        Dela Information
+      </Title>
+      <Text c="dimmed" ta="center" mb={20}>
+        Här kan du skapa mappar och lägga till filer för ditt fadderi
+      </Text>
 
-    <Flex
-      h="50vh"
-      mih={50}
-      bg="rgba(0, 0, 0, 0)"
-      gap={80}
-      justify="center"
-      align="center"
-      direction="column"
-      wrap="wrap"
+    <Group justify="center" mb="md">
+      <Button variant="outline" color="blue" size="md" onClick={handleShareClick}>
+        Lägg ut fil/pdf
+      </Button>
+      <Button variant="outline" color="blue" size="md" onClick={handleCreateFolderClick}>
+        Skapa ny mapp
+      </Button>
+    </Group>
 
-    >
-      <Button variant="light" color="blue" autoContrast size="xl" h={80} w={400} fz="2rem" >Senaste nytt</Button>
-      <Button variant="light" color="blue" autoContrast size="xl" h={80} w={400} fz="2rem" onClick={handleShareInfoClick} >Dela information</Button>
-      {showLinkInput &&
-        (<FileInput variant="filled" size="md" label="Lägg till länk" description="Vänligen lägg till länken här" placeholder="Klistra in länk här"
-          style={{
-            position: 'fixed', top: '600px', left: '50%', transform: 'translateX(-50%)', width: '400px'
-          }}
-        />
-        )}
-    </Flex>
+      {showFolderForm && (
+        <Paper withBorder p="md" radius="md" mb="md">
+          <Title order={4} mb="xs">Skapa ny mapp</Title>
+          <TextInput
+            label="Mappnamn"
+            placeholder="Ange mappens namn"
+            value={newFolderName}
+            onChange={(e) => setNewFolderName(e.currentTarget.value)}
+            mb="md"
+          />
+          <Button onClick={handleCreateFolder} fullWidth>Skapa</Button>
+        </Paper>
+      )}
+
+      {showForm && (
+        <Paper withBorder p="md" radius="md" mb="md">
+          <Title order={4} mb="xs">Ladda upp fil</Title>
+          <TextInput
+            label="Titel"
+            placeholder="Ange titel"
+            value={title}
+            onChange={(e) => setTitle(e.currentTarget.value)}
+            mb="md"
+          />
+          <FileInput
+            label="Fil (PDF)"
+            placeholder="Välj en PDF"
+            value={file}
+            onChange={setFile}
+            mb="md"
+            accept="application/pdf"
+          />
+          <Select
+            label="Mapp"
+            placeholder="Välj en mapp"
+            data={folders}
+            value={selectedFolder}
+            onChange={setSelectedFolder}
+            disabled={folders.length === 0}
+            mb="md"
+          />
+          <Button fullWidth onClick={handlePublish} color="blue">Publicera</Button>
+        </Paper>
+      )}
+
+      {folders.length > 0 && (
+        <Paper withBorder p="md" radius="md" mb="md">
+          <Group justify="apart">
+            <Title order={5}>Mappar</Title>
+            <ActionIcon onClick={() => setEditFolders((prev) => !prev)}>
+              <IconPencil size={18} />
+            </ActionIcon>
+          </Group>
+          <Divider my="sm" />
+          <List spacing="xs">
+            {folders.map((folder) => (
+              <List.Item key={folder} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{ cursor: 'pointer', fontWeight: activeFolder === folder ? 'bold' : 'normal', color: '#0077cc' }}
+                  onClick={() => {
+                    setActiveFolder(prev => (prev === folder ? null : folder));
+                    setEditFiles(false);
+                  }}
+                >
+                  📁 {folder}
+                </span>
+                {editFolders && (
+                  <ActionIcon color="red" onClick={() => deleteFolder(folder)}>
+                    <IconTrash size={16} />
+                  </ActionIcon>
+                )}
+              </List.Item>
+            ))}
+          </List>
+        </Paper>
+      )}
+
+      {activeFolder && (
+        <Paper withBorder p="md" radius="md">
+          <Group justify="apart">
+            <Title order={5}>Innehåll i mapp: {activeFolder}</Title>
+            <ActionIcon onClick={() => setEditFiles((prev) => !prev)}>
+              <IconPencil size={18} />
+            </ActionIcon>
+          </Group>
+          <Divider my="sm" />
+          {folderContents[activeFolder]?.length > 0 ? (
+            <List spacing="xs">
+              {folderContents[activeFolder].map((entry, index) => (
+                <List.Item key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <a
+                    href={entry.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    📄 {entry.title} ({entry.fileName})
+                  </a>
+                  {editFiles && (
+                    <ActionIcon color="red" onClick={() => deleteFile(activeFolder, index)}>
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  )}
+                </List.Item>
+              ))}
+            </List>
+          ) : (
+            <Text>Inga filer i denna mapp ännu.</Text>
+          )}
+        </Paper>
+      )}
+    </Container>
   );
 };
 
 export default ShareInfo;
-
-//Fin färg på knapparna:)  <Button variant="filled" color="yellow" autoContrast size="xl" h={80} w={400} fz="2rem" bg="#F6E2B6">Lägg ut PDF</Button>
