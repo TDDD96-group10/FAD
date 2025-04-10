@@ -16,7 +16,7 @@ interface DataItem {
   faddertyp: string;
 }
 
-const OverView = () => {
+const OverViewPage = () => {
   // State with explicit types
   const [sortBy, setSortBy] = useState<keyof DataItem>('fadder');
   const [summaryType, setSummaryType] = useState<'specialkost' | 'tröjstorlek'>('specialkost');
@@ -285,6 +285,7 @@ const OverView = () => {
         </Table>
       </ScrollArea>
 
+        
       <Group>
         <Text>Visa sammanställning för: </Text>
         <Select
@@ -306,4 +307,4 @@ const OverView = () => {
   );
 };
 
-export default OverView;
+export default OverViewPage;
