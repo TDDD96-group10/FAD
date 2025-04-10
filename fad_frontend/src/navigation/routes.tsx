@@ -4,6 +4,7 @@ import Logintest from '../pages/Login';
 import NotFoundPage from '../pages/NotFoundPage';
 import FADheader from '../header';
 import Loginkod from '../pages/Loginkod';
+import FadderHome from '../pages/FadderHome';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<Logintest />} />
         <Route path="/code" element={<Loginkod />} />
+        <Route path="/fadderhome" element={<FadderHome />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="home" element={<FADheader />}>
           {routes.map(({ path, element: Element }) => (
