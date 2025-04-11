@@ -17,5 +17,4 @@ export const routes: RouteType[] = [
   { path:"/code", element:Loginkod },
   { path:"/login", element:Logintest},
   { path: "/home", element:HomePage}
-
 ];

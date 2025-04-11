@@ -1,9 +1,15 @@
 import { AppShell, Burger, Button, Group, NavLink} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet } from 'react-router-dom';
+import { ReactNode } from 'react';
 
 
-const FADheader: React.FC = () => {
+
+type FADLayoutProps = {
+  children: ReactNode;
+};
+
+export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
 
     const [opened, { toggle }] = useDisclosure();
 
@@ -38,7 +44,7 @@ const FADheader: React.FC = () => {
             <NavLink label ="Logout" href='/'></NavLink>
           </AppShell.Navbar>
           <AppShell.Main>
-            <Outlet/>
+          {children} 
           </AppShell.Main>
         </AppShell>
       </>

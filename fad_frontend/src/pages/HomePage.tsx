@@ -1,9 +1,10 @@
-import "../styles/pages/Home.css";
+//import "../styles/pages/Home.css";
 import { useState } from 'react';
 import { useApi,callApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
 import {User} from "../api/Api";
 import { useSmartState } from "../hooks/useSmartState";
+import {FADheader } from "../components/header"
 
 
 import {
@@ -53,9 +54,12 @@ const HomePage: React.FC = () => {
 
   
   return (
-    <Container size="xs" style={{ marginTop: 100 }}>
+  
+
+    <FADheader>
+    <Container size="xs" >
     <Title order={2} mb="lg">
-      Mantine + React TypeScript Demo
+      Mantine + React TypeScript Demo  {JSON.stringify(data, null, 2)}
     </Title>
   
     {/* --- Section 1: Normal State --- */}
@@ -107,6 +111,8 @@ const HomePage: React.FC = () => {
       </Stack>
     </Box>
   </Container>
+ 
+  </FADheader>
   );
 };
 
