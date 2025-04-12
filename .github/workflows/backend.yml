@@ -2,30 +2,30 @@ name: Run Django Tests in Docker Compose
 
 on:
   push:
-    branches: [dev]
-    paths:
-      - 'fad_backend/**' 
+    branches: [dev_ci]
+    
+    
 
 
 jobs: 
-  #build-and-push:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@v3
-  #
-  #    - name: Log in to GHCR
-  #      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+  
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-  #    - name: Build image
-  #      run: |
-  #        docker build -t my-django-app ./fad_backend
+      - name: Build image
+        run: |
+          docker build -t my-django-app ./fad_backend
           
       
-  #    - name: Tag and push Docker image to GHCR
-  #      run: |
-  #        IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-  #        docker tag my-django-app ghcr.io/$IMAGE_OWNER/my-django-app:latest
-  #        docker push ghcr.io/$IMAGE_OWNER/my-django-app:latest
+      - name: Tag and push Docker image to GHCR
+        run: |
+          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker tag my-django-app ghcr.io/$IMAGE_OWNER/my-django-app:latest
+          docker push ghcr.io/$IMAGE_OWNER/my-django-app:latest
   ci:
     runs-on: ubuntu-latest
     steps:

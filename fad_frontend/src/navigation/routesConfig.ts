@@ -1,8 +1,8 @@
 import NotFoundPage from '../pages/NotFoundPage.tsx';
-import ShareInfo from '../pages/ShareInfo.tsx';
+import ShareInfoPage from '../pages/ShareInfoPage.tsx';
 import StartPage from '../pages/StartPage';
-import Loginkod from '../pages/Loginkod';
-import Logintest from '../pages/Login';
+import LoginCodePage from '../pages/LoginCodePage.tsx';
+import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
 
 interface RouteType {
@@ -13,8 +13,8 @@ interface RouteType {
 export const routes: RouteType[] = [
   { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
-  { path: "/shareinfo", element: ShareInfo},
-  { path:"/code", element:Loginkod },
-  { path:"/login", element:Logintest},
+  { path: "/shareinfo", element: ShareInfoPage},
+  { path:"/code", element:LoginCodePage },
+  { path:"/login", element:LoginPage},
   { path: "/home", element:HomePage}
 ];
