@@ -41,7 +41,9 @@ jobs:
           docker pull ghcr.io/$IMAGE_OWNER/my-django-app:latest
 
       - name: Run lint (flake8)
-        run: docker run --rm ghcr.io/${{ github.repository_owner }}/my-django-app:latest flake8 ./fad_backend
+        run: |
+          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker run --rm ghcr.io/IMAGE_OWNER/my-django-app:latest flake8 ./fad_backend
   test:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -60,5 +62,6 @@ jobs:
       - name: Run tests
         run: |
           docker run --rm \
-          ghcr.io/${{ github.repository_owner }}/my-django-app:latest \
+          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')\
+          ghcr.io/IMAGE_OWNER/my-django-app:latest \
           bash -c "coverage run manage.py test && coverage report --fail-under=80"
