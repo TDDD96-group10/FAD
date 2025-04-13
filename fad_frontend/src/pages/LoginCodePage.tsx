@@ -1,39 +1,43 @@
-
 import {
     Button,
     Container,
     Paper,
     TextInput,
+    Text 
 } from '@mantine/core';
-
-import { useNavigate } from "react-router-dom";
-import { useForm } from '@mantine/form';
+import { callApi } from "../hooks/useApi";
+import { apiClient } from "../api/ApiClient";
+import { CodeSubmit, TokenResponse } from '../api/Api';
+import { useSmartState } from '../hooks/useSmartState';
 
 
 const LoginCodePage: React.FC = () => {
+    const liuId = localStorage.getItem("liuId") ?? "";
+    const [form, setFormField] = useSmartState<CodeSubmit>({ username: liuId , code: '' });
 
-    const navigate = useNavigate();
+    const handleResponse = (tokens: TokenResponse) => {
+        localStorage.setItem("access", tokens.access);
+        localStorage.setItem("refresh", tokens.refresh);
+      };
 
-      const handleClick = () => {
-          navigate("/home");
-      }
-
-      const form = useForm({
-            mode: 'uncontrolled',
-            validateInputOnChange: true,
-            initialValues: { email: ''},
-        });
+    const {callApi:triggerApi, error:error} = callApi<TokenResponse>(() =>
+        apiClient.auth.authCodeCreate(form),
+        "/",
+        handleResponse
+      );
 
     return (
         <Container size={400} >
             <Paper withBorder shadow="md" p={30}  radius="md">
                 <TextInput 
                     label="Kod" 
-                    placeholder="" required
-                    key={form.key('email')}
-                    {...form.getInputProps('email')} 
+                    placeholder="" 
+                    required
+                    value={form.code}
+                    onChange={(e) => setFormField('code', e.currentTarget.value)}
                 />
-                 <Button fullWidth  mt="xl"  onClick={handleClick}>
+                {error && (<Text c="red" size="sm" mt="sm">{error}</Text>)}
+                 <Button fullWidth  mt="xl"  onClick={triggerApi}>
                     Ange kod
                  </Button>    
             </Paper>

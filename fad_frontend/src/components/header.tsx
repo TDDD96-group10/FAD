@@ -39,9 +39,10 @@ export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
 
           </AppShell.Header>
           <AppShell.Navbar p="md">
-            <NavLink label ="Home" href='/home'></NavLink>
+            <NavLink label ="Home" href='/demo'></NavLink>
             <NavLink label ="Shareinfo" href='/shareinfo'></NavLink>
             <NavLink label ="Contact (#)" href='/home'></NavLink>
+            <NavLink label ="Start" href='/'></NavLink>
             <NavLink label ="Logout" href='/'></NavLink>
           </AppShell.Navbar>
           <AppShell.Main>

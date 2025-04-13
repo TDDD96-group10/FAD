@@ -1,6 +1,6 @@
 from django.urls import path
-from .views.LoginView import LoginView
-from .views.GenerateTokenView import GenerateTokenView
+from .views.login_view import LoginView
+from .views.generate_token_view import GenerateTokenView
 
 
 urlpatterns = [

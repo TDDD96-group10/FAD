@@ -1,12 +1,12 @@
 import { Button, Group, ScrollArea, Stack, Title,Box  } from '@mantine/core';
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import {ActivityCard, initialActivityGroups}  from '../components/Activity';
+import { ActivityCard, initialActivityGroups}  from '../components/Activity';
 import FADheader from '../components/Header';
 import AddActivityModal from '../components/AddActivityModal';
 
 const StartPage: React.FC = () => {
-  var [opened, { open, close }] = useDisclosure(true);
+  var [opened, { open, close }] = useDisclosure();
 
   return (
     <FADheader>   

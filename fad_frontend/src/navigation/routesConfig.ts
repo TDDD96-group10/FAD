@@ -14,7 +14,7 @@ export const routes: RouteType[] = [
   { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
   { path: "/shareinfo", element: ShareInfoPage},
-  { path:"/code", element:LoginCodePage },
-  { path:"/login", element:LoginPage},
-  { path: "/home", element:HomePage}
+  { path: "/code", element:LoginCodePage },
+  { path: "/login", element:LoginPage},
+  { path: "/demo", element:HomePage}
 ];
