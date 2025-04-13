@@ -1,1 +1,1 @@
-from .LoginView import LoginView
+from .login_view import LoginView
