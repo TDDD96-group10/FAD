@@ -1,11 +1,14 @@
-import { AppShell, Burger, Button, Card, ColorPicker, Group, Modal, NavLink, Paper, Stack, TextInput, Title } from "@mantine/core";
+import { ActionIcon, AppShell, Burger, Button, Card, ColorPicker, Group, Modal, NavLink, Paper, Stack, TextInput, Title, useModalsStack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+import { IconSettings} from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
+import ConfigureTags from "./ConfigureTags";
+
 
 interface tagProps {
   name: string;
-  colour: string;
+  color: string;
 }
 
 
@@ -15,7 +18,7 @@ const Configure: React.FC = () => {
 
   const tagColours = ['#2e2e2e', '#868e96', '#fa5252', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14'];
   
-
+  const stack = useModalsStack(['delete-page', 'confirm-action']);
   const [opened, { open, close }] = useDisclosure();
   //const [open, setOpen] = useState(false);
   const [tagName, setName] = useState('');
@@ -28,6 +31,20 @@ const Configure: React.FC = () => {
     onChange('');
     close();
   }
+  
+  function editTag(name: string, color: string, index: number) {
+    stack.closeAll();
+    setTags(prevTags => {
+      const updatedTags = [...prevTags];
+      updatedTags[index] = { name, color };
+      return updatedTags;
+    });
+  }
+
+  function removeTag(index: number) {
+    setTags(prevTags => prevTags.filter((_, i) => i !== index));
+  }
+  
 
   return (
     <>
@@ -53,12 +70,13 @@ const Configure: React.FC = () => {
 
         </AppShell.Header>
         <AppShell.Navbar p="md">
-          <NavLink label ="Home" href='/home'></NavLink>
-          <NavLink label ="Configure" href='/configure'></NavLink>
-          <NavLink label ="Shareinfo" href='/home/shareinfo'></NavLink>
-          <NavLink label ="Test404" href='/home/test'></NavLink>
-          <NavLink label ="Contact (#)" href='/home/#'></NavLink>
-          <NavLink label ="Logout" href='/'></NavLink>
+            <NavLink label ="Home" href='/home'></NavLink>
+            <NavLink label ="Configure" href='/configure'></NavLink>
+            <NavLink label ="Shareinfo" href='/home/shareinfo'></NavLink>
+            <NavLink label ="Test404" href='/home/test'></NavLink>
+            <NavLink label ="Contact (#)" href='/home/#'></NavLink>
+            <NavLink label ="Logout" href='/'></NavLink>
+          
         </AppShell.Navbar>
         <AppShell.Main>
           <Stack>
@@ -82,23 +100,52 @@ const Configure: React.FC = () => {
                 <Modal size="sm" opened={opened} onClose={close} >
                   <Stack >
                     <TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)}/>
-                    <ColorPicker  onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
-                    <Button maw={320} onClick={() => addTag({name: tagName, colour:color})}>Spara</Button>
+                      <ColorPicker  onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
+                    <Button maw={320} onClick={() => addTag({name: tagName, color:color})}>Spara</Button>
                   </Stack>
                 </Modal>
                 }
               <div>
                 {tags.map((item, index) => (
-                  <Button color={item.colour} key={index} >
+                  <>
+                  <Modal.Stack>
+                    <Modal {...stack.register('delete-page')} title="Redigera tag">
+                      <Stack>
+                      <TextInput maw={320} value={tagName} defaultValue={item.name} onChange={(event) => setName(event.currentTarget.value)}></TextInput>
+                      <ColorPicker size="xl" onChange={onChange} value = {color} format="hex" swatches={tagColours}/>
+                      <>{color}</>
+                      </Stack>
+                      <Group mt="lg" justify="space-between">
+                        <Button onClick={ () => editTag(tagName, color, index)} >
+                          Spara ändringar
+                        </Button>
+                        <Button onClick={() => stack.open('confirm-action')} color="red">
+                          Radera tag
+                        </Button>
+                      </Group>
+                    </Modal>
+
+                    <Modal {...stack.register('confirm-action')} title="Confirm action">
+                      Are you sure you want to perform this action? This action cannot be undone. If you are
+                      sure, press confirm button below.
+                      <Group mt="lg" justify="flex-end">
+                        <Button onClick={stack.closeAll} variant="default">
+                          Cancel
+                        </Button>
+                        <Button onClick={() => removeTag(index)} color="red">
+                          Confirm
+                        </Button>
+                      </Group>
+                    </Modal>
+                  </Modal.Stack>
+                  <Button onClick={() => stack.open('delete-page')} color={item.color} rightSection={<IconSettings size= {14}/>} >
                     <p>{item.name}</p>
                   </Button>
+                  </>
                 ))}
               </div>
               </Card>
-              
-           
             </Stack>
-            
           </Stack>
         </AppShell.Main>
       </AppShell>
