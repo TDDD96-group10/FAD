@@ -18,8 +18,8 @@ const Configure: React.FC = () => {
 
   const tagColours = ['#2e2e2e', '#868e96', '#fa5252', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14'];
   
-  const stack = useModalsStack(['delete-page', 'confirm-action']);
-  const [opened, { open, close }] = useDisclosure();
+  const stack = useModalsStack(['delete-page', 'confirm-action', 'create-page']);
+  const [opened, setOpened] = useState(false);
   //const [open, setOpen] = useState(false);
   const [tagName, setName] = useState('');
   const [tags, setTags] = useState<tagProps[]>([]);
@@ -43,8 +43,13 @@ const Configure: React.FC = () => {
 
   function removeTag(index: number) {
     setTags(prevTags => prevTags.filter((_, i) => i !== index));
+    stack.closeAll();
   }
   
+  function createTag(){
+    setOpened(true)
+    stack.open('create-page')
+  }
 
   return (
     <>
@@ -94,10 +99,13 @@ const Configure: React.FC = () => {
                 <Title order={4}>
                   Taggar används för att sortera faddrarna på overview-sidan, exempel på taggar kan vara: klassfadder, nykterfadder, häfvfadder osv.
                 </Title>
-                <Button onClick={open}>Lägg till tagg</Button>
+                <Button onClick={() => setOpened(true)}>Lägg till tagg</Button>
 
-                {opened && 
-                <Modal size="sm" opened={opened} onClose={close} >
+                
+              <div>
+              <Modal.Stack>
+              {opened && 
+                <Modal size="sm" title="Skapa tagg" {...stack.register('create-page')} >
                   <Stack >
                     <TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)}/>
                       <ColorPicker  onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
@@ -105,13 +113,15 @@ const Configure: React.FC = () => {
                   </Stack>
                 </Modal>
                 }
-              <div>
                 {tags.map((item, index) => (
                   <>
-                  <Modal.Stack>
                     <Modal {...stack.register('delete-page')} title="Redigera tag">
                       <Stack>
-                      <TextInput maw={320} value={tagName} defaultValue={item.name} onChange={(event) => setName(event.currentTarget.value)}></TextInput>
+                      <TextInput 
+                        maw={320} 
+                        value={tagName} 
+                        defaultValue={item.name} 
+                        onChange={(event) => setName(event.currentTarget.value)}/>
                       <ColorPicker size="xl" onChange={onChange} value = {color} format="hex" swatches={tagColours}/>
                       <>{color}</>
                       </Stack>
@@ -137,12 +147,13 @@ const Configure: React.FC = () => {
                         </Button>
                       </Group>
                     </Modal>
-                  </Modal.Stack>
+                  
                   <Button onClick={() => stack.open('delete-page')} color={item.color} rightSection={<IconSettings size= {14}/>} >
                     <p>{item.name}</p>
                   </Button>
                   </>
                 ))}
+                </Modal.Stack>
               </div>
               </Card>
             </Stack>
