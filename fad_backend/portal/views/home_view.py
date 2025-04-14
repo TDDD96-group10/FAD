@@ -15,7 +15,8 @@ class HomeView(APIView):
     def get(self,request):
         #Retrieve all posts
         allPosts = Post.objects.all()
-        print("Hej")
+        #for element in allPosts:
+         #   print(f"title:{element.title}, author:{element.author}, created at:{element.created_at}")
         return Response(Post.objects.all()) #Should be custom for every request
     
 

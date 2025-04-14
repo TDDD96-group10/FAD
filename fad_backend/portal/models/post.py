@@ -10,3 +10,5 @@ class Post(models.Model):
     send_notifcation = models.BooleanField(default=False)
     title = models.CharField(max_length=200, null=False)
     text = models.TextField()
+    start_time = models.DateTimeField(null=True, blank=True)
+
