@@ -383,5 +383,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: "json",
         ...params,
       }),
+
+    /**
+     * @description def get(self, request): return Response()
+     *
+     * @tags portal
+     * @name PortalPostLinkCreate
+     * @request POST:/portal/post-link
+     * @secure
+     */
+    portalPostLinkCreate: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/post-link`,
+        method: "POST",
+        secure: true,
+        ...params,
+      }),
   };
 }
