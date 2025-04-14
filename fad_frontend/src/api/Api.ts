@@ -88,6 +88,34 @@ export interface UserOnly {
   user: User;
 }
 
+export interface Post {
+  /**
+   * Author
+   * @maxLength 8
+   */
+  author: string;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Title
+   * @maxLength 100
+   */
+  title: string;
+  /**
+   * Text
+   * @maxLength 100
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -450,10 +478,11 @@ export class Api<
      * @secure
      */
     portalHomeList: (params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<Post, any>({
         path: `/portal/home`,
         method: "GET",
         secure: true,
+        format: "json",
         ...params,
       }),
   };
