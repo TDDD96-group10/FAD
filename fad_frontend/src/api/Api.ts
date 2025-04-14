@@ -383,5 +383,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalHomeList
+     * @request GET:/portal/home
+     * @secure
+     */
+    portalHomeList: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/home`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
   };
 }
