@@ -4,6 +4,7 @@ import StartPage from '../pages/StartPage';
 import Loginkod from '../pages/Loginkod';
 import Logintest from '../pages/Login';
 import HomePage from '../pages/HomePage.tsx';
+import FadderInformation from '../pages/FadderInformation.tsx';
 
 interface RouteType {
   path: string;
@@ -16,6 +17,7 @@ export const routes: RouteType[] = [
   { path: "/shareinfo", element: ShareInfo},
   { path:"/code", element:Loginkod },
   { path:"/login", element:Logintest},
-  { path: "/home", element:HomePage}
+  { path: "/home", element:HomePage},
+  { path: "/FadderInfo", element:FadderInformation}
 
 ];
