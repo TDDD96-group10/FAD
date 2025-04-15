@@ -11,44 +11,60 @@ interface tagProps {
   color: string;
 }
 
-
-
-
 const Configure: React.FC = () => {
 
   const tagColours = ['#2e2e2e', '#868e96', '#fa5252', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14'];
   
-  const stack = useModalsStack(['delete-page', 'confirm-action', 'create-page']);
-  const [opened, setOpened] = useState(false);
-  //const [open, setOpen] = useState(false);
+  const stack = useModalsStack(['create-tag','edit-tag','delete-tag', ]);
   const [tagName, setName] = useState('');
   const [tags, setTags] = useState<tagProps[]>([]);
-  const [color, onChange] = useState("")
+  const [color, onChange] = useState("");
+  const [hasError, setError] = useState(false);
 
-  function addTag(newTag: tagProps){
-    setTags([...tags, newTag]);
-    setName('');
-    onChange('');
-    close();
+  function createTag(newTag: tagProps){
+    if(newTag.name || tags.some(tag => tag.name === newTag.name)){
+      setTags([...tags, newTag]);
+      setName('');
+      onChange('');
+      stack.closeAll();
+      setError(false);
+    }
+    else{
+      setError(true)
+    }
   }
   
-  function editTag(name: string, color: string, index: number) {
+  function editTag(newName: string, color: string, index: number) {
     stack.closeAll();
-    setTags(prevTags => {
-      const updatedTags = [...prevTags];
-      updatedTags[index] = { name, color };
-      return updatedTags;
-    });
+    if(!tags.some(tag => tag.name === newName)){
+      setError(true);
+    }
+    
+    if (newName){
+      setTags(prevTags => {
+        const updatedTags = [...prevTags];
+        updatedTags[index] = { name: newName, color: color };
+        setName('');
+        onChange('');
+        setError(false);
+        return updatedTags;
+      });
+    }
+    else if(!newName){
+      setTags(prevTags => {
+        const updatedTags = [...prevTags];
+        const prevName = updatedTags[index].name
+        updatedTags[index] = {name: prevName, color: color}
+        setError(false);
+        return updatedTags
+      })
+
+    }
   }
 
   function removeTag(index: number) {
     setTags(prevTags => prevTags.filter((_, i) => i !== index));
     stack.closeAll();
-  }
-  
-  function createTag(){
-    setOpened(true)
-    stack.open('create-page')
   }
 
   return (
@@ -63,8 +79,6 @@ const Configure: React.FC = () => {
       padding="md">
         <AppShell.Header>
           <Burger
-            opened={opened}
-            
             hiddenFrom="sm"
             size="sm"
           />
@@ -94,51 +108,48 @@ const Configure: React.FC = () => {
             </Card>
             <Stack component={Paper}>
               <Card>
-              
                 <Title order={2}>Taggar</Title>
                 <Title order={4}>
                   Taggar används för att sortera faddrarna på overview-sidan, exempel på taggar kan vara: klassfadder, nykterfadder, häfvfadder osv.
                 </Title>
-                <Button onClick={() => setOpened(true)}>Lägg till tagg</Button>
-
-                
-              <div>
+                <Button onClick={() => stack.open('create-tag')}>Lägg till tagg</Button>
               <Modal.Stack>
-              {opened && 
-                <Modal size="sm" title="Skapa tagg" {...stack.register('create-page')} >
+                <Modal size="sm" title="Skapa tagg" {...stack.register('create-tag')}>
                   <Stack >
-                    <TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)}/>
-                      <ColorPicker  onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
-                    <Button maw={320} onClick={() => addTag({name: tagName, color:color})}>Spara</Button>
+                    <TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)} error = {hasError} />
+                      <ColorPicker onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
+                    <Button maw={320} onClick={() => createTag({name: tagName, color:color})}>Spara</Button>
                   </Stack>
                 </Modal>
-                }
                 {tags.map((item, index) => (
-                  <>
-                    <Modal {...stack.register('delete-page')} title="Redigera tag">
+                  <div>
+                  <Group justify="flex-start">
+                    <Button onClick={() => stack.open('edit-tag')} color={item.color} defaultValue={item.name} rightSection={<IconSettings size= {14}/>} > {item.name} </Button>
+                    </Group>
+                  <div>
+                    <Modal {...stack.register('edit-tag')} title="Redigera tag" size="sm">
                       <Stack>
                       <TextInput 
                         maw={320} 
                         value={tagName} 
-                        defaultValue={item.name} 
-                        onChange={(event) => setName(event.currentTarget.value)}/>
+                        onChange={(event) => setName(event.currentTarget.value)}
+                        error = {hasError}/>
                       <ColorPicker size="xl" onChange={onChange} value = {color} format="hex" swatches={tagColours}/>
-                      <>{color}</>
                       </Stack>
                       <Group mt="lg" justify="space-between">
                         <Button onClick={ () => editTag(tagName, color, index)} >
                           Spara ändringar
                         </Button>
-                        <Button onClick={() => stack.open('confirm-action')} color="red">
+                        <Button onClick={() => stack.open('delete-tag')} color="red">
                           Radera tag
                         </Button>
                       </Group>
                     </Modal>
 
-                    <Modal {...stack.register('confirm-action')} title="Confirm action">
+                    <Modal {...stack.register('delete-tag')} title="Confirm action" size="sm">
                       Are you sure you want to perform this action? This action cannot be undone. If you are
                       sure, press confirm button below.
-                      <Group mt="lg" justify="flex-end">
+                      <Group mt="lg" justify="space-between">
                         <Button onClick={stack.closeAll} variant="default">
                           Cancel
                         </Button>
@@ -147,14 +158,10 @@ const Configure: React.FC = () => {
                         </Button>
                       </Group>
                     </Modal>
-                  
-                  <Button onClick={() => stack.open('delete-page')} color={item.color} rightSection={<IconSettings size= {14}/>} >
-                    <p>{item.name}</p>
-                  </Button>
-                  </>
+                  </div>
+                  </div>
                 ))}
                 </Modal.Stack>
-              </div>
               </Card>
             </Stack>
           </Stack>
