@@ -11,4 +11,3 @@ class Post(models.Model):
     title = models.CharField(max_length=200, null=False)
     text = models.TextField()
     start_time = models.DateTimeField(null=True, blank=True)
-

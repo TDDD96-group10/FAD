@@ -89,10 +89,9 @@ export interface UserOnly {
 }
 
 export interface Post {
-  /**
-   * Author
-   * @maxLength 8
-   */
+  /** ID */
+  id?: number;
+  /** Author */
   author: string;
   /**
    * Created at
@@ -101,19 +100,20 @@ export interface Post {
   created_at?: string;
   /**
    * Title
-   * @maxLength 100
+   * @minLength 1
+   * @maxLength 200
    */
   title: string;
   /**
    * Text
-   * @maxLength 100
+   * @minLength 1
    */
   text: string;
   /**
    * Start time
    * @format date-time
    */
-  start_time?: string;
+  start_time?: string | null;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -478,7 +478,7 @@ export class Api<
      * @secure
      */
     portalHomeList: (params: RequestParams = {}) =>
-      this.request<Post, any>({
+      this.request<Post[], any>({
         path: `/portal/home`,
         method: "GET",
         secure: true,
