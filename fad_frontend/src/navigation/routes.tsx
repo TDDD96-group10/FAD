@@ -7,11 +7,9 @@ const AppRoutes: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        
           {routes.map(({ path, element: Element }) => (
             <Route key={path} path={path} element={<Element />} />
           ))}
-        
       </Routes>
     </BrowserRouter>
   );
