@@ -1,7 +1,7 @@
 import { Button, Group, ScrollArea, Stack, Title,Box  } from '@mantine/core';
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { ActivityCard, initialActivityGroups}  from '../components/Activity';
+import { ActivityCard, initialActivityGroups}  from '../components/activity';
 import FADheader from '../components/Header';
 import AddActivityModal from '../components/AddActivityModal';
 

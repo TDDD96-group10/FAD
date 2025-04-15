@@ -4,7 +4,6 @@ import StartPage from '../pages/StartPage';
 import LoginCodePage from '../pages/LoginCodePage.tsx';
 import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
-import FADheader from '../components/header.tsx';
 import Configure from '../pages/Configure.tsx';
 
 interface RouteType {
@@ -13,11 +12,11 @@ interface RouteType {
 }
 
 export const routes: RouteType[] = [
-  { path: "", element: FADheader },
+  { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
   { path: "/shareinfo", element: ShareInfoPage},
   { path: "/code", element:LoginCodePage },
   { path: "/login", element:LoginPage},
   { path: "/demo", element:HomePage},
-  { path: "/configure", element: Configure}
+  { path: "/configuration", element: Configure}
 ];

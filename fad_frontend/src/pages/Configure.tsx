@@ -1,9 +1,10 @@
-import { ActionIcon, AppShell, Burger, Button, Card, ColorPicker, Group, Modal, NavLink, Paper, Stack, TextInput, Title, useModalsStack } from "@mantine/core";
+import { ActionIcon, AppShell, Burger, Button, Card, Checkbox, ColorPicker, Group, Modal, NavLink, Paper, Stack, TagsInput, TextInput, Title, useModalsStack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { IconSettings} from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
 import ConfigureTags from "./ConfigureTags";
+import FADheader from "../components/header";
 
 
 interface tagProps {
@@ -15,19 +16,21 @@ const Configure: React.FC = () => {
 
   const tagColours = ['#2e2e2e', '#868e96', '#fa5252', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14'];
   
-  const stack = useModalsStack(['create-tag','edit-tag','delete-tag', ]);
+  const stack = useModalsStack(['create-tag','edit-tag','delete-tag','create-profile-field' ]);
   const [tagName, setName] = useState('');
   const [tags, setTags] = useState<tagProps[]>([]);
   const [color, onChange] = useState("");
   const [hasError, setError] = useState(false);
+  const [multipleChoice, setMultipleChoice] = useState(false);
+  const [value, setValue] = useState<string[]>([]);
 
   function createTag(newTag: tagProps){
-    if(newTag.name || tags.some(tag => tag.name === newTag.name)){
+    if(newTag.name && !tags.some(tag => tag.name === newTag.name)){
       setTags([...tags, newTag]);
       setName('');
       onChange('');
-      stack.closeAll();
       setError(false);
+      stack.closeAll();
     }
     else{
       setError(true)
@@ -68,36 +71,7 @@ const Configure: React.FC = () => {
   }
 
   return (
-    <>
-      <AppShell
-      header={{ height: 60 }}
-      navbar={{
-              width: 300,
-              breakpoint: 'sm',
-            //  collapsed: { mobile: !opened },
-      }}
-      padding="md">
-        <AppShell.Header>
-          <Burger
-            hiddenFrom="sm"
-            size="sm"
-          />
-          <Group justify='space-between'> 
-            <div>FAD</div>
-            <Button>Byt Theme</Button>
-          </Group>
-
-        </AppShell.Header>
-        <AppShell.Navbar p="md">
-            <NavLink label ="Home" href='/home'></NavLink>
-            <NavLink label ="Configure" href='/configure'></NavLink>
-            <NavLink label ="Shareinfo" href='/home/shareinfo'></NavLink>
-            <NavLink label ="Test404" href='/home/test'></NavLink>
-            <NavLink label ="Contact (#)" href='/home/#'></NavLink>
-            <NavLink label ="Logout" href='/'></NavLink>
-          
-        </AppShell.Navbar>
-        <AppShell.Main>
+      <FADheader>
           <Stack>
             <Card>
             <Title order={1}>Konfiguration</Title>
@@ -147,28 +121,47 @@ const Configure: React.FC = () => {
                     </Modal>
 
                     <Modal {...stack.register('delete-tag')} title="Confirm action" size="sm">
-                      Are you sure you want to perform this action? This action cannot be undone. If you are
-                      sure, press confirm button below.
+                      Är du säker på att du vill radera taggen? Den kommer att försvinna från alla platser där den
+                      används.
                       <Group mt="lg" justify="space-between">
                         <Button onClick={stack.closeAll} variant="default">
-                          Cancel
+                          Avbryt
                         </Button>
                         <Button onClick={() => removeTag(index)} color="red">
-                          Confirm
+                          Radera
                         </Button>
                       </Group>
                     </Modal>
+                    
                   </div>
                   </div>
                 ))}
+                  <Modal {...stack.register('create-profile-field')} title="Profilinformation" size="sm">
+                    <Stack>
+                      <TextInput label="Rubrik"></TextInput>
+                      <TextInput label="Beskrivning" description= "Kan lämnas tomt"></TextInput>
+                      <Group>
+                        <Button>Fritext</Button>
+                        <Button onClick = {() => setMultipleChoice(true)}>Flervalsalternativ</Button>
+                        {multipleChoice && <TagsInput value={value} onChange={setValue} miw = {345}></TagsInput>}
+                        <Checkbox label= "Obligatorisk att fylla i"></Checkbox>
+                      </Group>
+                      <Group mt="lg" justify="space-between">
+                        <Button onClick={stack.closeAll} variant="default">Avbryt</Button>
+                        <Button color="red">Spara</Button>
+                      </Group>
+                    </Stack>
+                  </Modal>
                 </Modal.Stack>
               </Card>
             </Stack>
+            <Card>
+            <Title order={2}>Profilsidan</Title>
+            <Title order={4}>Om ni saknar information kan ni skapa en ny rubrik här, där ni kan välja att de kan skriva i fritext, eller faddrarna ska få olika alternativ att välja mellan.</Title>
+            <Button onClick={() => stack.open('create-profile-field')}>Lägg till profilinformation</Button>
+            </Card>
           </Stack>
-        </AppShell.Main>
-      </AppShell>
-    </>
-
+      </FADheader>
   );
 }
 
@@ -176,3 +169,16 @@ export default Configure;
 
 //rightSection={<IconSettings size = {14} />}
 //<TextInput maw={320} value = {tagName} label = "Namn" onChange={(event) => setValue(event.currentTarget.tagName)} />
+//<Paper withBorder p="md" radius="md" mb="md">
+//<Title order={4} mb="xs">Skapa ny mapp</Title>
+//<TextInput
+//  label="Mappnamn"
+//  placeholder="Ange mappens namn"
+//  value={newFolderName}
+//  onChange={(e) => setNewFolderName(e.currentTarget.value)}
+//  mb="md"
+///>
+//<Button onClick={handleCreateFolder} fullWidth>
+//  Skapa
+//</Button>
+//</Paper>
