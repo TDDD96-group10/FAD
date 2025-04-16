@@ -12,15 +12,14 @@ x-common-config: &common-config
   depends_on:
     - db
 
-# python fad_backend/manage.py makemigrations
-#        python fad_backend/manage.py migrate &&
-#        python fad_backend/manage.py initportal &&
+
 services:
   web:
     container_name: fad-backend
     command: >
       sh -c "
-     
+        python fad_backend/manage.py migrate &&
+        python fad_backend/manage.py initportal &&
         python fad_backend/manage.py runserver 0.0.0.0:8000
       "
     ports:
@@ -31,7 +30,6 @@ services:
       interval: 5s
       retries: 5
       timeout: 5s
-
     <<: *common-config
   
   frontend:
