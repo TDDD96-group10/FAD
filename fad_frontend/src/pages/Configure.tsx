@@ -1,15 +1,25 @@
-import { ActionIcon, AppShell, Burger, Button, Card, Checkbox, ColorPicker, Group, Modal, NavLink, Paper, Stack, TagsInput, TextInput, Title, useModalsStack } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Button, Card, Checkbox, ColorPicker, Group, Modal, NavLink, Paper, Stack, TagsInput, TextInput, Title, useModalsStack } from "@mantine/core";
+
 import { useState } from "react";
 import { IconSettings} from '@tabler/icons-react';
-import { modals } from '@mantine/modals';
-import ConfigureTags from "./ConfigureTags";
+
 import FADheader from "../components/header";
+import { error } from "openapi-typescript";
 
 
-interface tagProps {
+type tagProps = {
   name: string;
   color: string;
+}
+
+type inputOption = 'freeText' | 'multipleChoice';
+
+type profileProps =  {
+  title: string;
+  description: string | null;
+  inputType: inputOption;
+  addedOptions?: string[];
+  mandatory: boolean;
 }
 
 const Configure: React.FC = () => {
@@ -21,8 +31,14 @@ const Configure: React.FC = () => {
   const [tags, setTags] = useState<tagProps[]>([]);
   const [color, onChange] = useState("");
   const [hasError, setError] = useState(false);
-  const [multipleChoice, setMultipleChoice] = useState(false);
-  const [value, setValue] = useState<string[]>([]);
+
+  //States related to new profile option.
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [profileInputType, setProfileInputType] = useState<inputOption>('freeText');
+  const [addedOptions, setAddedOptions] = useState<string[]>([]);
+  const [mandatory, setMandatory] = useState(false);
+  const [profileFields, setProfileFileds] = useState<profileProps[]>([]);
 
   function createTag(newTag: tagProps){
     if(newTag.name && !tags.some(tag => tag.name === newTag.name)){
@@ -34,6 +50,46 @@ const Configure: React.FC = () => {
     }
     else{
       setError(true)
+    }
+  }
+
+  function saveNewProfileField(newProfile: profileProps) {
+    const hasTitle = !!newProfile.title && newProfile.title.trim() !== '';
+    const isMultipleChoice = newProfile.inputType === 'multipleChoice';
+    const isFreeText = newProfile.inputType === 'freeText';
+    const hasAddedOptions = addedOptions.length > 0;
+  
+    const isMissingOptions = hasTitle && isMultipleChoice && !hasAddedOptions;
+    const isMissingTitleForFreeText = isFreeText && !hasTitle;
+    const isMissingTitleForMultipleChoice = isMultipleChoice && hasAddedOptions && !hasTitle;
+  
+    if (!isMissingOptions && !isMissingTitleForFreeText && !isMissingTitleForMultipleChoice) {
+      setProfileFileds(prev => [...prev, newProfile]);
+      exitProfile();}
+    else if (isMissingTitleForFreeText || isMissingTitleForMultipleChoice) {
+      setError(true);
+    }
+  }
+  
+  
+
+  function exitProfile(){
+    stack.closeAll();
+    setTitle('');
+    setDescription('');
+    setProfileInputType('freeText');
+    setAddedOptions([]);
+    setMandatory(false); 
+    setError(false);
+  }
+
+  function newProfileInputType(multipleChoice: string){
+    if(multipleChoice === 'multipleChoice'){
+      setProfileInputType('multipleChoice');
+    }
+    else{
+      setAddedOptions([]);
+      setProfileInputType('freeText');
     }
   }
   
@@ -53,7 +109,7 @@ const Configure: React.FC = () => {
         return updatedTags;
       });
     }
-    else if(!newName){
+    else{
       setTags(prevTags => {
         const updatedTags = [...prevTags];
         const prevName = updatedTags[index].name
@@ -107,7 +163,8 @@ const Configure: React.FC = () => {
                         maw={320} 
                         value={tagName} 
                         onChange={(event) => setName(event.currentTarget.value)}
-                        error = {hasError}/>
+                        error = {hasError}
+                        />
                       <ColorPicker size="xl" onChange={onChange} value = {color} format="hex" swatches={tagColours}/>
                       </Stack>
                       <Group mt="lg" justify="space-between">
@@ -138,17 +195,26 @@ const Configure: React.FC = () => {
                 ))}
                   <Modal {...stack.register('create-profile-field')} title="Profilinformation" size="sm">
                     <Stack>
-                      <TextInput label="Rubrik"></TextInput>
-                      <TextInput label="Beskrivning" description= "Kan lämnas tomt"></TextInput>
+                      <TextInput label="Rubrik" variant="filled" value={title} error={hasError ? "Saknar titel" : ''} onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
+                      <TextInput label="Beskrivning" variant="filled" description= "Kan lämnas tomt" value={description} onChange={(event) => setDescription(event.currentTarget.value)}></TextInput>
                       <Group>
-                        <Button>Fritext</Button>
-                        <Button onClick = {() => setMultipleChoice(true)}>Flervalsalternativ</Button>
-                        {multipleChoice && <TagsInput value={value} onChange={setValue} miw = {345}></TagsInput>}
-                        <Checkbox label= "Obligatorisk att fylla i"></Checkbox>
+                        <Button onClick={() => newProfileInputType('')}>Fritext</Button>
+                        <Button onClick = {() => newProfileInputType('multipleChoice')}>Flervalsalternativ</Button>
+                        {(profileInputType === 'multipleChoice') && <TagsInput variant="filled"
+                                                                               value={addedOptions} 
+                                                                               onChange={setAddedOptions} 
+                                                                               miw = {345} 
+                                                                               error={profileInputType === 'multipleChoice' && addedOptions.length === 0 ? "Lägg till alternativ" : ''} />}
+                        <Checkbox label= "Obligatorisk att fylla i" onClick= {() => setMandatory(prev => !prev)}></Checkbox>
                       </Group>
                       <Group mt="lg" justify="space-between">
-                        <Button onClick={stack.closeAll} variant="default">Avbryt</Button>
-                        <Button color="red">Spara</Button>
+                        <Button onClick={exitProfile} variant="default">Avbryt</Button>
+                        <Button color="red" onClick={() => 
+                          saveNewProfileField({title : title, 
+                                               description :description, 
+                                               inputType : profileInputType, 
+                                               addedOptions:addedOptions, 
+                                               mandatory:mandatory})}>Spara</Button>
                       </Group>
                     </Stack>
                   </Modal>
@@ -159,6 +225,7 @@ const Configure: React.FC = () => {
             <Title order={2}>Profilsidan</Title>
             <Title order={4}>Om ni saknar information kan ni skapa en ny rubrik här, där ni kan välja att de kan skriva i fritext, eller faddrarna ska få olika alternativ att välja mellan.</Title>
             <Button onClick={() => stack.open('create-profile-field')}>Lägg till profilinformation</Button>
+            {profileFields.map((value, index) =>(<div> <Title  size = {20} key={index}> {value.title}</Title></div>))}
             </Card>
           </Stack>
       </FADheader>
@@ -166,19 +233,3 @@ const Configure: React.FC = () => {
 }
 
 export default Configure;
-
-//rightSection={<IconSettings size = {14} />}
-//<TextInput maw={320} value = {tagName} label = "Namn" onChange={(event) => setValue(event.currentTarget.tagName)} />
-//<Paper withBorder p="md" radius="md" mb="md">
-//<Title order={4} mb="xs">Skapa ny mapp</Title>
-//<TextInput
-//  label="Mappnamn"
-//  placeholder="Ange mappens namn"
-//  value={newFolderName}
-//  onChange={(e) => setNewFolderName(e.currentTarget.value)}
-//  mb="md"
-///>
-//<Button onClick={handleCreateFolder} fullWidth>
-//  Skapa
-//</Button>
-//</Paper>
