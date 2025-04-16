@@ -67,6 +67,30 @@ export interface UserOnly {
   user: User;
 }
 
+export interface PostLink {
+  /**
+   * Title
+   * @minLength 1
+   */
+  title: string;
+  /**
+   * Url
+   * @minLength 1
+   */
+  url: string;
+  /** Author */
+  author: number;
+  /** Program */
+  program: number;
+  /** Send notifcation */
+  send_notifcation: boolean;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -412,6 +436,25 @@ export class Api<
     portalHelloWorldCreate: (data: UserOnly, params: RequestParams = {}) =>
       this.request<UserOnly, any>({
         path: `/portal/hello-world`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description @swagger_auto_schema(responses={200: PostLinkSerializer()}   ) def get(self, request): return Response({ "user": { "title": request.title, "url": request.url, "author": request.author, "program": request.program, "send_notification": request.send_notification, "text" : request.text } })
+     *
+     * @tags portal
+     * @name PortalPostLinkCreate
+     * @request POST:/portal/post-link
+     * @secure
+     */
+    portalPostLinkCreate: (data: PostLink, params: RequestParams = {}) =>
+      this.request<PostLink, any>({
+        path: `/portal/post-link`,
         method: "POST",
         body: data,
         secure: true,
