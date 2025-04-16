@@ -2,7 +2,7 @@ import { Button, Group, ScrollArea, Stack, Title,Box  } from '@mantine/core';
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { ActivityCard, initialActivityGroups}  from '../components/activity';
-import FADheader from '../components/Header';
+import FADheader from '../components/header';
 import AddActivityModal from '../components/AddActivityModal';
 
 const StartPage: React.FC = () => {

@@ -34,9 +34,6 @@ export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
               <div>FAD</div>
               <Button>Byt Theme</Button>
             </Group>
-
-
-
           </AppShell.Header>
           <AppShell.Navbar p="md">
             <NavLink label ="Home" href='/demo'/>
