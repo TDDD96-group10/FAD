@@ -26,7 +26,7 @@ const Configure: React.FC = () => {
 
   const tagColours = ['#2e2e2e', '#868e96', '#fa5252', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14'];
   
-  const stack = useModalsStack(['create-tag','edit-tag','delete-tag','create-profile-field' ]);
+  const stack = useModalsStack(['create-tag','edit-tag','delete-tag','create-profile-field', 'edit-profile-field']);
   const [tagName, setName] = useState('');
   const [tags, setTags] = useState<tagProps[]>([]);
   const [color, onChange] = useState("");
@@ -145,11 +145,7 @@ const Configure: React.FC = () => {
                 <Button onClick={() => stack.open('create-tag')}>Lägg till tagg</Button>
               <Modal.Stack>
                 <Modal size="sm" title="Skapa tagg" {...stack.register('create-tag')}>
-                  <Stack >
-                    <TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)} error = {hasError} />
-                      <ColorPicker onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
-                    <Button maw={320} onClick={() => createTag({name: tagName, color:color})}>Spara</Button>
-                  </Stack>
+                
                 </Modal>
                 {tags.map((item, index) => (
                   <div>
@@ -210,11 +206,36 @@ const Configure: React.FC = () => {
                       <Group mt="lg" justify="space-between">
                         <Button onClick={exitProfile} variant="default">Avbryt</Button>
                         <Button color="red" onClick={() => 
-                          saveNewProfileField({title : title, 
-                                               description :description, 
-                                               inputType : profileInputType, 
-                                               addedOptions:addedOptions, 
-                                               mandatory:mandatory})}>Spara</Button>
+                          saveNewProfileField({title: title, 
+                                               description: description, 
+                                               inputType: profileInputType, 
+                                               addedOptions: addedOptions, 
+                                               mandatory: mandatory})}>Spara</Button>
+                      </Group>
+                    </Stack>
+                  </Modal>
+                  <Modal {...stack.register('edit-profile-field')} >
+                  <Stack>
+                      <TextInput label="Rubrik" variant="filled" value={title} error={hasError ? "Saknar titel" : ''} onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
+                      <TextInput label="Beskrivning" variant="filled" description= "Kan lämnas tomt" value={description} onChange={(event) => setDescription(event.currentTarget.value)}></TextInput>
+                      <Group>
+                        <Button onClick={() => newProfileInputType('')}>Fritext</Button>
+                        <Button onClick = {() => newProfileInputType('multipleChoice')}>Flervalsalternativ</Button>
+                        {(profileInputType === 'multipleChoice') && <TagsInput variant="filled"
+                                                                               value={addedOptions} 
+                                                                               onChange={setAddedOptions} 
+                                                                               miw = {345} 
+                                                                               error={profileInputType === 'multipleChoice' && addedOptions.length === 0 ? "Lägg till alternativ" : ''} />}
+                        <Checkbox label= "Obligatorisk att fylla i" onClick= {() => setMandatory(prev => !prev)}></Checkbox>
+                      </Group>
+                      <Group mt="lg" justify="space-between">
+                        <Button onClick={exitProfile} variant="default">Avbryt</Button>
+                        <Button color="red" onClick={() => 
+                          saveNewProfileField({title: title, 
+                                               description: description, 
+                                               inputType: profileInputType, 
+                                               addedOptions: addedOptions, 
+                                               mandatory: mandatory})}>Spara</Button>
                       </Group>
                     </Stack>
                   </Modal>
@@ -225,7 +246,7 @@ const Configure: React.FC = () => {
             <Title order={2}>Profilsidan</Title>
             <Title order={4}>Om ni saknar information kan ni skapa en ny rubrik här, där ni kan välja att de kan skriva i fritext, eller faddrarna ska få olika alternativ att välja mellan.</Title>
             <Button onClick={() => stack.open('create-profile-field')}>Lägg till profilinformation</Button>
-            {profileFields.map((value, index) =>(<div> <Title  size = {20} key={index}> {value.title}</Title></div>))}
+            {profileFields.map((value, index) =>(<Button onClick = {() => stack.open('edit-profile-field')} key={index}> {value.title}</Button>))}
             </Card>
           </Stack>
       </FADheader>
@@ -233,3 +254,9 @@ const Configure: React.FC = () => {
 }
 
 export default Configure;
+
+//  <Stack >
+//<TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)} error = {hasError} />
+//<ColorPicker onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
+//<Button maw={320} onClick={() => createTag({name: tagName, color:color})}>Spara</Button>
+//</Stack>
