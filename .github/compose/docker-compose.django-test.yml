@@ -2,7 +2,7 @@ services:
   test-django:
     image:  ghcr.io/${IMAGE_OWNER}/my-django-app:latest
     command: >
-      bash -c "ls -la /app && echo '-----' && cat /app/manage.py"
+      bash -c "ls"
     volumes:
       - ./fad_backend:/app
 
