@@ -2,14 +2,7 @@ services:
   test-django:
     image:  ghcr.io/${IMAGE_OWNER}/my-django-app:latest
     command: >
-      bash -c "
-          echo '🔍 Working directory:' &&
-          pwd &&
-          echo '📁 Directory contents:' &&
-          ls -la &&
-          echo '🧠 Looking for manage.py:' &&
-          find . -name manage.py
-        "
+      bash -c "coverage run manage.py test && coverage report --fail-under=80"
     volumes:
       - ../../fad_backend:/app
 
