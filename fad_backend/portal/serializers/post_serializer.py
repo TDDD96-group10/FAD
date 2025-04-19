@@ -4,10 +4,10 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers
 from portal.models import User, Program, Post
-from portal.serializers.ProgramSerializer import ProgramSerializer
-from portal.serializers.UserSerializer import UserSerializer
+from portal.serializers.program_serializer import ProgramSerializer
+from fad_backend.portal.serializers.user_serializer import UserSerializer
 
-# Serializer for the Post model, including nested serializers for author and program
+
 class PostSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     program = ProgramSerializer()
