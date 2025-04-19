@@ -2,7 +2,14 @@ services:
   test-django:
     image:  ghcr.io/${IMAGE_OWNER}/my-django-app:latest
     command: >
-      bash -c "ls"
+      bash -c "
+          echo '🔍 Working directory:' &&
+          pwd &&
+          echo '📁 Directory contents:' &&
+          ls -la &&
+          echo '🧠 Looking for manage.py:' &&
+          find . -name manage.py
+        "
     volumes:
       - ./fad_backend:/app
 
