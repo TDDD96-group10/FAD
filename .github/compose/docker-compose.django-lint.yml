@@ -4,6 +4,6 @@ services:
     command: >
       bash -c "flake8 /app"
     volumes:
-      - ./fad_backend:/app
+      - ../../fad_backend:/app
 
 

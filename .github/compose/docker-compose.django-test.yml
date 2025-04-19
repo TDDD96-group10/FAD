@@ -11,6 +11,6 @@ services:
           find . -name manage.py
         "
     volumes:
-      - ./fad_backend:/app
+      - ../../fad_backend:/app
 
 
