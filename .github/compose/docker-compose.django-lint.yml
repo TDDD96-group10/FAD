@@ -2,7 +2,7 @@ services:
   lint:
     image:  ghcr.io/${IMAGE_OWNER}/my-django-app:latest
     command: >
-      bash -c "flake8 ./app"
+      bash -c "flake8 /app"
     volumes:
       - ./fad_backend:/app
 
