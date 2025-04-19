@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers
-from time import daylight 
 
 
 class UserSerializer(serializers.Serializer):
@@ -34,6 +33,6 @@ class HelloWorldView(APIView):
     def post(self, request):
         serializer = UserOnlySerializer(data=request.data)
         if serializer.is_valid():
-            #Typically, you'd save to the DB here, but we'll echo it back
+            # Typically, you'd save to the DB here, but we'll echo it back
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
