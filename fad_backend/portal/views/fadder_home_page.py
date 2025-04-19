@@ -6,7 +6,7 @@ from drf_yasg import openapi
 from rest_framework import serializers
 
 from portal.models import Post
-from fad_backend.portal.serializers.post_serializer import PostSerializer
+from portal.serializers.post_serializer import PostSerializer
 
 
 class PostListView(APIView):
