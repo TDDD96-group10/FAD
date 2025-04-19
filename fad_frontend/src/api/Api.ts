@@ -67,7 +67,7 @@ export interface UserOnly {
   user: User;
 }
 
-export interface Program {
+export interface ProgramSerializer {
   /** ID */
   id?: number;
   /**
@@ -80,7 +80,7 @@ export interface Program {
   attributes?: object;
 }
 
-export type Group = {
+export type GroupSerializer = {
   /** ID */
   id?: number;
   /**
@@ -91,7 +91,7 @@ export type Group = {
   name: string;
 } | null;
 
-export interface UserModel {
+export interface UserSerializer {
   /**
    * User id
    * @minLength 1
@@ -104,8 +104,8 @@ export interface UserModel {
    * @maxLength 100
    */
   role: string;
-  program?: Program;
-  group?: Group;
+  program?: ProgramSerializer;
+  group?: GroupSerializer;
   /** Attributes */
   attributes: object;
 }
@@ -472,7 +472,7 @@ export class Api<
      * @secure
      */
     portalUsersList: (params: RequestParams = {}) =>
-      this.request<UserModel[], any>({
+      this.request<UserSerializer[], any>({
         path: `/portal/users`,
         method: "GET",
         secure: true,

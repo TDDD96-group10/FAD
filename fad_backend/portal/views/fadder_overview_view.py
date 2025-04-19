@@ -6,36 +6,14 @@ from drf_yasg import openapi
 
 from rest_framework import serializers
 
-from portal.models import User, Program, Group
+from portal.models import User
+from portal.serializers.user_serializer import UserSerializer
 
-from portal.serializers.UserModelSerializer import UserModelSerializer
-
-
-# class ProgramSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Program
-#         fields = '__all__'  # Or specify fields like ['id', 'name'] if known
-
-
-
-# class GroupSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Group
-#         fields = '__all__'  # Or specify fields like ['id', 'name'] if known
-
-
-# class UserModelSerializer(serializers.ModelSerializer):
-#     program = ProgramSerializer(read_only=True)
-#     group = GroupSerializer(read_only=True, allow_null=True)
-
-#     class Meta:
-#         model = User
-#         fields = ['user_id', 'role', 'program', 'group', 'attributes'] # TODO: Add diet, shirt_size etc
 
 class UserListView(APIView):
-    @swagger_auto_schema(responses={200: UserModelSerializer(many=True)})
+    @swagger_auto_schema(responses={200: UserSerializer(many=True)})
     def get(self, request):
-        users = User.objects.all()  # Fetch all users from the database
-        serializer = UserModelSerializer(users, many=True)  # Serialize the queryset
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
