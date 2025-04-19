@@ -88,7 +88,7 @@ export interface UserOnly {
   user: User;
 }
 
-export interface PostUserSerializer {
+export interface UserSerializer {
   /**
    * User id
    * @minLength 1
@@ -109,7 +109,7 @@ export interface PostUserSerializer {
   group?: number | null;
 }
 
-export interface PostProgramSerializer {
+export interface ProgramSerializer {
   /** ID */
   id?: number;
   /**
@@ -141,8 +141,8 @@ export interface PostSerializer {
    * @format date-time
    */
   created_at?: string;
-  author: PostUserSerializer;
-  program: PostProgramSerializer;
+  author: UserSerializer;
+  program: ProgramSerializer;
 }
 
 export type QueryParamsType = Record<string | number, any>;

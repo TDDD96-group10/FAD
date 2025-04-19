@@ -10,4 +10,4 @@ class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model = Program
         fields = '__all__'
-        ref_name = 'PostProgramSerializer'  # Explicit ref_name to avoid conflicts
+        ref_name = 'ProgramSerializer'

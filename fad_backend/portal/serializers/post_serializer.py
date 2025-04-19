@@ -14,4 +14,4 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'text', 'created_at', 'author', 'program']
-        ref_name = 'PostSerializer'  # Explicit ref_name for clarity
+        ref_name = 'PostSerializer'

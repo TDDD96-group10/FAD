@@ -10,4 +10,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        ref_name = 'PostUserSerializer'  # Explicit ref_name to avoid conflicts
+        ref_name = 'UserSerializer'
