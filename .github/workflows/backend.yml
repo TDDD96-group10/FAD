@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-
       - name: Check for backend build changes
         id: detect_changes
         run: |
@@ -51,7 +49,7 @@ jobs:
         run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
       - name: Run tests via Docker Compose
-        run: docker compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from web
+        run: docker compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from lint
       
       - name: Clean up after test run
         if: always()
@@ -70,7 +68,7 @@ jobs:
         run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
       - name: Run tests via Docker Compose
-        run: docker compose -f .github/compose/docker-compose.django-test.yml up --abort-on-container-exit --exit-code-from web
+        run: docker compose -f .github/compose/docker-compose.django-test.yml up --abort-on-container-exit --exit-code-from test-django
       
       - name: Clean up after test run
         if: always()
