@@ -38,6 +38,19 @@ export interface CodeSubmit {
   username: string;
 }
 
+export interface TokenResponse {
+  /**
+   * Refresh
+   * @minLength 1
+   */
+  refresh: string;
+  /**
+   * Access
+   * @minLength 1
+   */
+  access: string;
+}
+
 export interface Username {
   /**
    * Username
@@ -45,6 +58,14 @@ export interface Username {
    * @maxLength 150
    */
   username: string;
+}
+
+export interface MessageResponse {
+  /**
+   * Message
+   * @minLength 1
+   */
+  message: string;
 }
 
 export interface User {
@@ -397,7 +418,7 @@ export class Api<
      * @secure
      */
     authCodeCreate: (data: CodeSubmit, params: RequestParams = {}) =>
-      this.request<void, void>({
+      this.request<TokenResponse, void>({
         path: `/auth/code`,
         method: "POST",
         body: data,
@@ -416,7 +437,7 @@ export class Api<
      * @secure
      */
     authLoginCreate: (data: Username, params: RequestParams = {}) =>
-      this.request<void, void>({
+      this.request<MessageResponse, void>({
         path: `/auth/login`,
         method: "POST",
         body: data,

@@ -11,7 +11,7 @@ interface UseApiReturn<T> {
 interface CallApiReturn<T> {
   data: T |null 
   loading: boolean;
-  error: string | null;
+  error: string  | null;
   callApi: () => Promise<void>;
 }
 
@@ -19,11 +19,12 @@ interface CallApiReturn<T> {
 
 export  function callApi<T> (
   fetchFunction: () => Promise<{ data: T }>,
-  navigateTo?: string
+  navigateTo?: string,
+  handleResponse?: (data: T) => void
   ): CallApiReturn<T>  {
     const [data, setData] = useState<T | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState< string | null>(null);
     const navigate = useNavigate(); 
   
     const callApi = async () => {
@@ -33,14 +34,20 @@ export  function callApi<T> (
       try {
         const response = await fetchFunction();
         setData(response.data);
+        if (handleResponse) {
+          handleResponse(response.data);
+        }
         if (navigateTo) {
           navigate(navigateTo);
         }
-      } catch (err) {
-        setError((err as Error).message);
+      } catch (err ) {
+        const errorRes = err as HttpResponse<T, string>;
+        setError(errorRes.error)
       } finally {
         setLoading(false);
       }
+
+      
     };
         
     
