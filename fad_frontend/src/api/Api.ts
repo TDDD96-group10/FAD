@@ -88,6 +88,7 @@ export interface UserOnly {
   user: User;
 }
 
+
 export interface Post {
   /** ID */
   id?: number;
@@ -98,6 +99,44 @@ export interface Post {
    * @format date-time
    */
   created_at?: string;
+}
+export interface UserSerializer {
+  /**
+   * User id
+   * @minLength 1
+   * @maxLength 8
+   */
+  user_id: string;
+  /**
+   * Role
+   * @minLength 1
+   * @maxLength 100
+   */
+  role: string;
+  /** Attributes */
+  attributes: object;
+  /** Program */
+  program: number;
+  /** Group */
+  group?: number | null;
+}
+
+export interface ProgramSerializer {
+  /** ID */
+  id?: number;
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  /** Attributes */
+  attributes?: object;
+}
+
+export interface PostSerializer {
+  /** ID */
+  id?: number;
   /**
    * Title
    * @minLength 1
@@ -110,10 +149,17 @@ export interface Post {
    */
   text: string;
   /**
+
    * Start time
    * @format date-time
    */
   start_time?: string | null;
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  author: UserSerializer;
+  program: ProgramSerializer;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -473,6 +519,7 @@ export class Api<
      * No description
      *
      * @tags portal
+
      * @name PortalHomeList
      * @request GET:/portal/home
      * @secure
@@ -480,6 +527,13 @@ export class Api<
     portalHomeList: (params: RequestParams = {}) =>
       this.request<Post[], any>({
         path: `/portal/home`,
+     * @name PortalPostsList
+     * @request GET:/portal/posts
+     * @secure
+     */
+    portalPostsList: (params: RequestParams = {}) =>
+      this.request<PostSerializer[], any>({
+        path: `/portal/posts`,
         method: "GET",
         secure: true,
         format: "json",
