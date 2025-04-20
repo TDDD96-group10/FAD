@@ -68,27 +68,30 @@ export interface UserOnly {
 }
 
 export interface PostLink {
+  /** Author */
+  author: string;
+  /** Program */
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
   /**
    * Title
    * @minLength 1
+   * @maxLength 200
    */
   title: string;
-  /**
-   * Url
-   * @minLength 1
-   */
-  url: string;
-  /** Author */
-  author: number;
-  /** Program */
-  program: number;
-  /** Send notifcation */
-  send_notifcation: boolean;
   /**
    * Text
    * @minLength 1
    */
   text: string;
+  /**
+   * Link
+   * @format uri
+   * @minLength 1
+   * @maxLength 200
+   */
+  link: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -445,7 +448,7 @@ export class Api<
       }),
 
     /**
-     * @description @swagger_auto_schema(responses={200: PostLinkSerializer()}   ) def get(self, request): return Response({ "user": { "title": request.title, "url": request.url, "author": request.author, "program": request.program, "send_notification": request.send_notification, "text" : request.text } })
+     * No description
      *
      * @tags portal
      * @name PortalPostLinkCreate

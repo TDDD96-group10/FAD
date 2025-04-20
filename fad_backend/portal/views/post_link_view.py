@@ -7,10 +7,7 @@ from ..serializers import PostLinkSerializer
 
 
 class PostLinkView(APIView):
-    @swagger_auto_schema(
-         request_body=PostLinkSerializer,
-         responses={201: PostLinkSerializer()}
-      )
+    @swagger_auto_schema(request_body=PostLinkSerializer, responses={201: PostLinkSerializer()})
     def post(self, request):
         serializer = PostLinkSerializer(data=request.data)
         if serializer.is_valid():
