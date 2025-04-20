@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - dev
+    paths:
+      - 'fad_backend/*'
+    
 
     
 jobs: 
@@ -11,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-
       - name: Check for backend build changes
         id: detect_changes
         run: |
@@ -22,6 +23,10 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
         
+      - name: Conditional step if changes detected
+        if: steps.detect_changes.outputs.changed == 'true'
+        run: echo "Backend changes detected!"
+
       - name: Build and push Docker image to GHCR
         if: steps.detect_changes.outputs.changed == 'true'
         run: |
@@ -37,27 +42,6 @@ jobs:
             echo "Pushing image to GHCR..."
             docker push ghcr.io/$IMAGE_OWNER/my-django-app:latest
         
-
-  lint:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Log in to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Pull image from GHCR
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker pull ghcr.io/$IMAGE_OWNER/my-django-app:latest
-
-      - name: Run lint (flake8)
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker run --rm ghcr.io/$IMAGE_OWNER/my-django-app:latest flake8 ./fad_backend
-
   check-lint:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -71,12 +55,12 @@ jobs:
       - name: Set IMAGE_OWNER environment variable
         run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
-      - name: Run tests via Docker Compose
-        run: docker-compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from web
+      - name: Run lint via Docker Compose
+        run: docker compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from lint
       
       - name: Clean up after test run
         if: always()
-        run: docker-compose -f .github/compose/docker-compose.django-lint.yml down -v --remove-orphans
+        run: docker compose -f .github/compose/docker-compose.django-lint.yml down -v --remove-orphans
   test:
     needs: check-lint
     runs-on: ubuntu-latest
@@ -91,8 +75,8 @@ jobs:
         run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
       - name: Run tests via Docker Compose
-        run: docker-compose -f .github/compose/docker-compose.django-test.yml up --abort-on-container-exit --exit-code-from web
+        run: docker compose -f .github/compose/docker-compose.django-test.yml up --abort-on-container-exit --exit-code-from test-django
       
       - name: Clean up after test run
         if: always()
-        run: docker-compose -f .github/compose/docker-compose.django-test.yml down -v --remove-orphans
+        run: docker compose -f .github/compose/docker-compose.django-test.yml down -v --remove-orphans
