@@ -20,6 +20,10 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
         
+      - name: Conditional step if changes detected
+        if: steps.detect_changes.outputs.changed == 'true'
+        run: echo "Backend changes detected!"
+
       - name: Build and push Docker image to GHCR
         if: steps.detect_changes.outputs.changed == 'true'
         run: |
