@@ -1,1 +1,0 @@
-from .post_link_serializer import PostLinkSerializer
