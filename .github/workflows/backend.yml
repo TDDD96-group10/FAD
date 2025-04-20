@@ -1,9 +1,12 @@
 name: Run Django Tests in Docker Compose CI
 
 on:
-  push:
+  pull_request:
     branches:
-      - test_ci
+      - dev
+    paths:
+      - 'fad_backend/*'
+    
 
     
 jobs: 
