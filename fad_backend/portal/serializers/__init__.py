@@ -1,1 +1,2 @@
-from .post_link_serializer import PostLinkSerializer
+from .post_link_serializer import PostLinkSerializerfrom .postSerializer import PostSerializer
+from .postSerializer import PostSerializer

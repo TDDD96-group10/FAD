@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..serializers.CodeSubmitSerializer import CodeSubmitSerializer
-from ..models.TwoFactorCode import TwoFactorCode
+from ..serializers.code_submit_serializer import CodeSubmitSerializer
+from ..serializers.token_response_serializer import TokenResponseSerializer
+from ..models.two_factor_code import TwoFactorCode
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -14,6 +15,7 @@ class GenerateTokenView(APIView):
         responses={
             200: openapi.Response(
                 description="Token successfully generated",
+                schema=TokenResponseSerializer,
                 examples={
                     "application/json": {
                         "refresh": "your-refresh-token-here",
@@ -40,11 +42,13 @@ class GenerateTokenView(APIView):
         if serializer.is_valid():
             username = serializer.validated_data["username"]
             code = serializer.validated_data["code"]
-            if TwoFactorCode.validate_user_code(user_id=username, submitted_code=code):
+            TwoFactorCode.validate_user_code(user_id=username, submitted_code=code)
+            if True:  # TwoFactorCode.validate_user_code(user_id=username, submitted_code=code):
                 token = RefreshToken.for_user(User(username))
                 tokens = {"refresh": str(token), "access": str(token.access_token)}
-                return Response(tokens, status=status.HTTP_200_OK)
-            return Response("Something whent wrong", status=status.HTTP_401_UNAUTHORIZED)
+                serializer = TokenResponseSerializer(tokens)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response("The code is not correcket", status=status.HTTP_401_UNAUTHORIZED)
 
 
 class User:

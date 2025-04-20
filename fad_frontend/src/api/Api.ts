@@ -38,6 +38,19 @@ export interface CodeSubmit {
   username: string;
 }
 
+export interface TokenResponse {
+  /**
+   * Refresh
+   * @minLength 1
+   */
+  refresh: string;
+  /**
+   * Access
+   * @minLength 1
+   */
+  access: string;
+}
+
 export interface Username {
   /**
    * Username
@@ -45,6 +58,14 @@ export interface Username {
    * @maxLength 150
    */
   username: string;
+}
+
+export interface MessageResponse {
+  /**
+   * Message
+   * @minLength 1
+   */
+  message: string;
 }
 
 export interface User {
@@ -67,13 +88,55 @@ export interface UserOnly {
   user: User;
 }
 
-export interface PostLink {
+
+export interface Post {
+  /** ID */
+  id?: number;
   /** Author */
   author: string;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+}
+export interface UserSerializer {
+  /**
+   * User id
+   * @minLength 1
+   * @maxLength 8
+   */
+  user_id: string;
+  /**
+   * Role
+   * @minLength 1
+   * @maxLength 100
+   */
+  role: string;
+  /** Attributes */
+  attributes: object;
   /** Program */
-  program?: number | null;
-  /** Send notifcation */
-  send_notifcation?: boolean;
+  program: number;
+  /** Group */
+  group?: number | null;
+}
+
+export interface ProgramSerializer {
+  /** ID */
+  id?: number;
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  /** Attributes */
+  attributes?: object;
+}
+
+export interface PostSerializer {
+  /** ID */
+  id?: number;
   /**
    * Title
    * @minLength 1
@@ -86,12 +149,17 @@ export interface PostLink {
    */
   text: string;
   /**
-   * Link
-   * @format uri
-   * @minLength 1
-   * @maxLength 200
+
+   * Start time
+   * @format date-time
    */
-  link: string;
+  start_time?: string | null;
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  author: UserSerializer;
+  program: ProgramSerializer;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -381,7 +449,7 @@ export class Api<
      * @secure
      */
     authCodeCreate: (data: CodeSubmit, params: RequestParams = {}) =>
-      this.request<void, void>({
+      this.request<TokenResponse, void>({
         path: `/auth/code`,
         method: "POST",
         body: data,
@@ -400,7 +468,7 @@ export class Api<
      * @secure
      */
     authLoginCreate: (data: Username, params: RequestParams = {}) =>
-      this.request<void, void>({
+      this.request<MessageResponse, void>({
         path: `/auth/login`,
         method: "POST",
         body: data,
@@ -451,17 +519,23 @@ export class Api<
      * No description
      *
      * @tags portal
-     * @name PortalPostLinkCreate
-     * @request POST:/portal/post-link
+
+     * @name PortalHomeList
+     * @request GET:/portal/home
      * @secure
      */
-    portalPostLinkCreate: (data: PostLink, params: RequestParams = {}) =>
-      this.request<PostLink, any>({
-        path: `/portal/post-link`,
-        method: "POST",
-        body: data,
+    portalHomeList: (params: RequestParams = {}) =>
+      this.request<Post[], any>({
+        path: `/portal/home`,
+     * @name PortalPostsList
+     * @request GET:/portal/posts
+     * @secure
+     */
+    portalPostsList: (params: RequestParams = {}) =>
+      this.request<PostSerializer[], any>({
+        path: `/portal/posts`,
+        method: "GET",
         secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

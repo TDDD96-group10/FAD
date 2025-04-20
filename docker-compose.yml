@@ -12,15 +12,14 @@ x-common-config: &common-config
   depends_on:
     - db
 
-# python fad_backend/manage.py makemigrations
-#        python fad_backend/manage.py migrate &&
-#        python fad_backend/manage.py initportal &&
+
 services:
   web:
     container_name: fad-backend
     command: >
       sh -c "
-     
+        python fad_backend/manage.py migrate &&
+        python fad_backend/manage.py initportal &&
         python fad_backend/manage.py runserver 0.0.0.0:8000
       "
     ports:
@@ -31,7 +30,6 @@ services:
       interval: 5s
       retries: 5
       timeout: 5s
-
     <<: *common-config
   
   frontend:
@@ -90,13 +88,15 @@ services:
   
     
   db:
-    image: postgres:15  # Use PostgreSQL 15 as the database image
+    image: postgres:15  
     container_name: postgres-db
     restart: always
     environment:
-      POSTGRES_DB: django_project        # Name of the database
-      POSTGRES_USER: django_user         # Database user
-      POSTGRES_PASSWORD: django_password # Password for the user
+      POSTGRES_DB: django_project        
+      POSTGRES_USER: django_user         
+      POSTGRES_PASSWORD: django_password 
+      TZ: Europe/Stockholm  
+      POSTGRES_INITDB_ARGS: "--timezone=Europe/Stockholm"
     ports:
       - "5432:5432"
     volumes:
