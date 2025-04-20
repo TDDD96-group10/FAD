@@ -88,6 +88,63 @@ export interface UserOnly {
   user: User;
 }
 
+export interface UserSerializer {
+  /**
+   * User id
+   * @minLength 1
+   * @maxLength 8
+   */
+  user_id: string;
+  /**
+   * Role
+   * @minLength 1
+   * @maxLength 100
+   */
+  role: string;
+  /** Attributes */
+  attributes: object;
+  /** Program */
+  program: number;
+  /** Group */
+  group?: number | null;
+}
+
+export interface ProgramSerializer {
+  /** ID */
+  id?: number;
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  /** Attributes */
+  attributes?: object;
+}
+
+export interface PostSerializer {
+  /** ID */
+  id?: number;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  author: UserSerializer;
+  program: ProgramSerializer;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -437,6 +494,23 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalPostsList
+     * @request GET:/portal/posts
+     * @secure
+     */
+    portalPostsList: (params: RequestParams = {}) =>
+      this.request<PostSerializer[], any>({
+        path: `/portal/posts`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
