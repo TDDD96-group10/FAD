@@ -88,7 +88,6 @@ export interface UserOnly {
   user: User;
 }
 
-
 export interface Post {
   /** ID */
   id?: number;
@@ -99,7 +98,24 @@ export interface Post {
    * @format date-time
    */
   created_at?: string;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
 }
+
 export interface UserSerializer {
   /**
    * User id
@@ -149,11 +165,6 @@ export interface PostSerializer {
    */
   text: string;
   /**
-
-   * Start time
-   * @format date-time
-   */
-  start_time?: string | null;
    * Created at
    * @format date-time
    */
@@ -519,7 +530,6 @@ export class Api<
      * No description
      *
      * @tags portal
-
      * @name PortalHomeList
      * @request GET:/portal/home
      * @secure
@@ -527,6 +537,16 @@ export class Api<
     portalHomeList: (params: RequestParams = {}) =>
       this.request<Post[], any>({
         path: `/portal/home`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
      * @name PortalPostsList
      * @request GET:/portal/posts
      * @secure
