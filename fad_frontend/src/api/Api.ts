@@ -68,6 +68,31 @@ export interface MessageResponse {
   message: string;
 }
 
+export interface TextPost {
+  /** Author */
+  author: string;
+  /** Program */
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
+}
+
 export interface User {
   /** Id */
   id: number;
@@ -433,6 +458,25 @@ export class Api<
       }),
   };
   portal = {
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalShareInfoCreate
+     * @request POST:/portal/Share_info
+     * @secure
+     */
+    portalShareInfoCreate: (data: TextPost, params: RequestParams = {}) =>
+      this.request<TextPost, any>({
+        path: `/portal/Share_info`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *
