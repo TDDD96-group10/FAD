@@ -6,7 +6,7 @@ import {
   Text,
   Container,
 } from '@mantine/core';
-import FADheader from '../components/Header';
+import FADheader from '../components/header';
 import CreateFolderCard from '../components/CreateFolderCard';
 import AddFileFormCard from '../components/AddFileFormCard';
 import FolderListCard from '../components/FoldersListCard';

@@ -74,8 +74,6 @@ const Overview: React.FC = () => {
             {fadderType.map((type) => (<Menu.Item onClick = {() => setFilter(type)} key={type}>{type}</Menu.Item>))}
             </Menu.Dropdown>
           </Menu>
-
-
           </Group>
           <MultiSelect searchable data={[
         { group: 'Frontend', items: [{ value: 'react', label: 'React' }, { value: 'ng', label: 'Angular' }] },
