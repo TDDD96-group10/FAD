@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import HelloWorldView
-from .views import SharePDFView
+from .views import HelloWorldView, HomeView, ShareView
+
+
 urlpatterns = [
     path("hello-world", HelloWorldView.as_view(), name="Hello World"),
-    path("share_pdf",SharePDFView.as_view(), name = "Share PDF" )
+    path("home", HomeView.as_view(), name="Home"),
+    path("Share_info", ShareView.as_view(), name="Share_info")
 ]

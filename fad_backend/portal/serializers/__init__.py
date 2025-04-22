@@ -1,1 +1,2 @@
-from .share_pdf_serializer import SharePdfSerializer
+from .postSerializer import PostSerializer
+from .textpostserializer import TextPostSerializer
