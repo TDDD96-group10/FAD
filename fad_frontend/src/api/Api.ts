@@ -68,27 +68,6 @@ export interface MessageResponse {
   message: string;
 }
 
-export interface User {
-  /** Id */
-  id: number;
-  /**
-   * Username
-   * @minLength 1
-   */
-  username: string;
-  /**
-   * Email
-   * @format email
-   * @minLength 1
-   */
-  email: string;
-}
-
-export interface UserOnly {
-  user: User;
-}
-
-
 export interface Post {
   /** ID */
   id?: number;
@@ -99,7 +78,51 @@ export interface Post {
    * @format date-time
    */
   created_at?: string;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
 }
+
+export interface PostLink {
+  /** Author */
+  author: string;
+  /** Program */
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Link
+   * @format uri
+   * @minLength 1
+   * @maxLength 200
+   */
+  link: string;
+}
+
 export interface UserSerializer {
   /**
    * User id
@@ -149,11 +172,6 @@ export interface PostSerializer {
    */
   text: string;
   /**
-
-   * Start time
-   * @format date-time
-   */
-  start_time?: string | null;
    * Created at
    * @format date-time
    */
@@ -483,13 +501,13 @@ export class Api<
      * No description
      *
      * @tags portal
-     * @name PortalHelloWorldList
-     * @request GET:/portal/hello-world
+     * @name PortalHomeList
+     * @request GET:/portal/home
      * @secure
      */
-    portalHelloWorldList: (params: RequestParams = {}) =>
-      this.request<UserOnly, any>({
-        path: `/portal/hello-world`,
+    portalHomeList: (params: RequestParams = {}) =>
+      this.request<Post[], any>({
+        path: `/portal/home`,
         method: "GET",
         secure: true,
         format: "json",
@@ -500,13 +518,13 @@ export class Api<
      * No description
      *
      * @tags portal
-     * @name PortalHelloWorldCreate
-     * @request POST:/portal/hello-world
+     * @name PortalPostLinkCreate
+     * @request POST:/portal/post-link
      * @secure
      */
-    portalHelloWorldCreate: (data: UserOnly, params: RequestParams = {}) =>
-      this.request<UserOnly, any>({
-        path: `/portal/hello-world`,
+    portalPostLinkCreate: (data: PostLink, params: RequestParams = {}) =>
+      this.request<PostLink, any>({
+        path: `/portal/post-link`,
         method: "POST",
         body: data,
         secure: true,
@@ -519,14 +537,6 @@ export class Api<
      * No description
      *
      * @tags portal
-
-     * @name PortalHomeList
-     * @request GET:/portal/home
-     * @secure
-     */
-    portalHomeList: (params: RequestParams = {}) =>
-      this.request<Post[], any>({
-        path: `/portal/home`,
      * @name PortalPostsList
      * @request GET:/portal/posts
      * @secure
