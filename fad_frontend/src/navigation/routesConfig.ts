@@ -4,7 +4,7 @@ import StartPage from '../pages/StartPage';
 import LoginCodePage from '../pages/LoginCodePage.tsx';
 import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
-import FadderHome from '../pages/FadderHome';
+import FadderHome from '../pages/FadderHomePage.tsx';
 
 
 interface RouteType {
