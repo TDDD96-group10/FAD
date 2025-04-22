@@ -1,16 +1,59 @@
-import { Button, Group, Menu, MultiSelect, Stack } from "@mantine/core";
 import FADheader from "../components/header"
-import SearchBar from "../components/searchBar";
-import { IconCupOff, IconSearch, IconShirt } from "@tabler/icons-react";
 import { useState } from "react";
+import SearchBar from "../components/searchBar";
+import { Table, Checkbox, Chip} from '@mantine/core';
+import { allData } from './data';
+
+type tagsProps = {
+  name: string;
+  color: string
+}
 
 type fadderProps = {
   name: string;
   shirtSize: string;
-  alleries?: string;
+  allergies?: string;
+  fadderType?: tagsProps[]
   email: string;
   phone: string;
 }
+
+function FadderTable() {
+  const [selected, setSelected] = useState<string[]>([]); 
+  const data = allData;
+
+  const toggleCheckbox = (name: string) => {
+    setSelected((curr) =>
+      curr.includes(name) ? curr.filter((n) => n !== name) : [...curr, name]
+    );
+  };
+  const newRows = data.map(({name, shirtSize, allergies, fadderType, phone}:fadderProps) => (
+    <Table.Tr key={name} onClick={() => toggleCheckbox(name)}>
+      <Table.Td>{<Checkbox  ></Checkbox>}</Table.Td>
+      <Table.Td onClick= {() => console.log(name)}>{name}</Table.Td>   
+      <Table.Td>{fadderType?.map((val, index) => <Chip size="xs" p={1} key= {index} defaultChecked color={val.color}>{val.name}</Chip>)}</Table.Td>
+      <Table.Td>{shirtSize}</Table.Td>
+      <Table.Td>{allergies}</Table.Td>
+      <Table.Td>{phone}</Table.Td>
+    </Table.Tr>
+  ))
+  return (
+    <Table highlightOnHover striped>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th></Table.Th>
+          <Table.Th>Namn</Table.Th>
+          <Table.Th>Faddertyp</Table.Th>
+          <Table.Th>Tröjstorlek</Table.Th>
+          <Table.Th>Allergier</Table.Th>
+          <Table.Th>Telefonnummer</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>{newRows}</Table.Tbody>
+    </Table>
+  );
+}
+
 
 const Overview: React.FC = () => {
   //Dummy data
@@ -19,69 +62,17 @@ const Overview: React.FC = () => {
   const fadderType = ['Häfvfadder', 'Donna', 'DG']
   const data = shirtSizes.concat(allergies.concat(fadderType))
 
-  const faddrar:fadderProps[] = [
-    {
-      name: "Anna Andersson",
-      shirtSize: "M",
-      alleries: "Nötter",
-      email: "anna@example.com",
-      phone: "0701234567",
-    },
-    {
-      name: "Johan Johansson",
-      shirtSize: "L",
-      email: "johan@example.com",
-      phone: "0709876543",
-    },
-    {
-      name: "Sara Svensson",
-      shirtSize: "S",
-      alleries: "Laktos",
-      email: "sara@example.com",
-      phone: "0701112233",
-    },
-  ];
   
-
   const [filter, setFilter] = useState('');
 
-  
     return (
       <FADheader>
-        <Stack>
-          <Group>
-          <Menu position="bottom-end">
-            <Menu.Target>
-              <Button rightSection={<IconShirt size= {17}/>}>Tröjstorlekar</Button>
-            </Menu.Target>
-            <Menu.Dropdown >
-            {shirtSizes.map((sizes) => (<Menu.Item onClick = {() => setFilter(sizes)} key={sizes}>{sizes}</Menu.Item>))}
-            </Menu.Dropdown>
-          </Menu>
-          <Menu position="bottom-end">
-            <Menu.Target>
-              <Button rightSection={<IconCupOff size= {17}/>}>Alleriger</Button>
-            </Menu.Target>
-            <Menu.Dropdown >
-            {allergies.map((allergy) => (<Menu.Item onClick = {() => setFilter(allergy)} key={allergy}>{allergy}</Menu.Item>))}
-            </Menu.Dropdown>
-          </Menu>
-          <Menu position="bottom-end">
-            <Menu.Target>
-              <Button rightSection={<IconShirt size= {17}/>}>Alleriger</Button>
-            </Menu.Target>
-            <Menu.Dropdown >
-            {fadderType.map((type) => (<Menu.Item onClick = {() => setFilter(type)} key={type}>{type}</Menu.Item>))}
-            </Menu.Dropdown>
-          </Menu>
-          </Group>
-          <MultiSelect searchable data={[
-        { group: 'Frontend', items: [{ value: 'react', label: 'React' }, { value: 'ng', label: 'Angular' }] },
-        { group: 'Backend', items: [{ value: 'express', label: 'Express' }, { value: 'django', label: 'Django' }] },
-      ]}></MultiSelect>
-        </Stack>
+        <SearchBar/>   
+        <FadderTable></FadderTable>
       </FADheader>   
     );
 };
 
 export default Overview;
+
+
