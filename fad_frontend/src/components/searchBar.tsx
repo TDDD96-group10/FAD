@@ -1,5 +1,7 @@
 import {Button, Group, Menu, MultiSelect, Stack } from "@mantine/core";
 import { IconBookmark, IconCupOff, IconShirt } from "@tabler/icons-react";
+import { useState } from "react";
+import { v4 as UUID } from 'uuid';
 
 type fadderProps = {
   name: string;
@@ -7,10 +9,14 @@ type fadderProps = {
   alleries?: string;
   email: string;
   phone: string;
+  id?:string;
+}
+type searchBarProps = {
+  modify: boolean;
 }
 
 
-const SearchBar: React.FC = () => {
+const SearchBar: React.FC<searchBarProps> = ({ modify }) => {
 
   //TODO: Fixa childrens keys
   const shirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
@@ -23,14 +29,15 @@ const SearchBar: React.FC = () => {
   }
 
   return (
-<Stack>
+  <Stack>
     <Group>
+      <Button disabled={modify} >Modifiera</Button>
       <Menu position="bottom-end">
         <Menu.Target>
           <Button rightSection={<IconShirt size= {17}/>}>Tröjstorlekar</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {shirtSizes.map((sizes, index) => (<Menu.Item onClick = {() => setFilter(sizes)} key={index}>{sizes}</Menu.Item>))}
+        {shirtSizes.map((sizes, index) => (<Menu.Item onClick = {() => setFilter(sizes)} key={index}> {sizes}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
       <Menu position="bottom-end">
