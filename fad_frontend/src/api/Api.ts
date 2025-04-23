@@ -96,7 +96,13 @@ export interface Post {
   start_time?: string | null;
 }
 
+
+export interface Post {
+  /** ID */
+  id?: number;
+
 export interface PostLink {
+
   /** Author */
   author: string;
   /** Program */
@@ -108,6 +114,14 @@ export interface PostLink {
    * @minLength 1
    * @maxLength 200
    */
+
+  created_at?: string;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+
   title: string;
   /**
    * Text
@@ -115,12 +129,19 @@ export interface PostLink {
    */
   text: string;
   /**
+
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
+
    * Link
    * @format uri
    * @minLength 1
    * @maxLength 200
    */
   link: string;
+
 }
 
 export interface UserSerializer {
@@ -537,6 +558,25 @@ export class Api<
      * No description
      *
      * @tags portal
+
+     * @name PortalHomeList
+     * @request GET:/portal/home
+     * @secure
+     */
+    portalHomeList: (params: RequestParams = {}) =>
+      this.request<Post[], any>({
+        path: `/portal/home`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+
      * @name PortalPostsList
      * @request GET:/portal/posts
      * @secure
