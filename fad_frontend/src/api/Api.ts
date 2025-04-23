@@ -201,6 +201,49 @@ export interface PostSerializer {
   program: ProgramSerializer;
 }
 
+export interface ProgramSerializer {
+  /** ID */
+  id?: number;
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+  /** Attributes */
+  attributes?: object;
+}
+
+export type GroupSerializer = {
+  /** ID */
+  id?: number;
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+} | null;
+
+export interface UserSerializer {
+  /**
+   * User id
+   * @minLength 1
+   * @maxLength 8
+   */
+  user_id: string;
+  /**
+   * Role
+   * @minLength 1
+   * @maxLength 100
+   */
+  role: string;
+  program?: ProgramSerializer;
+  group?: GroupSerializer;
+  /** Attributes */
+  attributes: object;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -558,6 +601,15 @@ export class Api<
      * No description
      *
      * @tags portal
+
+     * @name PortalUsersList
+     * @request GET:/portal/users
+     * @secure
+     */
+    portalUsersList: (params: RequestParams = {}) =>
+      this.request<UserSerializer[], any>({
+        path: `/portal/users`,
+
 
      * @name PortalHomeList
      * @request GET:/portal/home
