@@ -20,12 +20,6 @@ class Command(BaseCommand):
             group=group
         )
 
-        posts = Post.objects.all()
-        print(f"Posts: {posts}")
-        for p in posts:
-            print(f"Post: {p.title}")
-            print(f"Post: {p.text}")
-
         post, _ = Post.objects.get_or_create(
             author=user,
             program=program,

@@ -14,14 +14,21 @@ class ShareView(APIView):
         responses={201: TextPostSerializer()}
     )
     def post(self, request):
-        today = timezone.now()
+        current_Datetime = timezone.now()
 
         serializer = TextPostSerializer(data=request.data)
         if serializer.is_valid():
             start_time = serializer.validated_data.get('start_time')
-            if start_time and start_time.date() < today.date():
+            
+            if start_time and start_time.date() < current_Datetime.date():
                 return Response({"error": "Post cant already have happend."}, status=status.HTTP_400_BAD_REQUEST)
 
             new_post = Post(**serializer.validated_data)
             new_post.save()
-        return Response("", status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            #Invalid serializer 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            
