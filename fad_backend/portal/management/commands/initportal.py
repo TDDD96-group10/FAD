@@ -25,7 +25,8 @@ class Command(BaseCommand):
             program=program,
             title="Welcome to the Program!",
             text="This is an important announcement for all new students.",
-            send_notifcation=True
+            send_notifcation=True,
+            start_time="2025-04-16 14:00:00+00:00"
         )
 
         self.stdout.write(self.style.SUCCESS("✅ Portal initialized!"))
