@@ -1,6 +1,5 @@
 import { AppShell, Burger, Button, Group, NavLink} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Outlet } from 'react-router-dom';
 import { ReactNode } from 'react';
 
 
@@ -41,7 +40,8 @@ export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
           <AppShell.Navbar p="md">
             <NavLink label ="Home" href='/demo'></NavLink>
             <NavLink label ="Shareinfo" href='/shareinfo'></NavLink>
-            <NavLink label ="Contact (#)" href='/home'></NavLink>
+            <NavLink label ="Contact" href='/home'></NavLink>
+            <NavLink label ="Configure" href='/configure'></NavLink>
             <NavLink label ="Start" href='/'></NavLink>
             <NavLink label ="Logout" href='/'></NavLink>
           </AppShell.Navbar>

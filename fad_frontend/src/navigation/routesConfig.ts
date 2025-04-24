@@ -5,6 +5,7 @@ import LoginCodePage from '../pages/LoginCodePage.tsx';
 import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import FadderHome from '../pages/FadderHomePage.tsx';
+import Configure from '../pages/Configure.tsx';
 
 
 interface RouteType {
@@ -16,6 +17,7 @@ export const routes: RouteType[] = [
   { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
   { path: "/shareinfo", element: ShareInfoPage},
+  { path: "/configure", element: Configure},
   { path: "/code", element:LoginCodePage },
   { path: "/login", element:LoginPage},
   { path: "/demo", element:HomePage},
