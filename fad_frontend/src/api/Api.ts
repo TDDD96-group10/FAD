@@ -442,30 +442,14 @@ export class Api<
       }),
 
     /**
-     * No description
+     * @description Ladda upp en CSV-fil med användardata
      *
      * @tags portal
      * @name PortalImportUsersCreate
      * @request POST:/portal/import-users
      * @secure
      */
-    portalImportUsersCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/portal/import-users`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * @description Ladda upp en CSV-fil med användardata
-     *
-     * @tags portal
-     * @name PortalUploadCsvCreate
-     * @request POST:/portal/upload-csv
-     * @secure
-     */
-    portalUploadCsvCreate: (
+    portalImportUsersCreate: (
       data: {
         /** @format binary */
         file: File;
@@ -473,7 +457,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<void, void>({
-        path: `/portal/upload-csv`,
+        path: `/portal/import-users`,
         method: "POST",
         body: data,
         secure: true,
