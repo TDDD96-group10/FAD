@@ -1,13 +1,11 @@
 import {
-    Button,
-    Checkbox,
+    Burger,
     Container,
+    Drawer,
     Group,
     Paper,
     ScrollArea,
     Stack,
-    TextInput,
-    Title,
     Text,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +24,7 @@ interface Task {
 
 // Sample data for testing
 const SAMPLE_TASKS: Task[] = [
-    { id: 1, title: 'Update 1', description: 'Munchen Hoben pass ändratMunchen Hoben pass ändrat', created_at: '2025-04-20T10:00:00Z', author: 'user1' },
+    { id: 1, title: 'Update 1', description: 'Munchen Hoben pass ändrat', created_at: '2025-04-20T10:00:00Z', author: 'user1' },
     { id: 2, title: 'Schedule Update', description: 'Schema för campusvandringen finns nu i driven', created_at: '2025-04-20T12:00:00Z', author: 'user2' },
     { id: 3, title: 'Update 2', description: 'Munchen Hoben pass ändrat', created_at: '2025-04-20T14:00:00Z', author: 'user1' },
     { id: 4, title: 'Schedule Update', description: 'Schema för campusvandringen finns nu i driven', created_at: '2025-04-20T16:00:00Z', author: 'user2' },
@@ -47,7 +45,8 @@ const SAMPLE_TASKS: Task[] = [
 const FadderHomePage: React.FC = () => {
     const navigate = useNavigate();
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [useSampleData, setUseSampleData] = useState<boolean>(false); // Toggle for sample data
+    const [useSampleData, setUseSampleData] = useState<boolean>(false);
+    const [opened, setOpened] = useState(false);
     const { data, loading, error } = useApi(() => apiClient.portal.portalPostsList());
 
     useEffect(() => {
@@ -77,7 +76,6 @@ const FadderHomePage: React.FC = () => {
         );
     }
 
-
     const formatDateTime = (dateTime: string) => {
         if (dateTime === '-' || dateTime === 'Unknown') return '-';
         try {
@@ -92,34 +90,17 @@ const FadderHomePage: React.FC = () => {
     };
 
     return (
-        <ScrollArea style={{ height: '100vh', overflow: 'auto' }} p="md">
-            <Stack spacing="lg">
-                {/* Three vertically stacked buttons with increased spacing */}
-                <Stack spacing="xl" pt="md" pl="lg" pr="lg">
-                    <Button variant="filled" color="blue" size="lg">
-                        Dokument
-                    </Button>
-                    <Button variant="filled" color="blue" size="lg">
-                        Fadderjobb
-                    </Button>
-                    <Button variant="filled" color="blue" size="lg">
-                        Schema
-                    </Button>
-                </Stack>
-
-                {/* Text component with padding only on top, left, and right */}
-                <Text size="xl" weight={500} pt="md" pl="md" pr="md">
+        <Container
+            fluid
+            p="xl"
+            pt="xl"
+            style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
+        >
+            <Stack spacing={0} style={{ flex: 1, overflow: 'hidden' }}>
+                <Text size="xl" weight={500}>
                     Senaste Nytt!
                 </Text>
-
-                {/* Nested ScrollArea with fixed height */}
-                <ScrollArea
-                    style={{ height: '400px', overflow: 'auto' }}
-                    pl="md"
-                    pr="md"
-                    pb="md"
-                >
-                    {/* Bullet list with data */}
+                <ScrollArea style={{ flex: 1, overflow: 'auto' }}>
                     <Stack spacing="sm">
                         {tasks.map((task, index) => (
                             <Paper
@@ -127,7 +108,7 @@ const FadderHomePage: React.FC = () => {
                                 p="md"
                                 withBorder
                                 style={{
-                                    backgroundColor: index % 2 === 0 ? '#333' : '#444', // Alternate colors for every otherlist item
+                                    backgroundColor: index % 2 === 0 ? '#333' : '#444',
                                     borderRadius: '4px',
                                     minHeight: '80px',
                                 }}
@@ -162,7 +143,74 @@ const FadderHomePage: React.FC = () => {
                     </Stack>
                 </ScrollArea>
             </Stack>
-        </ScrollArea>
+
+            <Group
+                p="md"
+                style={{
+                    background: '#222',
+                    borderTop: '1px solid #333',
+                    position: 'sticky',
+                    bottom: 0,
+                    zIndex: 1000,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                }}
+            >
+                <Burger
+                    opened={opened}
+                    onClick={() => setOpened((o) => !o)}
+                    size="sm"
+                    color="white"
+                    style={{ zIndex: 1001 }}
+                />
+            </Group>
+
+            <Drawer
+                opened={opened}
+                onClose={() => setOpened(false)}
+                position="bottom"
+                size="auto"
+                padding="md"
+                withCloseButton={false}
+                styles={{
+                    drawer: {
+                        background: '#222',
+                        borderTopLeftRadius: '8px',
+                        borderTopRightRadius: '8px',
+                        zIndex: 999,
+                    },
+                }}
+            >
+                <Stack spacing="sm">
+                    <Text
+                        size="md"
+                        weight={500}
+                        color="white"
+                        style={{ padding: '8px 16px', cursor: 'pointer' }}
+                        onClick={() => {
+                            navigate('/fadderdocuments');
+                            setOpened(false);
+                        }}
+                    >
+                        Dokument
+                    </Text>
+                    <Text
+                        size="md"
+                        weight={500}
+                        color="white"
+                        style={{ padding: '8px 16px', cursor: 'pointer' }}
+                        onClick={() => {
+                            navigate('/fadderlinks');
+                            setOpened(false);
+                        }}
+                    >
+                        Länkar
+                    </Text>
+                </Stack>
+            </Drawer>
+        </Container>
     );
 };
 
