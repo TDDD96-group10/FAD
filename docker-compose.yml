@@ -93,7 +93,7 @@ services:
         fi
       '
     environment:
-      - USE_COVERAGE
+      - USE_COVERAGE=1
     profiles:
       - tests
     <<: *common-config
