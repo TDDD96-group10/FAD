@@ -80,13 +80,28 @@ services:
   tests:
     container_name: tests
     working_dir: /app/fad_backend
-    command: python manage.py test 
+    command: >
+      sh -c '
+        if [ "$USE_COVERAGE" = "1" ]; then
+          coverage run \
+            --source=portal.views,portal.serializers,portal.models \
+            manage.py test portal.tests &&
+          coverage report &&
+          coverage html;
+        else
+          python manage.py test portal.tests;
+        fi
+      '
+    environment:
+      - USE_COVERAGE=1
     profiles:
       - tests
     <<: *common-config
-    
-  
-    
+
+
+
+
+
   db:
     image: postgres:15  
     container_name: postgres-db

@@ -96,13 +96,7 @@ export interface Post {
   start_time?: string | null;
 }
 
-
-export interface Post {
-  /** ID */
-  id?: number;
-
 export interface PostLink {
-
   /** Author */
   author: string;
   /** Program */
@@ -114,14 +108,6 @@ export interface PostLink {
    * @minLength 1
    * @maxLength 200
    */
-
-  created_at?: string;
-  /**
-   * Title
-   * @minLength 1
-   * @maxLength 200
-   */
-
   title: string;
   /**
    * Text
@@ -129,76 +115,12 @@ export interface PostLink {
    */
   text: string;
   /**
-
-   * Start time
-   * @format date-time
-   */
-  start_time?: string | null;
-
    * Link
    * @format uri
    * @minLength 1
    * @maxLength 200
    */
   link: string;
-
-}
-
-export interface UserSerializer {
-  /**
-   * User id
-   * @minLength 1
-   * @maxLength 8
-   */
-  user_id: string;
-  /**
-   * Role
-   * @minLength 1
-   * @maxLength 100
-   */
-  role: string;
-  /** Attributes */
-  attributes: object;
-  /** Program */
-  program: number;
-  /** Group */
-  group?: number | null;
-}
-
-export interface ProgramSerializer {
-  /** ID */
-  id?: number;
-  /**
-   * Name
-   * @minLength 1
-   * @maxLength 200
-   */
-  name: string;
-  /** Attributes */
-  attributes?: object;
-}
-
-export interface PostSerializer {
-  /** ID */
-  id?: number;
-  /**
-   * Title
-   * @minLength 1
-   * @maxLength 200
-   */
-  title: string;
-  /**
-   * Text
-   * @minLength 1
-   */
-  text: string;
-  /**
-   * Created at
-   * @format date-time
-   */
-  created_at?: string;
-  author: UserSerializer;
-  program: ProgramSerializer;
 }
 
 export interface ProgramSerializer {
@@ -242,6 +164,29 @@ export interface UserSerializer {
   group?: GroupSerializer;
   /** Attributes */
   attributes: object;
+}
+
+export interface PostSerializer {
+  /** ID */
+  id?: number;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  author: UserSerializer;
+  program: ProgramSerializer;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -601,23 +546,13 @@ export class Api<
      * No description
      *
      * @tags portal
-
-     * @name PortalUsersList
-     * @request GET:/portal/users
+     * @name PortalPostsList
+     * @request GET:/portal/posts
      * @secure
      */
-    portalUsersList: (params: RequestParams = {}) =>
-      this.request<UserSerializer[], any>({
-        path: `/portal/users`,
-
-
-     * @name PortalHomeList
-     * @request GET:/portal/home
-     * @secure
-     */
-    portalHomeList: (params: RequestParams = {}) =>
-      this.request<Post[], any>({
-        path: `/portal/home`,
+    portalPostsList: (params: RequestParams = {}) =>
+      this.request<PostSerializer[], any>({
+        path: `/portal/posts`,
         method: "GET",
         secure: true,
         format: "json",
@@ -628,14 +563,13 @@ export class Api<
      * No description
      *
      * @tags portal
-
-     * @name PortalPostsList
-     * @request GET:/portal/posts
+     * @name PortalUsersList
+     * @request GET:/portal/users
      * @secure
      */
-    portalPostsList: (params: RequestParams = {}) =>
-      this.request<PostSerializer[], any>({
-        path: `/portal/posts`,
+    portalUsersList: (params: RequestParams = {}) =>
+      this.request<UserSerializer[], any>({
+        path: `/portal/users`,
         method: "GET",
         secure: true,
         format: "json",

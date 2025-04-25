@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 from django.test import TestCase
+from django.core.exceptions import *
 from ..models.program import Program
 from ..models.user import User
 
@@ -18,3 +19,14 @@ class UserModelTest(TestCase):
         User.objects.create(user_id="belba438", role="admin", program=self.program, attributes={'size': "m"})
 
         self.assertEqual(len(self.program.users.all()), 3)
+
+    def test_create_invalid_user(self):
+        with self.assertRaises(ValidationError):
+            user = User(
+                user_id="",
+                role="admin",
+                program=self.program,
+                attributes={'size': "m"}
+            )
+            user.full_clean()
+            user.save()
