@@ -22,8 +22,10 @@ export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
                 breakpoint: 'sm',
                 collapsed: { mobile: !opened },
         }}
-        padding="md">
-          <AppShell.Header>
+        padding="md"
+        
+        >
+          <AppShell.Header >
             <Burger
               opened={opened}
               onClick={toggle}

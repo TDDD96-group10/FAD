@@ -3,89 +3,89 @@ import { useState } from "react";
 import SearchBar from "../components/searchBar";
 import { Table, Checkbox, Chip} from '@mantine/core';
 import { allData } from './data';
-import { v4 as uuidv4 } from 'uuid';
+import { fadderProps, overviewProps } from "./types";
 
-type tagsProps = {
-  name: string;
-  color: string
-}
 
-type fadderProps = {
-  name: string;
-  shirtSize: string;
-  allergies?: string;
-  fadderType?: tagsProps[]
-  email: string;
-  phone: string;
-  id?: string;
-}
+const Overview: React.FC<overviewProps> = () => {
 
-export function FadderTable() {
-  
-   
-  const data: fadderProps[] = allData.map((value: fadderProps) => ({
-    ...value,
-    id: value.id ?? uuidv4(), // Keep existing ID if it exists, or generate a new one
-  }));
-  const [faddrar, setFaddrar] = useState<fadderProps[]>(data);
-  
-  const toggleCheckbox = (fadder: fadderProps) => {
-    setFaddrar((curr:fadderProps[]) =>
-      curr.some((item) => item.id === fadder.id)
-        ? curr.filter((item) => item.id !== fadder.id)
-        : [...curr, fadder]
-    );
-  };
-  
-  const newRows = data.map((fadder:fadderProps) => (
-    <Table.Tr key={fadder.id} onClick={() => toggleCheckbox(fadder)}>
-      <Table.Td>{<Checkbox ></Checkbox>}</Table.Td>
-      <Table.Td onClick= {() => console.log(fadder.name)}>{fadder.name}</Table.Td>   
-      <Table.Td>{fadder.fadderType?.map((val, index) => <Chip size="xs" p={1} key= {index} defaultChecked color={val.color}>{val.name}</Chip>)}</Table.Td>
-      <Table.Td>{fadder.shirtSize}</Table.Td>
-     
-      <Table.Td>{fadder.phone}</Table.Td>
-      <Table.Td>{fadder.allergies}</Table.Td>
-    </Table.Tr>
-  ))
-  return (
-    <Table highlightOnHover striped>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th><Checkbox></Checkbox></Table.Th>
-          <Table.Th>Namn</Table.Th>
-          <Table.Th>Faddertyp</Table.Th>
-          <Table.Th>Tröjstorlek</Table.Th>
-          <Table.Th>Telefonnummer</Table.Th>
-          <Table.Th>Allergier</Table.Th>
-         
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>{newRows}</Table.Tbody>
-    </Table>
-  );
-}
-
-type overviewProps = {
-  faddrar: fadderProps[];
-}
-
-const Overview: React.FC<overviewProps> = ({ faddrar }) => {
-  //Dummy data
   const shirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
   const allergies = ['Jordnötter', 'Vegan', 'Vegetarian', 'Peskitarian']
   const fadderType = ['Häfvfadder', 'Donna', 'DG']
-  const data = shirtSizes.concat(allergies.concat(fadderType))
-  
-  const [filter, setFilter] = useState('');
-  const [selected, setSelected] = useState<fadderProps[]>([]);
-  const modify = selected.length > 0;
+  const data = allData
+  const defaultFadder:fadderProps= {firstName: '', lastName: '', shirtSize: '', email: '',
+                                    phone: '', id: '', fadderType: [], allergies: ''}
+
+  const [table, setTable] = useState<fadderProps[]>(data);
+  const [selectedIds, setSelectedIds] = useState<fadderProps[]>([]);
+  const editTags = selectedIds.length > 1;
+  const editFadder = selectedIds.length === 1;
+
+  function updateTags(updated: fadderProps[]){
+
+
+  }
+
+  const rows = data.map((fadder) => (
+    <Table.Tr
+      key={fadder.id}
+      bg={selectedIds.some((row) => row.id === fadder.id) ? 'var(--mantine-color-blue-light)' : undefined}
+    >
+      <Table.Td>
+        <Checkbox
+          aria-label="Select row"
+          checked={selectedIds.some((row) => row.id === fadder.id)}
+          onChange={(event) => {
+            const isChecked = event.currentTarget.checked;
+          
+            if (isChecked) {
+              if (!selectedIds.some((id) => id.id === fadder.id)) {
+                setSelectedIds([...selectedIds, fadder]);
+              }
+            } else {
+              setSelectedIds(selectedIds.filter((id) => id.id !== fadder.id));
+            }
+          }}
+        />
+      </Table.Td>
+      <Table.Td>{fadder.firstName + " " + fadder.lastName}</Table.Td>
+      <Table.Td>{fadder.fadderType?.map((val, index) => 
+                <Chip size="xs" p={1} key= {fadder.id+ index} defaultChecked color={val.color}>{val.name}</Chip>)}
+      </Table.Td>
+      <Table.Td>{fadder.shirtSize}</Table.Td>
+      <Table.Td>{fadder.phone}</Table.Td>
+      <Table.Td>{fadder.allergies}</Table.Td>
+    </Table.Tr>
+  ));
 
 
     return (
       <FADheader>
-        <SearchBar modify={modify}/>   
-        <FadderTable></FadderTable>
+        <SearchBar updateSelected = {updateTags}
+                   updateFadder={(updatedFadder: fadderProps) => 
+                                  setTable((prevTable) => 
+                                  prevTable.map((item) =>
+                      item.id === updatedFadder.id ? { ...item, ...updatedFadder } : item
+                    )
+                  )}
+                   selected={selectedIds} 
+                   editTags={editTags} 
+                   editFadder={editFadder} 
+                   singleFadder={selectedIds.length === 1 ? selectedIds[0] : defaultFadder} />   
+        <Table striped>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>{<Checkbox onChange = {() => 
+                                  selectedIds.length === data.length ?
+                                  setSelectedIds([]) : setSelectedIds(data)}/>}</Table.Th>
+            <Table.Th>Namn</Table.Th>
+            <Table.Th>Faddertyp</Table.Th>
+            <Table.Th>Tröjstorlekar</Table.Th>
+            <Table.Th>Telefon</Table.Th>
+            <Table.Th>Allergier</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
       </FADheader>   
     );
 };
