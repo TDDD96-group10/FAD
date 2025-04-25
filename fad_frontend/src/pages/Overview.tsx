@@ -20,12 +20,9 @@ const Overview: React.FC<overviewProps> = () => {
   const editTags = selectedIds.length > 1;
   const editFadder = selectedIds.length === 1;
 
-  function updateTags(updated: fadderProps[]){
+  function updateTags(updated: fadderProps[]){}
 
-
-  }
-
-  const rows = data.map((fadder) => (
+  const rows = table.map((fadder) => (
     <Table.Tr
       key={fadder.id}
       bg={selectedIds.some((row) => row.id === fadder.id) ? 'var(--mantine-color-blue-light)' : undefined}
@@ -61,12 +58,20 @@ const Overview: React.FC<overviewProps> = () => {
     return (
       <FADheader>
         <SearchBar updateSelected = {updateTags}
-                   updateFadder={(updatedFadder: fadderProps) => 
-                                  setTable((prevTable) => 
-                                  prevTable.map((item) =>
-                      item.id === updatedFadder.id ? { ...item, ...updatedFadder } : item
-                    )
-                  )}
+                   updateFadder={(updatedFadder: fadderProps) => {
+                    if (!updatedFadder.id) return;
+                    setTable((prevTable) =>
+                      prevTable.map((item) =>
+                        item.id === updatedFadder.id ? { ...item, ...updatedFadder } : item
+                      )
+                    );
+                    setSelectedIds((prevSelected) =>
+                      prevSelected.map((item) =>
+                        item.id === updatedFadder.id ? { ...item, ...updatedFadder } : item
+                      )
+                    );
+                    console.log(updatedFadder);
+                  }}
                    selected={selectedIds} 
                    editTags={editTags} 
                    editFadder={editFadder} 

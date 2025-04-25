@@ -7,37 +7,38 @@ import React from "react";
 
 
 const SearchBar: React.FC<searchBarProps> = ({ editTags, selected, editFadder, updateSelected, singleFadder, updateFadder}) => {
-
-  //TODO: Lös hur allergier ska fixas.
+  React.useEffect(() => {
+    const currentFadder = singleFadder || defaultFadder;
+    setUpdatedFadder(currentFadder);
+    setShirtSize(currentFadder.shirtSize ? [currentFadder.shirtSize] : ['']);
+    setfadderType(currentFadder.fadderType?.map(ft => ft.name) ?? []);
+  }, [singleFadder]);
+  
+  //TODO: Fixa allergies
   const allergies = ['Jordnötter', 'Vegan', 'Vegetarian', 'Peskitarian']
   const fadderTypeDict:fadderType[] = [{name: 'häfvfadder', color:'blue'}, { name: 'Donna', color: 'pink' }, { name: 'klassfadder', color: 'green' }, { name: 'DG', color: 'yellow' }]
   const stack = useModalsStack(['edit-single-fadder', 'edit-multiple-fadder']);
   const shirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
   const defaultFadder: fadderProps = {firstName: '', lastName: '', shirtSize: '', email: '', phone: '',
-                                      id: '', allergies: '',fadderType: [],};
-  const defaultTags = singleFadder?.fadderType?.map(val => val.name);
-  // Use singleFadder or fallback to defaultFadder
+                                      id: '', allergies: '',fadderType: []};
+
+  const defaultTags = singleFadder?.fadderType?.map(val=> val.name) ?? [];
+  const defaultShirtSize: string[] = singleFadder?.shirtSize ? [singleFadder.shirtSize] : [''];
+
+
   const [updatedFadder, setUpdatedFadder] = useState<fadderProps>(singleFadder || defaultFadder);
-  const [updatedPhone, setUpdatedPhone] = useState<string>(singleFadder?.phone ?? '');
-  const [updatedFadderType, setUpdatedFadderType] = useState<fadderType[]>(singleFadder?.fadderType ?? []);
-  const [fadderTypes, setFadderTypes] = useState<string[]>(singleFadder?.fadderType?.map(type =>type.name) ?? []);
-
-  React.useEffect(() => {
-    setUpdatedFadderType(singleFadder?.fadderType ?? []);
-  }, [singleFadder]);
-
-  function fadderUpdateType(type:string[]){
-    setFadderTypes(type)
-    setUpdatedFadderType(fadderTypeDict.filter(fadder => type.includes(fadder.name)))
-
+  const [fadderType, setfadderType] = useState<string[]>([]);
+  const [shirtSize, setShirtSize] = useState<string[]>(defaultShirtSize);
+  
+  function setFilter(allergy: string): void {
+    throw new Error("Function not implemented.");
   }
-console.log('singleFadder:', singleFadder);
-console.log('fadderType:', singleFadder?.fadderType);
-console.log('mapped fadderTypes:', singleFadder?.fadderType?.map(type => type.name));
-console.log('final initial value:', singleFadder?.fadderType?.map(type => type.name) ?? []);
+  
 
   return (
   <Stack>
+    <p>{singleFadder?.shirtSize}</p>
+    <>{defaultShirtSize}</>
     <Group>
       <Button disabled={!editFadder} onClick={() => stack.open("edit-single-fadder")}>Redigera fadder</Button>
       <Button disabled={!editTags} onClick={()=> stack.open("edit-multiple-fadder")}>Ändra taggar</Button>
@@ -46,7 +47,7 @@ console.log('final initial value:', singleFadder?.fadderType?.map(type => type.n
           <Button rightSection={<IconShirt size= {17}/>}>Tröjstorlekar</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {shirtSizes.map((sizes, index) => (<Menu.Item key={index}> {sizes}</Menu.Item>))}
+        {shirtSizes.map((sizes, index) => (<Menu.Item onClick = {() => setFilter(sizes)} key={index}> {sizes}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
       <Menu position="bottom-end">
@@ -54,7 +55,7 @@ console.log('final initial value:', singleFadder?.fadderType?.map(type => type.n
           <Button rightSection={<IconCupOff size= {17}/>}>Alleriger</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {allergies.map((allergy, index) => (<Menu.Item key={index + 10}>{allergy}</Menu.Item>))}
+        {allergies.map((allergy, index) => (<Menu.Item onClick = {() => setFilter(allergy)} key={index + 10}>{allergy}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
       <Menu position="bottom-end">
@@ -62,7 +63,7 @@ console.log('final initial value:', singleFadder?.fadderType?.map(type => type.n
           <Button rightSection={<IconBookmark size= {17}/>}>Taggar</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {fadderTypeDict.map((type, index) => (<Menu.Item  key={index + 20}>{type.name}</Menu.Item>))}
+        {fadderTypeDict.map((type, index) => (<Menu.Item onClick = {() => setFilter(type.name)} key={index + 20}>{type.name}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
     </Group>
@@ -74,44 +75,61 @@ console.log('final initial value:', singleFadder?.fadderType?.map(type => type.n
       <Modal title={'Redigera fadder'}{...stack.register('edit-single-fadder')}>
         <TextInput  label={'Förnamn'}
                     value={updatedFadder.firstName} 
-                    error={updatedFadder.firstName === ''}
-                    onChange={(event) => setUpdatedFadder({...updatedFadder, 
-                                                          firstName:event.currentTarget.value})}/>
+                    onChange={(event) => setUpdatedFadder((prev) => ({
+                                      ...prev, firstName: event.currentTarget.value}))}/>
         <TextInput  label={'Efternamn'}
-                    error={updatedFadder.lastName === ''}
                     value={updatedFadder.lastName} 
-                    onChange={(event) => setUpdatedFadder({...updatedFadder, 
-                                                          lastName:event.currentTarget.value})}/>
+                    onChange={(event) => setUpdatedFadder((prev) => ({
+                      ...prev, lastName: event.currentTarget.value}))}/>
 
         <TagsInput  label={'Tröjstorlek'}
-                    defaultValue={[updatedFadder.shirtSize]} 
-                    error = {updatedFadder.shirtSize.length < 0}
-                    maxTags={1} data={shirtSizes}></TagsInput>
+                    value={shirtSize}
+                    defaultValue={[updatedFadder.shirtSize]}
+                    maxTags={1} 
+                    onChange={(val) => {
+                      setShirtSize(val);
+                      setUpdatedFadder((prev) => ({ ...prev, shirtSize: val[0] || '' }));
+                    }}
+                    data={shirtSizes}
+                    error={shirtSize.length !== 1}
+                  
+                    />
         <TextInput  label={'Email'}
                     value={updatedFadder.email} 
-                    onChange={(event) => setUpdatedFadder({...updatedFadder, 
-                                                            email:event.currentTarget.value})}/>
+                    onChange={(event) => setUpdatedFadder((prev) => ({
+                      ...prev, firstName: event.currentTarget.value}))}/>
         <TextInput  label={'Telefon'}
                     value={updatedFadder.phone} 
-                    onChange={(event) => setUpdatedPhone(event.currentTarget.value)}/>
+                    onChange={(event) => setUpdatedFadder((prev) => ({
+                      ...prev, firstName: event.currentTarget.value}))}/>
         <MultiSelect 
                     label={'Taggar'}
                     defaultValue={defaultTags} 
                     data={fadderTypeDict.map(val => val.name)}
-                    value={fadderTypes}
-                    onChange={fadderUpdateType}/>
+                    value={fadderType}
+                    onChange={(val) => {
+                      setfadderType(val);
+                      const createFadderTypes = fadderTypeDict.filter(fadder => val.includes(fadder.name));
+                      setUpdatedFadder((prev) => ({...prev, fadderType:createFadderTypes}));
+                    }}/>
         <Group>
         <Button onClick={stack.closeAll}>Avbryt</Button>
-        <Button 
-              
+        <Button onClick={() => {updateFadder(updatedFadder);
+                                stack.closeAll();
+                                }}
             >
               Spara
         </Button>
         </Group>
       </Modal>
       <Modal {...stack.register('edit-multiple-fadder')}>
-      </Modal>  
+        
+        
+      </Modal>
+      
     </Modal.Stack>
+
+
   </Stack>
   );
 };
