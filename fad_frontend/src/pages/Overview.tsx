@@ -14,7 +14,6 @@ const Overview: React.FC<overviewProps> = () => {
   const data = allData
   const defaultFadder:fadderProps= {firstName: '', lastName: '', shirtSize: '', email: '',
                                     phone: '', id: '', fadderType: [], allergies: ''}
-
   const [table, setTable] = useState<fadderProps[]>(data);
   const [selectedIds, setSelectedIds] = useState<fadderProps[]>([]);
   const editTags = selectedIds.length > 1;
