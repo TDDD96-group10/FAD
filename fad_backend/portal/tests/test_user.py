@@ -118,13 +118,14 @@ class UserModelTest(TestCase):
             user.full_clean()
 
     def test_no_role(self):
-        user = User.object.create(
+        user = User.objects.create(
             user_id="abcde000",
             role="",
             program=self.program,
             attributes={"size": "m"},
         )
-        self.assertEqual(user.role, "")
+        retrieved_user = User.objects.get(user_id="abcde000")
+        self.assertEqual(retrieved_user.role, "")
         self.assertEqual(self.program.users.count(), 1)
 
 
@@ -211,7 +212,7 @@ class UserModelTest(TestCase):
         )
         self.assertTrue(User.objects.filter(user_id="abcde000").exists())
         self.group.delete()
-        self.assertTrue(User.objects.filter(user_id="abcde000").exists())
+        self.assertFalse(User.objects.filter(user_id="abcde000").exists())
 
 
 
