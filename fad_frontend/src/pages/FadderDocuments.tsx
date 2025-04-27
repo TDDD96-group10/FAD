@@ -20,27 +20,27 @@ const FadderDocuments: React.FC = () => {
   const [links, setLinks] = useState<Link[]>([]);
 
   useEffect(() => {
-    //sample data
+    // Sample data
     setDocuments([
       { id: '1', title: 'Introduktions-PDF', url: '/docs/intro.pdf' },
       { id: '2', title: 'Checklista för faddrar', url: '/docs/checklist.pdf' },
     ]);
 
     setLinks([
-      { id: '1', name: 'Google Drive', url: 'https://drive.google.com' },
-      { id: '2', name: 'Schemat', url: 'https://schema.link' },
+      { id: '1', name: 'Google Drive', url: 'https://drive.google.com/drive/u/0/folders/1x0sFMPvGYdPG9xM6f9BsE9Oxo_vi2huq' },
+      { id: '2', name: 'Schemat', url: 'https://calendar.google.com/calendar/u/0/r/week/2025/4/28' },
     ]);
   }, []);
 
   return (
-    <Container size={800} my={40}>
-      <Title ta="center" mb="lg">
+    <Container size="xs" my="md">
+      <Title ta="center" mb="md" order={2}>
         Dokument och länkar
       </Title>
 
-      <Paper withBorder shadow="md" p={30} mb="lg" radius="md">
+      <Paper withBorder shadow="sm" p="md" mb="md" radius="md">
         <Title order={4} mb="sm">Filer</Title>
-        <List spacing="xs">
+        <List spacing="sm">
           {documents.map((doc) => (
             <List.Item key={doc.id}>
               <Anchor href={doc.url} target="_blank" rel="noopener noreferrer">
@@ -51,11 +51,11 @@ const FadderDocuments: React.FC = () => {
         </List>
       </Paper>
 
-      <Divider my="xl" />
+      <Divider my="md" />
 
-      <Paper withBorder shadow="md" p={30} radius="md">
+      <Paper withBorder shadow="sm" p="md" radius="md">
         <Title order={4} mb="sm">Länkar</Title>
-        <List spacing="xs">
+        <List spacing="sm">
           {links.map((link) => (
             <List.Item key={link.id}>
               <Anchor href={link.url} target="_blank" rel="noopener noreferrer">
