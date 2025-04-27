@@ -18,6 +18,12 @@ class ProgramModelTest(TestCase):
         self.assertIsInstance(retrieved_program.attributes, dict)
         self.assertIn("size", retrieved_program.attributes)
 
+    def test_create_multiple_programs(self):
+        program1 = Program.objects.create(name="Program 1", attributes=self.valid_attributes)
+        program2 = Program.objects.create(name="Program 2", attributes=self.valid_attributes)
+
+        self.assertEqual(Program.objects.count(), 3) # 1 from setUp + 2 new programs
+
     def test_no_name(self):
         program = Program(name="", attributes=self.valid_attributes)
         with self.assertRaises(ValidationError):
