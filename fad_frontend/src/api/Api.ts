@@ -442,7 +442,7 @@ export class Api<
       }),
 
     /**
-     * @description Ladda upp en CSV-fil med användardata
+     * @description API endpoint for bulk importing users from a CSV file. This view handles file uploads containing user data in CSV format, creates User instances along with related Program and Group objects, and returns import statistics. Example CSV Format: user_id,role,program,group,attributes 123,student,"Program Name,attr1:value1",Group A,"{key:value}" 456,teacher,"Program Name,attr2:value2",Group B,"{key:value}"
      *
      * @tags portal
      * @name PortalImportUsersCreate
