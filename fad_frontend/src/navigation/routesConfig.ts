@@ -5,6 +5,7 @@ import Loginkod from '../pages/Loginkod';
 import Logintest from '../pages/Login';
 import HomePage from '../pages/HomePage.tsx';
 import FadderInformation from '../pages/FadderInformation.tsx';
+import FadderDocuments from '../pages/FadderDocuments.tsx';
 
 interface RouteType {
   path: string;
@@ -18,6 +19,7 @@ export const routes: RouteType[] = [
   { path:"/code", element:Loginkod },
   { path:"/login", element:Logintest},
   { path: "/home", element:HomePage},
-  { path: "/FadderInfo", element:FadderInformation}
+  { path: "/FadderInfo", element:FadderInformation},
+  { path: "/FadderDocuments", element:FadderDocuments}
 
 ];
