@@ -1,0 +1,9 @@
+services:
+  lint:
+    image:  ghcr.io/${IMAGE_OWNER}/my-django-app:latest
+    command: >
+      bash -c "flake8 ."
+    volumes:
+      - ../../fad_backend:/app
+
+

@@ -21,7 +21,5 @@ RUN pip install psycopg
 RUN pip install djangorestframework-simplejwt
 RUN pip install django-cors-headers
 
-COPY . /app/
-
 EXPOSE 8000
 
