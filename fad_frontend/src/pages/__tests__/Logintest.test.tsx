@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
-import Logintest from '../Login';
+import Logintest from '../LoginPage';
 
 
 test('renders email input and sign in button', () => {
