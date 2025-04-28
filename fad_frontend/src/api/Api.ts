@@ -116,33 +116,6 @@ export interface Post {
   start_time?: string | null;
 }
 
-export interface PostLink {
-  /** Author */
-  author: string;
-  /** Program */
-  program?: number | null;
-  /** Send notifcation */
-  send_notifcation?: boolean;
-  /**
-   * Title
-   * @minLength 1
-   * @maxLength 200
-   */
-  title: string;
-  /**
-   * Text
-   * @minLength 1
-   */
-  text: string;
-  /**
-   * Link
-   * @format uri
-   * @minLength 1
-   * @maxLength 200
-   */
-  link: string;
-}
-
 export interface ProgramSerializer {
   /** ID */
   id?: number;
@@ -184,6 +157,33 @@ export interface UserSerializer {
   group?: GroupSerializer;
   /** Attributes */
   attributes: object;
+}
+
+export interface PostLink {
+  /** Author */
+  author: string;
+  /** Program */
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Link
+   * @format uri
+   * @minLength 1
+   * @maxLength 200
+   */
+  link: string;
 }
 
 export interface PostSerializer {
@@ -607,6 +607,23 @@ export class Api<
      * No description
      *
      * @tags portal
+     * @name PortalRead
+     * @request GET:/portal/pdf_view{pdf_id}
+     * @secure
+     */
+    portalRead: (pdfId: string, params: RequestParams = {}) =>
+      this.request<UserSerializer, any>({
+        path: `/portal/pdf_view${pdfId}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
      * @name PortalPostLinkCreate
      * @request POST:/portal/post-link
      * @secure
@@ -633,6 +650,23 @@ export class Api<
     portalPostsList: (params: RequestParams = {}) =>
       this.request<PostSerializer[], any>({
         path: `/portal/posts`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalProfileMetaDataList
+     * @request GET:/portal/profile-meta-data
+     * @secure
+     */
+    portalProfileMetaDataList: (params: RequestParams = {}) =>
+      this.request<UserSerializer, any>({
+        path: `/portal/profile-meta-data`,
         method: "GET",
         secure: true,
         format: "json",

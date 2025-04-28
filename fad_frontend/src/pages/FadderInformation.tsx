@@ -9,10 +9,14 @@ import {
   Select,
   MultiSelect
 } from '@mantine/core';
+import { useApi } from "../hooks/useApi";
+import { apiClient } from "../api/ApiClient";
 
 import '../styles/pages/FadderInformation.css';
 
 const FadderInformation: React.FC = () => {
+  const { data, loading, error } = useApi(() => apiClient.portal.portalHelloWorldList());
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -46,6 +50,9 @@ const FadderInformation: React.FC = () => {
     console.log('Skickat:', formData);
     alert('Tack! Informationen har sparats.');
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error} {JSON.stringify(data, null, 2)}</p>;
 
   return (
     <Container size={700} my={40}>
