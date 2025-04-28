@@ -93,6 +93,20 @@ export interface TextPost {
   start_time?: string | null;
 }
 
+export interface SharePdf {
+  /**
+   * File name
+   * @minLength 1
+   * @maxLength 100
+   */
+  file_name: string;
+  /**
+   * Pdf
+   * @format uri
+   */
+  pdf?: string;
+}
+
 export interface User {
   /** Id */
   id: number;
@@ -473,6 +487,36 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalSharePdfCreate
+     * @request POST:/portal/Share_pdf
+     * @secure
+     */
+    portalSharePdfCreate: (
+      data: {
+        /** File name */
+        file_name: string;
+        /**
+         * PDF file
+         * @format binary
+         */
+        pdf: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SharePdf, any>({
+        path: `/portal/Share_pdf`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
         format: "json",
         ...params,
       }),

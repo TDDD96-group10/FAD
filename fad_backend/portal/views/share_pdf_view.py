@@ -36,9 +36,7 @@ class SharePDFView(APIView):
     def post(self, request):
         datacopy = request.data.copy()
         serializer = SharePdfSerializer(data={**request.data, **request.FILES})
-        print("here")
         if serializer.is_valid():
-            print("here2")
             file_name = serializer.validated_data['file_name']
             pdf = serializer.validated_data['pdf']
 
