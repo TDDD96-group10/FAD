@@ -19,9 +19,9 @@ interface RouteType {
 export const routes: RouteType[] = [
   { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
-  { path: "/shareinfo", element: ShareInfo},
-  { path:"/code", element:Loginkod },
-  { path:"/login", element:Logintest},
+  { path: "/shareinfo", element: ShareInfoPage},
+  { path:"/code", element:LoginCodePage },
+  { path:"/login", element:LoginPage},
   { path: "/demo", element:HomePage},
   { path: "/FadderInfo", element:FadderInformation},
   { path: "/FadderDocuments", element:FadderDocuments},
