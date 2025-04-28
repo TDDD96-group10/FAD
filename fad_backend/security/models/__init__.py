@@ -1,1 +1,1 @@
-from .TwoFactorCode import TwoFactorCode
+from .two_factor_code import TwoFactorCode

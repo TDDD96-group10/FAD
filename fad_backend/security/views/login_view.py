@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from ..serializers.UsernameSerializer import UsernameSerializer
-from ..models.TwoFactorCode import TwoFactorCode
+from ..serializers.username_serializer import UsernameSerializer
+from ..serializers.message_response_serializer import MessageResponseSerializer
+from ..models.two_factor_code import TwoFactorCode
 from ..utils.EmailSender import EmailSender
 
 
@@ -14,6 +15,7 @@ class LoginView(APIView):
         responses={
             200: openapi.Response(
                 description="Success",
+                schema=MessageResponseSerializer,
                 examples={
                     "application/json": {"message": "The code is sent to the email"}
                 },

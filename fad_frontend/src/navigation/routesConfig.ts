@@ -1,11 +1,15 @@
 import NotFoundPage from '../pages/NotFoundPage.tsx';
-import ShareInfo from '../pages/ShareInfo.tsx';
+import ShareInfoPage from '../pages/ShareInfoPage.tsx';
 import StartPage from '../pages/StartPage';
-import Loginkod from '../pages/Loginkod';
-import Logintest from '../pages/Login';
+import LoginCodePage from '../pages/LoginCodePage.tsx';
+import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import FadderInformation from '../pages/FadderInformation.tsx';
 import FadderDocuments from '../pages/FadderDocuments.tsx';
+import FadderHome from '../pages/FadderHomePage.tsx';
+import Configure from '../pages/Configure.tsx';
+
+
 
 interface RouteType {
   path: string;
@@ -18,8 +22,9 @@ export const routes: RouteType[] = [
   { path: "/shareinfo", element: ShareInfo},
   { path:"/code", element:Loginkod },
   { path:"/login", element:Logintest},
-  { path: "/home", element:HomePage},
+  { path: "/demo", element:HomePage},
   { path: "/FadderInfo", element:FadderInformation},
-  { path: "/FadderDocuments", element:FadderDocuments}
-
+  { path: "/FadderDocuments", element:FadderDocuments},
+  { path: "/configure", element: Configure},
+  { path: "/fadderhome", element:FadderHome},
 ];
