@@ -1,18 +1,34 @@
 import {Button, Group, Menu, Modal, MultiSelect, Stack, TagsInput, TextInput, useModalsStack } from "@mantine/core";
 import { IconBookmark, IconCupOff, IconShirt } from "@tabler/icons-react";
 import { useState } from "react";
-import { fadderProps, searchBarProps, shirtSize, fadderType } from "../pages/types";
+import { fadderProps, searchBarProps, fadderType } from "../pages/types";
 import React from "react";
 
 
 
-const SearchBar: React.FC<searchBarProps> = ({ editTags, selected, editFadder, updateSelected, singleFadder, updateFadder}) => {
+const SearchBar: React.FC<searchBarProps> = ({ editTags, selectedFaddrar, editFadder, updateMultipleFaddrar, singleFadder, updateFadder}) => {
+  const allTagsSelected = selectedFaddrar
+  .flatMap((fadder) => fadder.fadderType?.map((type) => type.name) ?? [])
+  .filter((name): name is string => typeof name === 'string');
+
+  const uniqueTags = Array.from(new Set(allTagsSelected));
+  
   React.useEffect(() => {
     const currentFadder = singleFadder || defaultFadder;
     setUpdatedFadder(currentFadder);
     setShirtSize(currentFadder.shirtSize ? [currentFadder.shirtSize] : ['']);
     setfadderType(currentFadder.fadderType?.map(ft => ft.name) ?? []);
   }, [singleFadder]);
+
+  //This updates the selected faddrar after each when added/removed
+  React.useEffect( () =>{
+    const allTagsSelected = selectedFaddrar
+    .flatMap((fadder) => fadder.fadderType?.map((type) => type.name) ?? [])
+    .filter((name): name is string => typeof name === 'string');
+  
+    const uniqueTags = Array.from(new Set(allTagsSelected));
+    setRemovedTags(uniqueTags)
+  }, [selectedFaddrar])
   
   //TODO: Fixa allergies
   const allergies = ['Jordnötter', 'Vegan', 'Vegetarian', 'Peskitarian']
@@ -21,24 +37,46 @@ const SearchBar: React.FC<searchBarProps> = ({ editTags, selected, editFadder, u
   const shirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
   const defaultFadder: fadderProps = {firstName: '', lastName: '', shirtSize: '', email: '', phone: '',
                                       id: '', allergies: '',fadderType: []};
-
   const defaultTags = singleFadder?.fadderType?.map(val=> val.name) ?? [];
   const defaultShirtSize: string[] = singleFadder?.shirtSize ? [singleFadder.shirtSize] : [''];
-
-
   const [updatedFadder, setUpdatedFadder] = useState<fadderProps>(singleFadder || defaultFadder);
+  const [updatedSelectedFaddrar, setUpdatedSelectedFaddrar] = useState<fadderProps[]>(selectedFaddrar || []);
   const [fadderType, setfadderType] = useState<string[]>([]);
   const [shirtSize, setShirtSize] = useState<string[]>(defaultShirtSize);
+  const [removedTags, setRemovedTags] = useState<string[]>(() => uniqueTags);
+  const [addedTags, setAddedTags] = useState<string[]>([]);
+
+  function findRemovedTags() {
+    // You probably just want to use removedTags directly
+    const tagsToRemove =  uniqueTags.filter(item => !removedTags.includes(item));
+    
+    console.log('Tags to remove:', tagsToRemove);
+
+  
+    const updatedFaddrar = selectedFaddrar.map(fadder => ({
+      ...fadder,
+      fadderType: fadder.fadderType
+        ? fadder.fadderType.filter(type => !tagsToRemove.includes(type.name))
+        : undefined, // important: preserve undefined, not []
+    }));
+  
+    console.log('Updated faddrar:', updatedFaddrar);
+  
+    updateMultipleFaddrar(updatedFaddrar);
+  }
+
+  
   
   function setFilter(allergy: string): void {
     throw new Error("Function not implemented.");
   }
-  
+  const allTags = fadderTypeDict.map(val => val.name)
+
+ 
 
   return (
   <Stack>
-    <p>{singleFadder?.shirtSize}</p>
-    <>{defaultShirtSize}</>
+    
     <Group>
       <Button disabled={!editFadder} onClick={() => stack.open("edit-single-fadder")}>Redigera fadder</Button>
       <Button disabled={!editTags} onClick={()=> stack.open("edit-multiple-fadder")}>Ändra taggar</Button>
@@ -88,8 +126,7 @@ const SearchBar: React.FC<searchBarProps> = ({ editTags, selected, editFadder, u
                     maxTags={1} 
                     onChange={(val) => {
                       setShirtSize(val);
-                      setUpdatedFadder((prev) => ({ ...prev, shirtSize: val[0] || '' }));
-                    }}
+                      setUpdatedFadder((prev) => ({ ...prev, shirtSize: val[0] || '' }));}}
                     data={shirtSizes}
                     error={shirtSize.length !== 1}
                   
@@ -115,21 +152,28 @@ const SearchBar: React.FC<searchBarProps> = ({ editTags, selected, editFadder, u
         <Group>
         <Button onClick={stack.closeAll}>Avbryt</Button>
         <Button onClick={() => {updateFadder(updatedFadder);
-                                stack.closeAll();
-                                }}
-            >
-              Spara
-        </Button>
+                                stack.closeAll();}}
+            >Spara</Button>
         </Group>
       </Modal>
       <Modal {...stack.register('edit-multiple-fadder')}>
-        
-        
+      <TagsInput
+                label={'Ta bort taggar från alla markerade'}
+                value={removedTags}
+                onChange={setRemovedTags}
+                />
+      <TagsInput
+                label={'Lägg till denna tag till alla markerade'}
+                value={addedTags}
+                onChange={setAddedTags}
+                data = {allTags}
+              />
+        <Group >
+          <Button onClick={stack.closeAll}>Avbryt</Button>
+          <Button onClick={findRemovedTags}>Spara</Button>
+        </Group>
       </Modal>
-      
     </Modal.Stack>
-
-
   </Stack>
   );
 };

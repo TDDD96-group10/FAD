@@ -18,8 +18,25 @@ const Overview: React.FC<overviewProps> = () => {
   const [selectedIds, setSelectedIds] = useState<fadderProps[]>([]);
   const editTags = selectedIds.length > 1;
   const editFadder = selectedIds.length === 1;
+  const [allFaddrar, setAllFadrar] =  useState<fadderProps[]>(data);
 
-  function updateTags(updated: fadderProps[]){}
+  function updateTags(updated: fadderProps[]){
+    console.log('Updatearde :', updated)
+    const updatedFaddrar = new Map(updated.map(prop => [prop.id, prop]));
+    const result = allFaddrar.map(prop => 
+      updatedFaddrar.has(prop.id) ? updatedFaddrar.get(prop.id)! : prop
+    );
+    setTable(result)
+  }
+  function removeMultipleTags(updated: fadderProps[]){
+    console.log('Updatearde :', updated)
+    const updatedFaddrar = new Map(updated.map(prop => [prop.id, prop]));
+    const result = allFaddrar.map(prop => 
+      updatedFaddrar.has(prop.id) ? updatedFaddrar.get(prop.id)! : prop
+    );
+    setTable(result)
+
+  }
 
   const rows = table.map((fadder) => (
     <Table.Tr
@@ -32,7 +49,6 @@ const Overview: React.FC<overviewProps> = () => {
           checked={selectedIds.some((row) => row.id === fadder.id)}
           onChange={(event) => {
             const isChecked = event.currentTarget.checked;
-          
             if (isChecked) {
               if (!selectedIds.some((id) => id.id === fadder.id)) {
                 setSelectedIds([...selectedIds, fadder]);
@@ -71,10 +87,12 @@ const Overview: React.FC<overviewProps> = () => {
                     );
                     console.log(updatedFadder);
                   }}
-                   selected={selectedIds} 
+                   selectedFaddrar={selectedIds} 
                    editTags={editTags} 
                    editFadder={editFadder} 
-                   singleFadder={selectedIds.length === 1 ? selectedIds[0] : defaultFadder} />   
+                   singleFadder={selectedIds.length === 1 ? selectedIds[0] : defaultFadder} 
+                   updateMultipleFaddrar={(val) => removeMultipleTags(val)}
+                   />   
         <Table striped>
         <Table.Thead>
           <Table.Tr>
