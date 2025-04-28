@@ -5,8 +5,10 @@ import LoginCodePage from '../pages/LoginCodePage.tsx';
 import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
 import FadderInformation from '../pages/FadderInformation.tsx';
+import FadderDocuments from '../pages/FadderDocuments.tsx';
 import FadderHome from '../pages/FadderHomePage.tsx';
 import Configure from '../pages/Configure.tsx';
+
 
 
 interface RouteType {
@@ -17,12 +19,12 @@ interface RouteType {
 export const routes: RouteType[] = [
   { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
-  { path: "/shareinfo", element: ShareInfoPage},
-  { path: "/configure", element: Configure},
-  { path: "/code", element:LoginCodePage },
-  { path: "/login", element:LoginPage},
+  { path: "/shareinfo", element: ShareInfo},
+  { path:"/code", element:Loginkod },
+  { path:"/login", element:Logintest},
   { path: "/demo", element:HomePage},
+  { path: "/FadderInfo", element:FadderInformation},
+  { path: "/FadderDocuments", element:FadderDocuments},
+  { path: "/configure", element: Configure},
   { path: "/fadderhome", element:FadderHome},
-  { path: "/FadderInfo", element:FadderInformation}
-
 ];
