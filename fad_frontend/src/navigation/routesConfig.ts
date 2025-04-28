@@ -4,6 +4,7 @@ import StartPage from '../pages/StartPage';
 import LoginCodePage from '../pages/LoginCodePage.tsx';
 import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
+import FadderInformation from '../pages/FadderInformation.tsx';
 import FadderHome from '../pages/FadderHomePage.tsx';
 import Configure from '../pages/Configure.tsx';
 
@@ -21,5 +22,7 @@ export const routes: RouteType[] = [
   { path: "/code", element:LoginCodePage },
   { path: "/login", element:LoginPage},
   { path: "/demo", element:HomePage},
-  { path: "/fadderhome", element:FadderHome}
+  { path: "/fadderhome", element:FadderHome},
+  { path: "/FadderInfo", element:FadderInformation}
+
 ];
