@@ -499,24 +499,12 @@ export class Api<
      * @request POST:/portal/Share_pdf
      * @secure
      */
-    portalSharePdfCreate: (
-      data: {
-        /** File name */
-        file_name: string;
-        /**
-         * PDF file
-         * @format binary
-         */
-        pdf: File;
-      },
-      params: RequestParams = {},
-    ) =>
+    portalSharePdfCreate: (params: RequestParams = {}) =>
       this.request<SharePdf, any>({
         path: `/portal/Share_pdf`,
         method: "POST",
-        body: data,
         secure: true,
-        type: ContentType.FormData,
+        type: ContentType.UrlEncoded,
         format: "json",
         ...params,
       }),
