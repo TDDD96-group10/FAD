@@ -15,46 +15,44 @@ const Overview: React.FC<overviewProps> = () => {
   const defaultFadder:fadderProps= {firstName: '', lastName: '', shirtSize: '', email: '',
                                     phone: '', id: '', fadderType: [], allergies: ''}
   const [table, setTable] = useState<fadderProps[]>(data);
-  const [selectedIds, setSelectedIds] = useState<fadderProps[]>([]);
-  const editTags = selectedIds.length > 1;
-  const editFadder = selectedIds.length === 1;
+  const [selectedFaddrar, setSelectedFaddrar] = useState<fadderProps[]>([]);
+  const editTags = selectedFaddrar.length > 1;
+  const editFadder = selectedFaddrar.length === 1;
   const [allFaddrar, setAllFadrar] =  useState<fadderProps[]>(data);
 
   function updateTags(updated: fadderProps[]){
-    console.log('Updatearde :', updated)
     const updatedFaddrar = new Map(updated.map(prop => [prop.id, prop]));
     const result = allFaddrar.map(prop => 
       updatedFaddrar.has(prop.id) ? updatedFaddrar.get(prop.id)! : prop
     );
     setTable(result)
   }
-  function removeMultipleTags(updated: fadderProps[]){
-    console.log('Updatearde :', updated)
+  function updateMultipleTags(updated: fadderProps[]){
     const updatedFaddrar = new Map(updated.map(prop => [prop.id, prop]));
     const result = allFaddrar.map(prop => 
       updatedFaddrar.has(prop.id) ? updatedFaddrar.get(prop.id)! : prop
     );
     setTable(result)
-
+    setSelectedFaddrar(updated)
   }
 
   const rows = table.map((fadder) => (
     <Table.Tr
       key={fadder.id}
-      bg={selectedIds.some((row) => row.id === fadder.id) ? 'var(--mantine-color-blue-light)' : undefined}
+      bg={selectedFaddrar.some((row) => row.id === fadder.id) ? 'var(--mantine-color-blue-light)' : undefined}
     >
       <Table.Td>
         <Checkbox
           aria-label="Select row"
-          checked={selectedIds.some((row) => row.id === fadder.id)}
+          checked={selectedFaddrar.some((row) => row.id === fadder.id)}
           onChange={(event) => {
             const isChecked = event.currentTarget.checked;
             if (isChecked) {
-              if (!selectedIds.some((id) => id.id === fadder.id)) {
-                setSelectedIds([...selectedIds, fadder]);
+              if (!selectedFaddrar.some((id) => id.id === fadder.id)) {
+                setSelectedFaddrar([...selectedFaddrar, fadder]);
               }
             } else {
-              setSelectedIds(selectedIds.filter((id) => id.id !== fadder.id));
+              setSelectedFaddrar(selectedFaddrar.filter((id) => id.id !== fadder.id));
             }
           }}
         />
@@ -80,25 +78,24 @@ const Overview: React.FC<overviewProps> = () => {
                         item.id === updatedFadder.id ? { ...item, ...updatedFadder } : item
                       )
                     );
-                    setSelectedIds((prevSelected) =>
+                    setSelectedFaddrar((prevSelected) =>
                       prevSelected.map((item) =>
                         item.id === updatedFadder.id ? { ...item, ...updatedFadder } : item
                       )
                     );
-                    console.log(updatedFadder);
                   }}
-                   selectedFaddrar={selectedIds} 
+                   selectedFaddrar={selectedFaddrar} 
                    editTags={editTags} 
                    editFadder={editFadder} 
-                   singleFadder={selectedIds.length === 1 ? selectedIds[0] : defaultFadder} 
-                   updateMultipleFaddrar={(val) => removeMultipleTags(val)}
+                   singleFadder={selectedFaddrar.length === 1 ? selectedFaddrar[0] : defaultFadder} 
+                   updateMultipleTags={(val) => updateMultipleTags(val)}
                    />   
         <Table striped>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>{<Checkbox onChange = {() => 
-                                  selectedIds.length === data.length ?
-                                  setSelectedIds([]) : setSelectedIds(data)}/>}</Table.Th>
+                                  selectedFaddrar.length === data.length ?
+                                  setSelectedFaddrar([]) : setSelectedFaddrar(data)}/>}</Table.Th>
             <Table.Th>Namn</Table.Th>
             <Table.Th>Faddertyp</Table.Th>
             <Table.Th>Tröjstorlekar</Table.Th>
