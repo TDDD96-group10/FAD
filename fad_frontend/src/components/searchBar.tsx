@@ -1,15 +1,20 @@
-import {Button, Group, Menu, Modal, MultiSelect, Stack, TagsInput, TextInput, useModalsStack } from "@mantine/core";
+import {Button, ComboboxItem, Group, Menu, Modal, MultiSelect, OptionsFilter, Stack, TagsInput, TextInput, useModalsStack } from "@mantine/core";
 import { IconBookmark, IconCupOff, IconShirt } from "@tabler/icons-react";
 import { useState } from "react";
 import { fadderProps, searchBarProps, fadderType } from "../pages/types";
 import React from "react";
 
+type searchType = {
+  name: string;
+  options: string[]
+}
 
 
 const SearchBar: React.FC<searchBarProps> = ({ editTags, selectedFaddrar, editFadder, updateMultipleTags, singleFadder, updateFadder}) => {
   
   const allergies = ['Jordnötter', 'Vegan', 'Vegetarian', 'Peskitarian']
   const fadderTypeDict:fadderType[] = [{name: 'häfvfadder', color:'blue'}, { name: 'Donna', color: 'pink' }, { name: 'klassfadder', color: 'green' }, { name: 'DG', color: 'yellow' }]
+  const allTags = fadderTypeDict.map(val => val.name)
   const stack = useModalsStack(['edit-single-fadder', 'edit-multiple-fadder']);
   const shirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
   const defaultFadder: fadderProps = {firstName: '', lastName: '', shirtSize: '', email: '', phone: '',
@@ -19,6 +24,9 @@ const SearchBar: React.FC<searchBarProps> = ({ editTags, selectedFaddrar, editFa
   const [updatedFadder, setUpdatedFadder] = useState<fadderProps>(singleFadder || defaultFadder);
   const [fadderType, setfadderType] = useState<string[]>([]);
   const [shirtSize, setShirtSize] = useState<string[]>(defaultShirtSize);
+
+  const serachOptions = allergies.concat(allTags.concat(shirtSizes))
+
 
   const uniqueTags = React.useMemo(() => {
     return Array.from(
@@ -47,7 +55,6 @@ const SearchBar: React.FC<searchBarProps> = ({ editTags, selectedFaddrar, editFa
     .flatMap((fadder) => fadder.fadderType?.map((type) => type.name) ?? [])
     .filter((name): name is string => typeof name === 'string');
     const uniqueTags = Array.from(new Set(allTagsSelected));
-    console.log("UNIKA TAGGAR I USEEFFECT ", uniqueTags)
     setRemovableTags(uniqueTags)
     setAddedTags([])
     selectedFaddrarRef.current = selectedFaddrar;
@@ -63,7 +70,6 @@ const SearchBar: React.FC<searchBarProps> = ({ editTags, selectedFaddrar, editFa
     }));
   
     updateMultipleTags(updatedFaddrar);
-    // Immediately reflect local state instead of waiting for useEffect
     setRemovableTags(
       Array.from(new Set(
         updatedFaddrar.flatMap(f =>
@@ -87,28 +93,26 @@ function addMultipleTags(){
     return {
       ...fadder,
       fadderType: [...(fadder.fadderType ?? []), ...newTypes]
-    };
-  });
-
+      };
+    });
   updateMultipleTags(updatedFaddrar);
   setRemovableTags(prev => [
     ...prev,
     ...addedTags.filter(tag => !prev.includes(tag))
   ]);
   setAddedTags([]);
-}
-
-  
-  function setFilter(allergy: string): void {
-    throw new Error("Function not implemented.");
   }
-  const allTags = fadderTypeDict.map(val => val.name)
 
- 
+  const optionsFilter: OptionsFilter = ({ options, search }) => {
+    const splittedSearch = search.toLowerCase().trim().split(' ');
+    return (options as ComboboxItem[]).filter((option) => {
+      const words = option.label.toLowerCase().trim().split(' ');
+      return splittedSearch.every((searchWord) => words.some((word) => word.includes(searchWord)));
+    });
+  };
 
   return (
   <Stack>
-    {selectedFaddrar.map((val, index) => <p key={index + 100000}> {val.firstName}</p>)}
     <Group>
       <Button disabled={!editFadder} onClick={() => stack.open("edit-single-fadder")}>Redigera fadder</Button>
       <Button disabled={!editTags} onClick={()=> stack.open("edit-multiple-fadder")}>Ändra taggar</Button>
@@ -117,7 +121,7 @@ function addMultipleTags(){
           <Button rightSection={<IconShirt size= {17}/>}>Tröjstorlekar</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {shirtSizes.map((sizes, index) => (<Menu.Item onClick = {() => setFilter(sizes)} key={index}> {sizes}</Menu.Item>))}
+        {shirtSizes.map((sizes, index) => (<Menu.Item key={index}> {sizes}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
       <Menu position="bottom-end">
@@ -125,7 +129,7 @@ function addMultipleTags(){
           <Button rightSection={<IconCupOff size= {17}/>}>Alleriger</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {allergies.map((allergy, index) => (<Menu.Item onClick = {() => setFilter(allergy)} key={index + 10}>{allergy}</Menu.Item>))}
+        {allergies.map((allergy, index) => (<Menu.Item key={index + 10}>{allergy}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
       <Menu position="bottom-end">
@@ -133,13 +137,12 @@ function addMultipleTags(){
           <Button rightSection={<IconBookmark size= {17}/>}>Taggar</Button>
         </Menu.Target>
         <Menu.Dropdown >
-        {fadderTypeDict.map((type, index) => (<Menu.Item onClick = {() => setFilter(type.name)} key={index + 20}>{type.name}</Menu.Item>))}
+        {fadderTypeDict.map((type, index) => (<Menu.Item key={index + 20}>{type.name}</Menu.Item>))}
         </Menu.Dropdown>
       </Menu>
     </Group>
-    <MultiSelect searchable data={[
-      { group: 'Frontend', items: [{ value: 'react', label: 'React' }, { value: 'ng', label: 'Angular' }] },
-      { group: 'Backend', items: [{ value: 'express', label: 'Express' }, { value: 'django', label: 'Django' }] },]}>
+    <MultiSelect  searchable data={serachOptions}
+      filter={optionsFilter}>
     </MultiSelect>
     <Modal.Stack>
       <Modal title={'Redigera fadder'}{...stack.register('edit-single-fadder')}>
@@ -201,7 +204,7 @@ function addMultipleTags(){
                 label={'Lägg till denna tag till alla markerade'}
                 value={addedTags}
                 onChange={setAddedTags}
-                data = {allTags}
+                data = {fadderTypeDict.map(val => val.name)}
               />
         <Group >
           <Button onClick={()=> {
