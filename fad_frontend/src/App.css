@@ -5,15 +5,15 @@
 }*/
 
 
-/* Basic styles for layout */
+/* Basic styles for layout 
 
-/* Container */
+
 .container {
   display: flex;
   flex-direction: column;
 }
 
-/* Header */
+
 .header {
   background-color: #007bff;
   color: white;
@@ -43,7 +43,7 @@
   text-decoration: underline;
 }
 
-/* Hero Section */
+
 .hero {
   text-align: center;
   padding: 60px 20px;
@@ -74,12 +74,11 @@
   background-color: #0056b3;
 }
 
-/* Main Content */
+
 .content {
   text-align: center;
 }
 
-/* Footer */
 .afooter {
   background-color: #333;
   color: white;
@@ -87,4 +86,4 @@
   padding: 10px 0;
   margin-top: auto;
 
-}
+}*/

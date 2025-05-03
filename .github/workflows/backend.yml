@@ -2,51 +2,65 @@ name: Run Django Tests in Docker Compose CI
 
 on:
   pull_request:
-    branches:
-      - dev
-
+    paths:
+      - 'fad_backend/*'
     
 
+    
 jobs: 
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-  
-      - name: Log in to GHCR
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build image
+      - name: Check for backend build changes
+        id: detect_changes
         run: |
-          docker build -t my-django-app ./fad_backend
-          
+          if git diff --quiet origin/dev...HEAD -- fad_backend/Dockerfile fad_backend/requirements.txt; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Conditional step if changes detected
+        if: steps.detect_changes.outputs.changed == 'true'
+        run: echo "Backend changes detected!"
+
+      - name: Build and push Docker image to GHCR
+        if: steps.detect_changes.outputs.changed == 'true'
+        run: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        
+            echo "Building Docker image..."
+            docker build -t my-django-app ./fad_backend
+        
+            echo "Tagging image..."
+            IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+            docker tag my-django-app ghcr.io/$IMAGE_OWNER/my-django-app:latest
+        
+            echo "Pushing image to GHCR..."
+            docker push ghcr.io/$IMAGE_OWNER/my-django-app:latest
+        
+  check-lint:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Set IMAGE_OWNER environment variable
+        run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
-      - name: Tag and push Docker image to GHCR
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker tag my-django-app ghcr.io/$IMAGE_OWNER/my-django-app:latest
-          docker push ghcr.io/$IMAGE_OWNER/my-django-app:latest
-  lint:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Log in to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Pull image from GHCR
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker pull ghcr.io/$IMAGE_OWNER/my-django-app:latest
-
-      - name: Run lint (flake8)
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker run --rm ghcr.io/$IMAGE_OWNER/my-django-app:latest flake8 ./fad_backend
+      - name: Run lint via Docker Compose
+        run: docker compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from lint
+      
+      - name: Clean up after test run
+        if: always()
+        run: docker compose -f .github/compose/docker-compose.django-lint.yml down -v --remove-orphans
   test:
-    needs: build-and-push
+    needs: check-lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -55,14 +69,12 @@ jobs:
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Pull image from GHCR
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker pull ghcr.io/$IMAGE_OWNER/my-django-app:latest
-
-      - name: Run tests
-        run: |
-          IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker run --rm \
-          ghcr.io/$IMAGE_OWNER/my-django-app:latest \
-          bash -c "coverage run manage.py test && coverage report --fail-under=80"
+      - name: Set IMAGE_OWNER environment variable
+        run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      
+      - name: Run tests via Docker Compose
+        run: docker compose -f .github/compose/docker-compose.django-test.yml up --abort-on-container-exit --exit-code-from test-django
+      
+      - name: Clean up after test run
+        if: always()
+        run: docker compose -f .github/compose/docker-compose.django-test.yml down -v --remove-orphans

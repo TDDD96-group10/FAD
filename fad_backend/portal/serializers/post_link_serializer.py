@@ -1,9 +1,9 @@
 from rest_framework import serializers
+from ..models import PostLink
 
-class PostLinkSerializer(serializers.Serializer):
-    title = serializers.CharField()
-    url = serializers.CharField()
-    author = serializers.IntegerField()
-    program = serializers.IntegerField()
-    send_notifcation = serializers.BooleanField()
-    text  = serializers.CharField()
+
+class PostLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostLink
+        fields = ['author', 'program', 'send_notifcation', 'title', 'text', 'link']
+

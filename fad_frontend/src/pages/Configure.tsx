@@ -1,5 +1,4 @@
 import { Button, Card, Group, Modal, Paper, Stack, Title, useModalsStack } from "@mantine/core";
-
 import { useState } from "react";
 import { IconSettings} from '@tabler/icons-react';
 
@@ -192,13 +191,10 @@ const Configure: React.FC = () => {
           </Stack>
         </Stack>
     </FADheader>
+
   );
 }
 
 export default Configure;
 
-//  <Stack >
-//<TextInput value={tagName}  onChange={(event) => setName(event.currentTarget.value)} error = {hasError} />
-//<ColorPicker onChange={onChange} size="xl" value = {color} format="hex" swatches={tagColours} />
-//<Button maw={320} onClick={() => createTag({name: tagName, color:color})}>Spara</Button>
-//</Stack>
+
