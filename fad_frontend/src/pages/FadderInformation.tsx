@@ -6,53 +6,77 @@ import {
   Paper,
   TextInput,
   Title,
-  Select,
-  MultiSelect
+  MultiSelect,
+  Text
 } from '@mantine/core';
 import { useApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
+import {UserSerializer} from "../api/Api";
+import { useSmartState } from "../hooks/useSmartState";
 
 import '../styles/pages/FadderInformation.css';
+import { data } from 'react-router-dom';
 
 const FadderInformation: React.FC = () => {
-  const { data, loading, error } = useApi(() => apiClient.portal.portalHelloWorldList());
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    shirtSize: '',
-    specialDiet: [] as string[],
-    otherDiet: '',
-  });
+  const { data: user, loading, error, setField, setValue } = useApi(() => apiClient.portal.portalProfileMetaDataList());
 
-  const handleChange = (field: string, value: string | string[]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = () => {
-    if (!formData.firstName || !formData.lastName || !formData.email) {
-      alert('Fyll i alla obligatoriska fält.');
-      return;
-    }
-
-    const finalDiet = formData.specialDiet.includes('Annat...')
-    ? [...formData.specialDiet.filter((d) => d !== 'Annat...'), formData.otherDiet]
-    : formData.specialDiet;
-
-    console.log('Skickat:', {
-        ...formData,
-        specialDiet: finalDiet,
-    });
-
-
-    console.log('Skickat:', formData);
-    alert('Tack! Informationen har sparats.');
-  };
+  
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: 'red' }}>Error: {error} {JSON.stringify(data, null, 2)}</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error} </p>;
+  
+
+
+  function getInputType() {
+    const input = "ALL";
+    const jsonString = JSON.parse(JSON.stringify(user?.program?.attributes));
+    return Object.keys(jsonString).map((key) => {
+     
+      const values = jsonString[key];
+      if (Array.isArray(values) && values.includes(input)) {
+        return <p>Hello world</p>
+      } else if (Array.isArray(values) && !values.includes(input)){
+        const attributeFromProgram = jsonString[key] as string[];
+        const jsonStringUser = JSON.parse(JSON.stringify(user?.attributes));
+        var jsonAtributies = jsonStringUser[key] as string[];
+
+        if(typeof jsonAtributies  !== "object") {
+          jsonAtributies = [jsonAtributies]
+        }
+        return <MultiSelect
+            label={key}
+            placeholder="Välje ett av alterntiven"
+            data={attributeFromProgram}
+            value={Array.isArray(jsonAtributies) ? jsonAtributies : []}
+            onChange={(selectedValues) => {
+              console.log(selectedValues)
+              if (user?.attributes) {
+                setField("attributes", { ...user?.attributes, [key]: selectedValues })
+              }
+            }}
+            searchable
+            clearable
+      />
+      }
+      if (values === "ALL") {
+        return <TextInput
+          label={key}
+          placeholder=""
+          value={JSON.parse(JSON.stringify(user?.attributes))[key]}
+          onChange={(e) => {
+            if (user?.attributes) {
+              setField("attributes", { ...user?.attributes, [key]: e.currentTarget.value })
+            }
+          }}
+          required
+          mb="md"
+        />
+      }
+    });
+  }
+
+
 
   return (
     <Container size={700} my={40}>
@@ -60,85 +84,45 @@ const FadderInformation: React.FC = () => {
         Fyll i din information
       </Title>
       <Paper withBorder shadow="md" p={30} radius="md">
+      <Text fw={500} size="md">
+      LIU-ID: {user?.user_id}
+    </Text>
         <TextInput
           label="Förnamn"
-          placeholder="Anna"
-          value={formData.firstName}
-          onChange={(e) => handleChange('firstName', e.currentTarget.value)}
+          placeholder={user?.first_name}
+          value={user?.first_name}
+          onChange={(e) =>  setField("first_name",e.currentTarget.value)}
           required
           mb="md"
         />
         <TextInput
           label="Efternamn"
-          placeholder="Andersson"
-          value={formData.lastName}
-          onChange={(e) => handleChange('lastName', e.currentTarget.value)}
+          placeholder={user?.last_name}
+          value={user?.last_name}
+          onChange={(e) =>  setField("last_name",e.currentTarget.value)}
           required
           mb="md"
         />
         <TextInput
           label="Mobilnummer"
-          placeholder="070-123 45 67"
-          value={formData.phone}
-          onChange={(e) => handleChange('phone', e.currentTarget.value)}
+          placeholder={user?.phone_number}
+          value={user?.phone_number}
+          onChange={(e) =>  setField('phone_number', e.currentTarget.value)}
           required
           mb="md"
         />
         <TextInput
           label="Orbi-mail"
-          placeholder="du@orbi.nu"
-          value={formData.email}
-          onChange={(e) => handleChange('email', e.currentTarget.value)}
+          placeholder=""
+          value={user?.email ??  ""}
+          onChange={(e) =>  setField('email', e.currentTarget.value)}
           required
           mb="md"
         />
-        <Select
-          label="Tröjstorlek"
-          placeholder="Välj din storlek"
-          data={['XS', 'S', 'M', 'L', 'XL', 'XXL']}
-          value={formData.shirtSize}
-          onChange={(value) => handleChange('shirtSize', value || '')}
-          required
-          mb="md"
-        />
-       <MultiSelect
-        label="Specialkost / Allergier"
-        placeholder="Välj en eller flera"
-        description='Välj "Annat..." om din specialkost inte finns i listan'
-        data={[
-            'Laktosfri',
-            'Glutenfri',
-            'Vegetarian',
-            'Vegan',
-            'Nötallergi',
-            'Annat...'
-        ]}
-        
-        value={formData.specialDiet}
-        onChange={(value) => handleChange('specialDiet', value)}
-        mb={formData.specialDiet.includes('Annat...') ? 0 : 'md'}
-        />
-
-        {formData.specialDiet.includes('Annat...') && (
-        <TextInput
-            placeholder="Skriv in din specialkost här..."
-            value={formData.otherDiet}
-            onChange={(e) => handleChange('otherDiet', e.currentTarget.value)}
-            mb="md"
-            autoFocus
-            variant="filled"
-            styles={{
-            input: {
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-            },
-            }}
-        />
-        )}
-
-
+        {getInputType()}
+     
         <Group justify="center" mt="xl">
-          <Button onClick={handleSubmit} size="md">
+          <Button onClick={() => console.log("push")} size="md">
             Spara
           </Button>
         </Group>

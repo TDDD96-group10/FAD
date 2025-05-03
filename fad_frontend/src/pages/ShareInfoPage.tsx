@@ -5,12 +5,17 @@ import {
   Group,
   Text,
   Container,
+  Paper,
+  List,
+  Anchor
 } from '@mantine/core';
 import FADheader from '../components/Header';
 import CreateFolderCard from '../components/CreateFolderCard';
 import AddFileFormCard from '../components/AddFileFormCard';
 import FolderListCard from '../components/FoldersListCard';
 import FolderContentCard from '../components/FolderContentCard';
+import { useApi,callApi } from "../hooks/useApi";
+import { apiClient } from "../api/ApiClient";
 
 
 type FileEntry = {
@@ -20,85 +25,11 @@ type FileEntry = {
 };
 
 const ShareInfoPage: React.FC = () => {
+  const { data, loading, error } = useApi(() => apiClient.portal.portalFilenamesList());
   const [showForm, setShowForm] = useState(false);
-  const [title, setTitle] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-
-  const [folders, setFolders] = useState<string[]>([]);
-  const [folderContents, setFolderContents] = useState<Record<string, FileEntry[]>>({});
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-
-  const [showFolderForm, setShowFolderForm] = useState(false);
-  const [newFolderName, setNewFolderName] = useState('');
-
-  const [activeFolder, setActiveFolder] = useState<string>("");
-  const [editFolders, setEditFolders] = useState(false);
-  const [editFiles, setEditFiles] = useState(false);
-
   const handleShareClick = () => setShowForm((prev) => !prev);
-  const handleCreateFolderClick = () => setShowFolderForm((prev) => !prev);
 
-  const handleCreateFolder = () => {
-    if (!newFolderName.trim()) {
-      alert('Ange ett namn för mappen.');
-      return;
-    }
-    if (folders.includes(newFolderName)) {
-      alert('En mapp med detta namn finns redan.');
-      return;
-    }
 
-    setFolders((prev) => [...prev, newFolderName]);
-    setFolderContents((prev) => ({ ...prev, [newFolderName]: [] }));
-    setNewFolderName('');
-    setShowFolderForm(false);
-  };
-
-  const handlePublish = () => {
-    if (!title || !file || !selectedFolder) {
-      alert('Fyll i titel, välj en fil och en mapp');
-      return;
-    }
-
-    const fileUrl = URL.createObjectURL(file);
-
-    const newEntry: FileEntry = {
-      title,
-      fileName: file.name,
-      fileUrl,
-    };
-
-    setFolderContents((prev) => ({
-      ...prev,
-      [selectedFolder]: [...(prev[selectedFolder] || []), newEntry],
-    }));
-
-    alert(`Fil publicerad med titel: ${title} i mapp "${selectedFolder}"`);
-
-    setTitle('');
-    setFile(null);
-    setSelectedFolder(null);
-    setShowForm(false);
-  };
-
-  const deleteFolder = (folderName: string) => {
-    if (!window.confirm(`Vill du ta bort mappen "${folderName}"?`)) return;
-    setFolders((prev) => prev.filter((f) => f !== folderName));
-    setFolderContents((prev) => {
-      const updated = { ...prev };
-      delete updated[folderName];
-      return updated;
-    });
-    if (activeFolder === folderName) setActiveFolder("");
-  };
-
-  const deleteFile = (folder: string, index: number) => {
-    setFolderContents((prev) => {
-      const updated = [...(prev[folder] || [])];
-      updated.splice(index, 1);
-      return { ...prev, [folder]: updated };
-    });
-  };
 
 
   return (
@@ -114,23 +45,33 @@ const ShareInfoPage: React.FC = () => {
         <Button variant="outline" color="blue" size="xl" onClick={handleShareClick}>
           Lägg ut pdf
         </Button>
-        <Button variant="outline" color="blue" size="xl" onClick={handleCreateFolderClick}>
-          Skapa ny mapp
-        </Button>
       </Group>
 
-      {showFolderForm &&  <CreateFolderCard />}
 
       {showForm && <AddFileFormCard />}
 
-      {folders.length > 0 && <FolderListCard 
-        folders={folders} 
-        activeFolder={activeFolder} 
-        setActiveFolder={setActiveFolder} 
-        deleteFolder={deleteFolder}
-        setEditFiles={setEditFiles}
-        />}
-      {activeFolder &&  <FolderContentCard activeFolder={activeFolder} folderContents={folderContents} deleteFile={deleteFile}/>}
+         <Paper withBorder shadow="sm" p="md" mb="md" radius="md">
+              <Title order={4} mb="sm">Filer</Title>
+              <List spacing="sm">
+                {data?.map((doc) => (
+                  <List.Item key={doc.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Anchor href={"http://127.0.0.1:8000/portal/pdf_view/"+ doc.id} target="_blank" rel="noopener noreferrer">
+                      📄 {doc.file_name}
+                    </Anchor>
+
+                    <button
+                      onClick={() => handleDelete(doc.id)}
+                      style={{ marginLeft: "1rem", background: "transparent", border: "none", cursor: "pointer", color: "red" }}
+                      title="Delete"
+                    >
+                      ❌
+                    </button>
+                  </List.Item>
+                ))}
+              </List>
+            </Paper>
+
+    
     </Container>
     </FADheader> 
   );

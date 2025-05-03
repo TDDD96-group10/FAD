@@ -68,6 +68,56 @@ export interface MessageResponse {
   message: string;
 }
 
+export interface TextPost {
+  /** Author */
+  author: string;
+  /** Program */
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
+}
+
+export interface SharePdf {
+  /**
+   * File name
+   * @minLength 1
+   * @maxLength 100
+   */
+  file_name: string;
+  /**
+   * Pdf
+   * @format uri
+   */
+  pdf?: string;
+}
+
+export interface FileNames {
+  /** Id */
+  id?: number;
+  /**
+   * File name
+   * @minLength 1
+   * @maxLength 100
+   */
+  file_name: string;
+}
+
 export interface User {
   /** Id */
   id: number;
@@ -157,6 +207,31 @@ export interface UserSerializer {
   group?: GroupSerializer;
   /** Attributes */
   attributes: object;
+  /**
+   * First name
+   * @minLength 1
+   * @maxLength 50
+   */
+  first_name?: string;
+  /**
+   * Last name
+   * @minLength 1
+   * @maxLength 50
+   */
+  last_name?: string;
+  /**
+   * Phone number
+   * @minLength 1
+   * @maxLength 20
+   */
+  phone_number?: string;
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   * @maxLength 254
+   */
+  email?: string | null;
 }
 
 export interface PostLink {
@@ -207,6 +282,34 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
+}
+
+export interface EditableUser {
+  /**
+   * First name
+   * @minLength 1
+   * @maxLength 50
+   */
+  first_name?: string;
+  /**
+   * Last name
+   * @minLength 1
+   * @maxLength 50
+   */
+  last_name?: string;
+  /**
+   * Phone number
+   * @minLength 1
+   * @maxLength 20
+   */
+  phone_number?: string;
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   * @maxLength 254
+   */
+  email?: string | null;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -530,6 +633,72 @@ export class Api<
      * No description
      *
      * @tags portal
+     * @name PortalShareInfoCreate
+     * @request POST:/portal/Share_info
+     * @secure
+     */
+    portalShareInfoCreate: (data: TextPost, params: RequestParams = {}) =>
+      this.request<TextPost, any>({
+        path: `/portal/Share_info`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalSharePdfCreate
+     * @request POST:/portal/Share_pdf
+     * @secure
+     */
+    portalSharePdfCreate: (
+      data: {
+        /**
+         * @minLength 1
+         * @maxLength 100
+         */
+        file_name: string;
+        /** @format binary */
+        pdf: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SharePdf, any>({
+        path: `/portal/Share_pdf`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFilenamesList
+     * @request GET:/portal/filenames
+     * @secure
+     */
+    portalFilenamesList: (params: RequestParams = {}) =>
+      this.request<FileNames[], any>({
+        path: `/portal/filenames`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
      * @name PortalHelloWorldList
      * @request GET:/portal/hello-world
      * @secure
@@ -607,13 +776,13 @@ export class Api<
      * No description
      *
      * @tags portal
-     * @name PortalRead
-     * @request GET:/portal/pdf_view{pdf_id}
+     * @name PortalPdfViewRead
+     * @request GET:/portal/pdf_view/{pdf_id}
      * @secure
      */
-    portalRead: (pdfId: string, params: RequestParams = {}) =>
+    portalPdfViewRead: (pdfId: string, params: RequestParams = {}) =>
       this.request<UserSerializer, any>({
-        path: `/portal/pdf_view${pdfId}`,
+        path: `/portal/pdf_view/${pdfId}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -669,6 +838,29 @@ export class Api<
         path: `/portal/profile-meta-data`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update user profile information.
+     *
+     * @tags portal
+     * @name PortalProfileMetaDataUpdate
+     * @summary Update user fields (first name, last name, phone number, email)
+     * @request PUT:/portal/profile-meta-data
+     * @secure
+     */
+    portalProfileMetaDataUpdate: (
+      data: EditableUser,
+      params: RequestParams = {},
+    ) =>
+      this.request<EditableUser, void>({
+        path: `/portal/profile-meta-data`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
