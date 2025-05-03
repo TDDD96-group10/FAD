@@ -6,3 +6,4 @@ class PostLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostLink
         fields = ['author', 'program', 'send_notifcation', 'title', 'text', 'link']
+

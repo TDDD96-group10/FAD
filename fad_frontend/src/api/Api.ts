@@ -88,6 +88,25 @@ export interface UserOnly {
   user: User;
 }
 
+
+export interface PostLink {
+  /**
+   * Title
+   * @minLength 1
+   */
+  title: string;
+  /**
+   * Url
+   * @minLength 1
+   */
+  url: string;
+  /** Author */
+  author: number;
+  /** Program */
+  program: number;
+  /** Send notifcation */
+  send_notifcation: boolean;
+
 export interface Post {
   /** ID */
   id?: number;
@@ -195,11 +214,13 @@ export interface PostSerializer {
    * @maxLength 200
    */
   title: string;
+
   /**
    * Text
    * @minLength 1
    */
   text: string;
+
   /**
    * Created at
    * @format date-time
@@ -207,6 +228,7 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
+
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -563,6 +585,9 @@ export class Api<
       }),
 
     /**
+
+     * @description @swagger_auto_schema(responses={200: PostLinkSerializer()}   ) def get(self, request): return Response({ "user": { "title": request.title, "url": request.url, "author": request.author, "program": request.program, "send_notification": request.send_notification, "text" : request.text } })
+
      * No description
      *
      * @tags portal
@@ -605,6 +630,7 @@ export class Api<
 
     /**
      * No description
+
      *
      * @tags portal
      * @name PortalPostLinkCreate
@@ -621,6 +647,7 @@ export class Api<
         format: "json",
         ...params,
       }),
+
 
     /**
      * No description
@@ -655,5 +682,6 @@ export class Api<
         format: "json",
         ...params,
       }),
+
   };
 }

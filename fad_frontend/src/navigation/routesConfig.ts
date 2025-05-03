@@ -11,6 +11,7 @@ import Configure from '../pages/Configure.tsx';
 
 
 
+
 interface RouteType {
   path: string;
   element: React.FC;
@@ -27,4 +28,5 @@ export const routes: RouteType[] = [
   { path: "/FadderDocuments", element:FadderDocuments},
   { path: "/configure", element: Configure},
   { path: "/fadderhome", element:FadderHome},
+
 ];
