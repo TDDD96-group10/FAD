@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from portal.models import User
+from portal.models import User, Program
 from portal.serializers.user_serializer import UserSerializer
 from portal.serializers.editable_user_serializer import EditableUserSerializer
 
@@ -10,7 +10,15 @@ from portal.serializers.editable_user_serializer import EditableUserSerializer
 class UserProfileView(APIView):
     @swagger_auto_schema(responses={200: UserSerializer()})
     def get(self, request):
-        users = User.objects.get(user_id="teste112")
+        program = Program.objects.first()
+        users = User.objects.filter(program=program)[0]
+        print("sdsdsadsadsadsadsadsad")
+        print(users)
+        print("sdsdsadsadsadsadsadsad")
+        print("sdsdsadsadsadsadsadsad")
+        print("sdsdsadsadsadsadsadsad")
+        print("sdsdsadsadsadsadsadsad")
+        
         serializer = UserSerializer(users)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

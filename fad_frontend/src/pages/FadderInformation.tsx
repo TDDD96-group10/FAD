@@ -7,7 +7,10 @@ import {
   TextInput,
   Title,
   MultiSelect,
-  Text
+  Text,
+  Stack,
+  Badge,
+
 } from '@mantine/core';
 import { useApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
@@ -25,55 +28,71 @@ const FadderInformation: React.FC = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: 'red' }}>Error: {error} </p>;
+
   
 
 
-  function getInputType() {
-    const input = "ALL";
+  function getTags() {
     const jsonString = JSON.parse(JSON.stringify(user?.program?.attributes));
-    return Object.keys(jsonString).map((key) => {
-     
-      const values = jsonString[key];
-      if (Array.isArray(values) && values.includes(input)) {
-        return <p>Hello world</p>
-      } else if (Array.isArray(values) && !values.includes(input)){
-        const attributeFromProgram = jsonString[key] as string[];
-        const jsonStringUser = JSON.parse(JSON.stringify(user?.attributes));
-        var jsonAtributies = jsonStringUser[key] as string[];
+    const tags = jsonString["tags"];
+    return <Stack>
+      <Text>Mina taggar</Text>
+      <Group>
+      {tags.map((value, index) => (
+      
+          <Badge key={index}>{value}</Badge>
+      ))}
+      </Group>
+    </Stack>
 
-        if(typeof jsonAtributies  !== "object") {
-          jsonAtributies = [jsonAtributies]
+  }
+
+  function getCustomTextInput() {
+    const jsonString = JSON.parse(JSON.stringify(user?.program?.attributes));
+    const custom_text_input = jsonString["custom_free_text"]
+    return custom_text_input.map((key) => {
+      return <TextInput
+      label={key}
+      placeholder=""
+      value={JSON.parse(JSON.stringify(user?.attributes))[key]}
+      onChange={(e) => {
+        if (user?.attributes) {
+          setField("attributes", { ...user?.attributes, [key]: e.currentTarget.value })
         }
-        return <MultiSelect
-            label={key}
+      }}
+      required
+      mb="md"
+    />
+    })
+
+  }
+
+  function getInputType() {
+
+    const jsonString = JSON.parse(JSON.stringify(user?.program?.attributes));
+    var jsonUserValues = JSON.parse(JSON.stringify(user?.attributes));
+    const excludeKeys = ["tags", "custom_free_text"];
+    const filteredKeys = Object.keys(jsonString).filter(key => !excludeKeys.includes(key) && Array.isArray(jsonString[key]));
+
+
+    return filteredKeys.map((value, key) => (
+      <MultiSelect
+            key={key}
+            label={value}
             placeholder="Välje ett av alterntiven"
-            data={attributeFromProgram}
-            value={Array.isArray(jsonAtributies) ? jsonAtributies : []}
+            data={jsonString[value]}
+            value={Array.isArray(jsonUserValues[value]) ? jsonUserValues[value] : []}
             onChange={(selectedValues) => {
               console.log(selectedValues)
               if (user?.attributes) {
-                setField("attributes", { ...user?.attributes, [key]: selectedValues })
+                setField("attributes", { ...user?.attributes, [value]: selectedValues })
               }
             }}
             searchable
             clearable
       />
-      }
-      if (values === "ALL") {
-        return <TextInput
-          label={key}
-          placeholder=""
-          value={JSON.parse(JSON.stringify(user?.attributes))[key]}
-          onChange={(e) => {
-            if (user?.attributes) {
-              setField("attributes", { ...user?.attributes, [key]: e.currentTarget.value })
-            }
-          }}
-          required
-          mb="md"
-        />
-      }
-    });
+    ))
+   
   }
 
 
@@ -119,6 +138,9 @@ const FadderInformation: React.FC = () => {
           required
           mb="md"
         />
+
+        {getTags()}
+        {getCustomTextInput()}
         {getInputType()}
      
         <Group justify="center" mt="xl">

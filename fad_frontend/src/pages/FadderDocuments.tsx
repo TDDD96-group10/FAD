@@ -13,7 +13,7 @@ type Link = {
 };
 
 const FadderDocuments: React.FC = () => {
-  const { data, loading, error } = useApi(() => apiClient.portal.portalFilenamesList());
+  const { data, loading, error } = useApi(() => apiClient.portal.portalFilesList());
   const [links, setLinks] = useState<Link[]>([]);
 
   useEffect(() => {

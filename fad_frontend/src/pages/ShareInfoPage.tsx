@@ -7,28 +7,57 @@ import {
   Container,
   Paper,
   List,
-  Anchor
+  Anchor,
+  TextInput
 } from '@mantine/core';
-import FADheader from '../components/Header';
-import CreateFolderCard from '../components/CreateFolderCard';
+import FADheader from '../components/header';
 import AddFileFormCard from '../components/AddFileFormCard';
-import FolderListCard from '../components/FoldersListCard';
-import FolderContentCard from '../components/FolderContentCard';
-import { useApi,callApi } from "../hooks/useApi";
+import { useApi, callApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
+import {PostLink} from "../api/Api";
+import { useSmartState } from "../hooks/useSmartState";
 
 
-type FileEntry = {
-  title: string;
-  fileName: string;
-  fileUrl: string;
-};
+
 
 const ShareInfoPage: React.FC = () => {
-  const { data, loading, error } = useApi(() => apiClient.portal.portalFilenamesList());
+  const { data, loading, error } = useApi(() => apiClient.portal.portalFilesList());
+  const [link, setLink] = useSmartState<PostLink>({
+    author: "",
+    program: 1,
+    send_notifcation: false,
+    title: "Deafulr",
+    text: "Deafult",
+    link: ""
+    });
+
+  const { callApi: triggerApi} = callApi(() =>
+      apiClient.portal.portalPostLinkCreate(link)
+    );
+
+   
   const [showForm, setShowForm] = useState(false);
+  const [showAddLink, setShowAddLink ] = useState(false);
   const handleShareClick = () => setShowForm((prev) => !prev);
 
+
+  function getAddLink() {
+    return  <Paper withBorder p="md" radius="md" mb="md">
+          <Title order={4} mb="xs">Ladda upp fil</Title>
+    
+          <TextInput
+            label="Länk"
+            placeholder="Ange länk"
+            value={link.link}
+            onChange={(e) => setLink("link", e.currentTarget.value)}
+            mb="md"
+          />
+            <Button fullWidth onClick={() => (triggerApi())} color="blue">
+            Publicera
+            </Button>
+          
+          </Paper>
+  }
 
 
 
@@ -45,10 +74,17 @@ const ShareInfoPage: React.FC = () => {
         <Button variant="outline" color="blue" size="xl" onClick={handleShareClick}>
           Lägg ut pdf
         </Button>
+
+        <Button variant="outline" color="blue" size="xl" onClick={() => setShowAddLink((prev) => !prev)}>
+          Lägg ut länk
+        </Button>
       </Group>
 
+      {showAddLink && getAddLink()}
 
       {showForm && <AddFileFormCard />}
+
+
 
          <Paper withBorder shadow="sm" p="md" mb="md" radius="md">
               <Title order={4} mb="sm">Filer</Title>

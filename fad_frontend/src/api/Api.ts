@@ -69,10 +69,6 @@ export interface MessageResponse {
 }
 
 export interface TextPost {
-  /** Author */
-  author: string;
-  /** Program */
-  program?: number | null;
   /** Send notifcation */
   send_notifcation?: boolean;
   /**
@@ -105,6 +101,32 @@ export interface SharePdf {
    * @format uri
    */
   pdf?: string;
+}
+
+export interface AddAtributeText {
+  /**
+   * Key name
+   * @minLength 1
+   * @maxLength 100
+   */
+  key_name: string;
+}
+
+export interface AddCustomFileds {
+  /**
+   * Key name
+   * @minLength 1
+   * @maxLength 100
+   */
+  key_name: string;
+  Key_value: string[];
+}
+
+export interface Tags {
+  fadder_tags: string[];
+  custom_free_text: string[];
+  /** Tag groups */
+  tag_groups: Record<string, string[]>;
 }
 
 export interface FileNames {
@@ -682,16 +704,136 @@ export class Api<
      * No description
      *
      * @tags portal
-     * @name PortalFilenamesList
-     * @request GET:/portal/filenames
+     * @name PortalAddAtributeCreate
+     * @request POST:/portal/add-atribute
      * @secure
      */
-    portalFilenamesList: (params: RequestParams = {}) =>
-      this.request<FileNames[], any>({
-        path: `/portal/filenames`,
+    portalAddAtributeCreate: (
+      data: AddAtributeText,
+      params: RequestParams = {},
+    ) =>
+      this.request<AddAtributeText, any>({
+        path: `/portal/add-atribute`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalAddMutivalueFiledsCreate
+     * @request POST:/portal/add-mutivalue-fileds
+     * @secure
+     */
+    portalAddMutivalueFiledsCreate: (
+      data: AddCustomFileds,
+      params: RequestParams = {},
+    ) =>
+      this.request<AddCustomFileds, any>({
+        path: `/portal/add-mutivalue-fileds`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderTagsList
+     * @request GET:/portal/fadder-tags
+     * @secure
+     */
+    portalFadderTagsList: (params: RequestParams = {}) =>
+      this.request<Tags, any>({
+        path: `/portal/fadder-tags`,
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderTagsCreate
+     * @request POST:/portal/fadder-tags
+     * @secure
+     */
+    portalFadderTagsCreate: (
+      data: AddAtributeText,
+      params: RequestParams = {},
+    ) =>
+      this.request<AddAtributeText, any>({
+        path: `/portal/fadder-tags`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderTagsDelete
+     * @request DELETE:/portal/fadder-tags
+     * @secure
+     */
+    portalFadderTagsDelete: (
+      data: AddAtributeText,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/portal/fadder-tags`,
+        method: "DELETE",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFilesList
+     * @request GET:/portal/files
+     * @secure
+     */
+    portalFilesList: (params: RequestParams = {}) =>
+      this.request<FileNames[], any>({
+        path: `/portal/files`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFilesDelete
+     * @request DELETE:/portal/files
+     * @secure
+     */
+    portalFilesDelete: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/files`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 

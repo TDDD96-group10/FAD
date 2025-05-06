@@ -6,6 +6,10 @@ class Program(models.Model):
     name = models.CharField(max_length=200, null=False)
     attributes = models.JSONField(default=dict)
 
+
+
+
+
     def validate_attributes(self, value):
         if not isinstance(value, dict):
             raise ValidationError("Attributes must be a dictionary.")

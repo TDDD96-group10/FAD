@@ -1,7 +1,7 @@
 import { Modal, Stack, TextInput, Button } from '@mantine/core';
 import { callApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
-import {PostLink} from "../api/Api";
+import {TextPost} from "../api/Api";
 import { useSmartState } from "../hooks/useSmartState";
 
 type AddActivityModalProps = {
@@ -10,18 +10,14 @@ type AddActivityModalProps = {
 };
 
 const AddActivityModal = ({ opened, onClose }: AddActivityModalProps) => {
-  const [post, setPost] = useSmartState<PostLink>({
-      author: "defult",
-      program: 1,
+  const [post, setPost] = useSmartState<TextPost>({
       send_notifcation: false,
       title: "",
       text: "",
-      link:""
-
     });
   
     const { callApi: triggerApi, error:error} = callApi(() =>
-      apiClient.portal.portalPostLinkCreate(post)
+      apiClient.portal.portalShareInfoCreate(post)
     );
 
  
@@ -38,7 +34,6 @@ const AddActivityModal = ({ opened, onClose }: AddActivityModalProps) => {
             <Stack>
               <TextInput label="Titel" placeholder="Titel" onChange={(event) =>  setPost("title",event.currentTarget.value)}/>
               <TextInput label="Beskrivning" placeholder="Beskrivning" onChange={(event) => setPost("text",event.currentTarget.value)}/>
-              <TextInput label="Länk till det kuliga" placeholder="Länk" onChange={(event) => setPost("link",event.currentTarget.value)}/>
               <Button
               variant={post.send_notifcation ? "filled" : "outline"}
               color={post.send_notifcation ? "green" : "gray"}
