@@ -61,7 +61,7 @@ export function useApi<T> (
   ): UseApiReturn<T> {
     const [data, setData] = useState<T | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>("");
     const navigate = useNavigate(); 
     
     useEffect(() => {

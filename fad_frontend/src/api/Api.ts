@@ -88,6 +88,26 @@ export interface UserOnly {
   user: User;
 }
 
+
+export interface PostLink {
+  /**
+   * Title
+   * @minLength 1
+   */
+  title: string;
+  /**
+   * Url
+   * @minLength 1
+   */
+  url: string;
+  /** Author */
+  author: number;
+  /** Program */
+  program: number;
+  /** Send notifcation */
+  send_notifcation: boolean;
+
+
 export interface Post {
   /** ID */
   id?: number;
@@ -98,6 +118,7 @@ export interface Post {
    * @format date-time
    */
   created_at?: string;
+
   /**
    * Title
    * @minLength 1
@@ -117,24 +138,50 @@ export interface Post {
 }
 
 export interface UserSerializer {
+
   /**
-   * User id
+   * Title
    * @minLength 1
-   * @maxLength 8
+   * @maxLength 200
    */
-  user_id: string;
+  title: string;
   /**
-   * Role
+   * Text
    * @minLength 1
-   * @maxLength 100
    */
-  role: string;
-  /** Attributes */
-  attributes: object;
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
+}
+
+export interface PostLink {
+  /** Author */
+  author: string;
   /** Program */
-  program: number;
-  /** Group */
-  group?: number | null;
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Link
+   * @format uri
+   * @minLength 1
+   * @maxLength 200
+   */
+  link: string;
 }
 
 export interface ProgramSerializer {
@@ -150,6 +197,36 @@ export interface ProgramSerializer {
   attributes?: object;
 }
 
+export type GroupSerializer = {
+  /** ID */
+  id?: number;
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 200
+   */
+  name: string;
+} | null;
+
+export interface UserSerializer {
+  /**
+   * User id
+   * @minLength 1
+   * @maxLength 8
+   */
+  user_id: string;
+  /**
+   * Role
+   * @minLength 1
+   * @maxLength 100
+   */
+  role: string;
+  program?: ProgramSerializer;
+  group?: GroupSerializer;
+  /** Attributes */
+  attributes: object;
+}
+
 export interface PostSerializer {
   /** ID */
   id?: number;
@@ -159,11 +236,13 @@ export interface PostSerializer {
    * @maxLength 200
    */
   title: string;
+
   /**
    * Text
    * @minLength 1
    */
   text: string;
+
   /**
    * Created at
    * @format date-time
@@ -171,6 +250,7 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
+
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -527,6 +607,9 @@ export class Api<
       }),
 
     /**
+
+     * @description @swagger_auto_schema(responses={200: PostLinkSerializer()}   ) def get(self, request): return Response({ "user": { "title": request.title, "url": request.url, "author": request.author, "program": request.program, "send_notification": request.send_notification, "text" : request.text } })
+
      * No description
      *
      * @tags portal
@@ -544,6 +627,53 @@ export class Api<
       }),
 
     /**
+
+     * @description API endpoint for bulk importing users from a CSV file. This view handles file uploads containing user data in CSV format, creates User instances along with related Program and Group objects, and returns import statistics. Example CSV Format: user_id,role,program,group,attributes 123,student,"Program Name,attr1:value1",Group A,"{key:value}" 456,teacher,"Program Name,attr2:value2",Group B,"{key:value}"
+     *
+     * @tags portal
+     * @name PortalImportUsersCreate
+     * @request POST:/portal/import-users
+     * @secure
+     */
+    portalImportUsersCreate: (
+      data: {
+        /** @format binary */
+        file: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/portal/import-users`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+
+     *
+     * @tags portal
+     * @name PortalPostLinkCreate
+     * @request POST:/portal/post-link
+     * @secure
+     */
+    portalPostLinkCreate: (data: PostLink, params: RequestParams = {}) =>
+      this.request<PostLink, any>({
+        path: `/portal/post-link`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+
+    /**
+
      * No description
      *
      * @tags portal
@@ -559,5 +689,23 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalUsersList
+     * @request GET:/portal/users
+     * @secure
+     */
+    portalUsersList: (params: RequestParams = {}) =>
+      this.request<UserSerializer[], any>({
+        path: `/portal/users`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
   };
 }
