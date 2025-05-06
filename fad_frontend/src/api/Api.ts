@@ -107,6 +107,7 @@ export interface PostLink {
   /** Send notifcation */
   send_notifcation: boolean;
 
+
 export interface Post {
   /** ID */
   id?: number;
@@ -117,6 +118,27 @@ export interface Post {
    * @format date-time
    */
   created_at?: string;
+
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
+}
+
+export interface UserSerializer {
+
   /**
    * Title
    * @minLength 1
@@ -605,6 +627,7 @@ export class Api<
       }),
 
     /**
+
      * @description API endpoint for bulk importing users from a CSV file. This view handles file uploads containing user data in CSV format, creates User instances along with related Program and Group objects, and returns import statistics. Example CSV Format: user_id,role,program,group,attributes 123,student,"Program Name,attr1:value1",Group A,"{key:value}" 456,teacher,"Program Name,attr2:value2",Group B,"{key:value}"
      *
      * @tags portal
@@ -650,6 +673,7 @@ export class Api<
 
 
     /**
+
      * No description
      *
      * @tags portal

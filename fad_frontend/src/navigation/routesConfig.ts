@@ -4,6 +4,7 @@ import StartPage from '../pages/StartPage';
 import LoginCodePage from '../pages/LoginCodePage.tsx';
 import LoginPage from '../pages/LoginPage.tsx';
 import HomePage from '../pages/HomePage.tsx';
+import Overview from '../pages/Overview.tsx';
 import FadderInformation from '../pages/FadderInformation.tsx';
 import FadderDocuments from '../pages/FadderDocuments.tsx';
 import FadderHome from '../pages/FadderHomePage.tsx';
@@ -20,6 +21,7 @@ interface RouteType {
 export const routes: RouteType[] = [
   { path: "", element: StartPage },
   { path: "*", element: NotFoundPage },
+  { path: "/overview", element: Overview},
   { path: "/shareinfo", element: ShareInfo},
   { path:"/code", element:Loginkod },
   { path:"/login", element:Logintest},
