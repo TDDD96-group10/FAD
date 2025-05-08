@@ -88,26 +88,6 @@ export interface UserOnly {
   user: User;
 }
 
-
-export interface PostLink {
-  /**
-   * Title
-   * @minLength 1
-   */
-  title: string;
-  /**
-   * Url
-   * @minLength 1
-   */
-  url: string;
-  /** Author */
-  author: number;
-  /** Program */
-  program: number;
-  /** Send notifcation */
-  send_notifcation: boolean;
-
-
 export interface Post {
   /** ID */
   id?: number;
@@ -118,27 +98,6 @@ export interface Post {
    * @format date-time
    */
   created_at?: string;
-
-  /**
-   * Title
-   * @minLength 1
-   * @maxLength 200
-   */
-  title: string;
-  /**
-   * Text
-   * @minLength 1
-   */
-  text: string;
-  /**
-   * Start time
-   * @format date-time
-   */
-  start_time?: string | null;
-}
-
-export interface UserSerializer {
-
   /**
    * Title
    * @minLength 1
@@ -236,13 +195,11 @@ export interface PostSerializer {
    * @maxLength 200
    */
   title: string;
-
   /**
    * Text
    * @minLength 1
    */
   text: string;
-
   /**
    * Created at
    * @format date-time
@@ -250,7 +207,6 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
-
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -607,9 +563,6 @@ export class Api<
       }),
 
     /**
-
-     * @description @swagger_auto_schema(responses={200: PostLinkSerializer()}   ) def get(self, request): return Response({ "user": { "title": request.title, "url": request.url, "author": request.author, "program": request.program, "send_notification": request.send_notification, "text" : request.text } })
-
      * No description
      *
      * @tags portal
@@ -627,7 +580,6 @@ export class Api<
       }),
 
     /**
-
      * @description API endpoint for bulk importing users from a CSV file. This view handles file uploads containing user data in CSV format, creates User instances along with related Program and Group objects, and returns import statistics. Example CSV Format: user_id,role,program,group,attributes 123,student,"Program Name,attr1:value1",Group A,"{key:value}" 456,teacher,"Program Name,attr2:value2",Group B,"{key:value}"
      *
      * @tags portal
@@ -653,7 +605,6 @@ export class Api<
 
     /**
      * No description
-
      *
      * @tags portal
      * @name PortalPostLinkCreate
@@ -671,9 +622,7 @@ export class Api<
         ...params,
       }),
 
-
     /**
-
      * No description
      *
      * @tags portal
@@ -706,6 +655,5 @@ export class Api<
         format: "json",
         ...params,
       }),
-
   };
 }
