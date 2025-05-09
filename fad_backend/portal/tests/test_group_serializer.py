@@ -18,3 +18,20 @@ class GroupSerializerTest(APITestCase):
         self.assertEqual(data['name'], "Test Group")
         self.assertEqual(data['id'], self.group.id)
 
+    def test_create_group(self):
+        data = {'name': 'New Group'}
+        serializer = GroupSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        group = serializer.save()
+        self.assertEqual(group.name, 'New Group')
+        self.assertIsInstance(group, Group)
+    
+    def test_update_group(self):
+        data = {'name': 'Updated Group'}
+        serializer = GroupSerializer(instance=self.group, data=data, partial=True)
+        self.assertTrue(serializer.is_valid())
+        group = serializer.save()
+        self.assertEqual(group.name, 'Updated Group')
+        self.assertIsInstance(group, Group)
+
+
