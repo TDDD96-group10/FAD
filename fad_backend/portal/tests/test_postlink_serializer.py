@@ -31,9 +31,6 @@ class PostLinkSerializerTest(APITestCase):
             'text': "Test Text",
             'link': "http://example.com"
         }
-        # self.factory = APIRequestFactory()
-        # self.request = self.factory.get('/')
-        # self.request.user = self.user
         self.serializer = PostLinkSerializer(instance=self.post_link)
 
     def test_serializer_valid(self):
