@@ -8,7 +8,12 @@ class PostSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     program = ProgramSerializer()
 
+    can_delete = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ['id', 'title', 'text', 'created_at', 'author', 'program']
+        fields = ['id', 'title', 'text', 'created_at', 'author', 'program', 'can_delete']
         ref_name = 'PostSerializer'
+
+    def get_can_delete(self, obj):
+        return True

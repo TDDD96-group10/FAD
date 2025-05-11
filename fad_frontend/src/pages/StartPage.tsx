@@ -1,39 +1,30 @@
-import { Button, Group, ScrollArea, Stack, Title,Box  } from '@mantine/core';
+import { Button, Group } from '@mantine/core';
 import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { ActivityCard, initialActivityGroups}  from '../components/activity';
-import FADheader from '../components/header';
+import FADheader from '../components/Header';
 import AddActivityModal from '../components/AddActivityModal';
+import { useApi } from '../hooks/useApi';
+import { apiClient } from '../api/ApiClient';
+import PostCard from '../components/PostCard';
+
 
 const StartPage: React.FC = () => {
   var [opened, { open, close }] = useDisclosure();
+  const { data, loading, error } = useApi(() => apiClient.portal.portalPostsList());
+  
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error} {JSON.stringify(data, null, 2)}</p>;
 
+
+  console.log(data)
   return (
     <FADheader>   
       <AddActivityModal opened={opened} onClose={close}  />
       <Button variant="default" onClick={open}>Lägg till Aktivitet</Button>
       <Group justify="center" align="top" >
-      <ScrollArea type="always" offsetScrollbars scrollbarSize={12} scrollbars="x">
-        <Box style={{ display: 'flex', gap: '24px', padding: '1rem' }}>
-          {initialActivityGroups.map((group, index) => (
-            <Stack key={index} >
-              <Title order={2}>{group.label}</Title>
-              <ScrollArea type="always" offsetScrollbars scrollbarSize={12} scrollbars="y" >
-                <Stack gap="md">
-                  {group.activities.map((component, index) => (
-                    <ActivityCard
-                      key={index}
-                      title={component.title}
-                      link={component.link}
-                      description={component.description}
-                    />
-                  ))}
-                </Stack>
-              </ScrollArea>
-            </Stack>
-          ))}   
-        </Box>
-      </ScrollArea>
+        {data?.map((value) => (
+          <PostCard post={value} />
+        ))}
       </Group>
     </FADheader> 
   );

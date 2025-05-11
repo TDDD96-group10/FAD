@@ -50,10 +50,15 @@ function TagsModal({ addTag, editTag, removeTag, changeWindow, exitWindow, curre
     case ('create-tag'):
       return(
       <Stack >
-        <TextInput value={name}  error= {error ? 'Får inte ha samma namn som annan tag' : ''} onChange={(event) => setName(event.currentTarget.value)} />
+        <TextInput value={name}  
+          error= {error ? 'Får inte ha samma namn som annan tag' : ''} 
+          onChange={(event) => setName(event.currentTarget.value)} />
           <ColorPicker onChange={setColor} size="xl" value = {color} format="hex" swatches={tagColours} />
-        <Button maw={320} onClick={() =>tags.some(tag => tag.name === name.trim())
-                                        ? setError(true) : addTag({ name: name.trim(), color })}
+        <Button 
+          maw={320} 
+          onClick={() =>tags.some(tag => tag.name === name.trim())
+                     ? setError(true) : 
+                        addTag({ name: name.trim(), color })}
           >Spara</Button>
       </Stack>)
     case('edit-tag'):

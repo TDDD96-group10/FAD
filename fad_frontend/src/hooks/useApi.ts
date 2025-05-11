@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { HttpResponse } from "../api/Api";
+import { useSmartState } from "./useSmartState";
+import { setField,setValue } from "./useSmartState";
 
 interface UseApiReturn<T> {
     data: T | null;
     loading: boolean;
     error: string | null;
+    setField: setField<T>;
+    setValue: setValue<T>;
 }
 
 interface CallApiReturn<T> {
@@ -55,11 +59,15 @@ export  function callApi<T> (
 }
 
 
+
+
 export function useApi<T> (
   fetchFunction: () => Promise<{ data: T ,status: number}>,
-  navigateTo?: string
+  navigateTo?: string,
+  defaultValue : T | null = null,
+  useEffectVaribale : string | number | null = null
   ): UseApiReturn<T> {
-    const [data, setData] = useState<T | null>(null)
+    const [data, setField, setValue] = useSmartState<T | null>(defaultValue) 
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string>("");
     const navigate = useNavigate(); 
@@ -68,32 +76,27 @@ export function useApi<T> (
         const fetchData = async () => {
             try {
                 const response = await fetchFunction();
-               
-                setData(response.data);
+                setValue(response.data);
                 if (navigateTo) {
                     navigate(navigateTo);
                 }
               } catch (err ) {
-                
                 if (err instanceof Error) {
                   setError(err.message);
                 } else if (typeof err === "object" && err !== null && "status" in err) {
-                  const errorWithStatus = err as { status: number };
-
-                  setError(`Error ${errorWithStatus.status}: `);
-                  if (errorWithStatus.status == 401){
-                    navigate("/login");
-                  }
+                    const errorWithStatus = err as { status: number };
+                    setError(`Error ${errorWithStatus.status}: `);
+                    if (errorWithStatus.status == 401){
+                      navigate("/login");
+                    }
                 } else {
                   setError("An unknown error occurred");
                 }
-                
-               
               } finally {
                 setLoading(false);
               }
         };
         fetchData();
-    }, []) 
-    return { data, loading, error };
+    }, [useEffectVaribale]) 
+    return { data, loading, error, setField, setValue};
 }

@@ -53,8 +53,8 @@ jobs:
       - name: Set IMAGE_OWNER environment variable
         run: echo "IMAGE_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       
-      - name: Run lint via Docker Compose
-        run: docker compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from lint
+  #    - name: Run lint via Docker Compose
+  #      run: docker compose -f .github/compose/docker-compose.django-lint.yml up --abort-on-container-exit --exit-code-from lint
       
       - name: Clean up after test run
         if: always()

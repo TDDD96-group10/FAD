@@ -7,6 +7,7 @@ from ..serializers.username_serializer import UsernameSerializer
 from ..serializers.message_response_serializer import MessageResponseSerializer
 from ..models.two_factor_code import TwoFactorCode
 from ..utils.EmailSender import EmailSender
+from fad_backend.signals import  token_created
 
 
 class LoginView(APIView):

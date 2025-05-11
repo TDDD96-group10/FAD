@@ -7,6 +7,8 @@ from ..models.two_factor_code import TwoFactorCode
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from fad_backend.signals import  token_created
+from ..serializers.custom_token_serializer import CustomObtainPairSerializer
 
 
 class GenerateTokenView(APIView):
@@ -44,13 +46,18 @@ class GenerateTokenView(APIView):
             code = serializer.validated_data["code"]
             TwoFactorCode.validate_user_code(user_id=username, submitted_code=code)
             if True:  # TwoFactorCode.validate_user_code(user_id=username, submitted_code=code):
-                token = RefreshToken.for_user(User(username))
+                
+            
+                token =  CustomObtainPairSerializer.get_token(User(username) )
+
+                print(token.access_token)
                 tokens = {"refresh": str(token), "access": str(token.access_token)}
                 serializer = TokenResponseSerializer(tokens)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response("The code is not correcket", status=status.HTTP_401_UNAUTHORIZED)
+        return Response("The code is not correcket", status=status.HTTP_401_UNAUTHORIZED)
 
 
 class User:
     def __init__(self, user_id):
-        self.id = user_id
+        self.id = 1
+        self.liu_id = user_id

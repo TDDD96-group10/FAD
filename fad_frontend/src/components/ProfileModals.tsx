@@ -53,19 +53,7 @@ function ProfileModals({saveNewProfile, deleteProfileField, changeWindow, exit, 
     exit();
   }
 
-  function editProfile(){
-    const hasTitle = !!title && title.trim() !== '';
-    const hasAddedOptions = customOptions.length > 0;
-    
-    if(showTags && hasAddedOptions && hasTitle || hasTitle && !showTags){
-      const newProfileField = {title: title, description: description, addedOptions: customOptions, mandatory:mandatory, showTags:showTags}
-      saveNewProfile(newProfileField);
-      resetStates();
-    }
-    else{
-      setError(true);
-    }
-  }
+
 
   function resetStates(){
     setTitle('')
@@ -90,16 +78,33 @@ function ProfileModals({saveNewProfile, deleteProfileField, changeWindow, exit, 
       return(
         <>
         <Stack>
-          <TextInput label="Rubrik" variant="filled" value={title} error={hasError ? "Saknar titel" : ''} onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
-          <TextInput label="Beskrivning" variant="filled" description= "Kan lämnas tomt" value={description} onChange={(event) => setDescription(event.currentTarget.value)}></TextInput>
+          <TextInput 
+            label="Rubrik" 
+            variant="filled" 
+            value={title} 
+            error={hasError ? "Saknar titel" : ''} 
+            onChange={(event) => setTitle(event.currentTarget.value)}>
+          </TextInput>
+          <TextInput 
+            label="Beskrivning" 
+            variant="filled" 
+            description= "Kan lämnas tomt" 
+            value={description} 
+            onChange={(event) => setDescription(event.currentTarget.value)}>
+          </TextInput>
           <Group>
             <Button onClick={() => setShowTags(false)}>Fritext</Button>
             <Button onClick = {() => setShowTags(true)}>Flervalsalternativ</Button>
-            {showTags && <TagsInput variant="filled"
-                                    value={customOptions} 
-                                    onChange={setCustomOptions} 
-                                    miw = {345} 
-                                    error={ showTags && customOptions.length === 0 ? "Lägg till alternativ" : ''} />}
+            {showTags && 
+              <TagsInput 
+                variant="filled"
+                value={customOptions} 
+                onChange={setCustomOptions} 
+                miw = {345} 
+                error={showTags && 
+                  customOptions.length === 0 
+                  ? "Lägg till alternativ" 
+                  : ''} />}
             <Checkbox label= "Obligatorisk att fylla i" onClick= {() => setMandatory(prev => !prev)}></Checkbox>
           </Group>
           <Group mt="lg" justify="space-between">

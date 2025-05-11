@@ -5,30 +5,32 @@ import {
   Title,
   TextInput,
   FileInput,
-  Button,
-  Select,
+  Button
 } from '@mantine/core';
+import { callApi } from "../hooks/useApi";
+import { apiClient } from "../api/ApiClient";
+
+
 
 const AddFileFormCard = () => {
-  const [title, setTitle] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
-  const [showFolderForm, setShowFolderForm] = useState(false);
 
-  const folders = ['Dokument', 'Rapporter', 'Avtal']; // example folder names
+  const defaultFile = new File([""], "empty.pdf", { type: "application/pdf" });
+  const [fileName, setFileName] = useState('');
+  const [file, setFile] = useState<File>(defaultFile);
+
+  const { callApi: triggerApi } = callApi(() =>
+        apiClient.portal.portalSharePdfCreate({file_name:fileName, pdf:file})
+      );
+  
+
+
 
   const handlePublish = () => {
-    if (!file || !title || !selectedFolder) {
-      alert('Vänligen fyll i alla fält');
+    if (file.name === "empty.pdf" && file.size === 0) {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('title', title);
-    formData.append('folder', selectedFolder);
-
-    // here will the logic be for that sending the request for upploading a new file in to the backend
+    triggerApi();
   };
 
   return (
@@ -38,8 +40,8 @@ const AddFileFormCard = () => {
       <TextInput
         label="Titel"
         placeholder="Ange titel"
-        value={title}
-        onChange={(e) => setTitle(e.currentTarget.value)}
+        value={fileName}
+        onChange={(e) =>setFileName(e.currentTarget.value)}
         mb="md"
       />
 
@@ -47,26 +49,14 @@ const AddFileFormCard = () => {
         label="Fil (PDF)"
         placeholder="Välj en PDF"
         value={file}
-        onChange={setFile}
-        mb="md"
-        accept="application/pdf"
-      />
-
-      <Select
-        label="Mapp"
-        placeholder="Välj en mapp"
-        data={[...folders, '➕ Skapa ny mapp...']}
-        value={selectedFolder}
         onChange={(value) => {
-          if (value === '➕ Skapa ny mapp...') {
-            setShowFolderForm(true); // open folder creation form
-          } else {
-            setSelectedFolder(value);
+          if (value !== null) {
+            setFile(value);
           }
         }}
         mb="md"
+        accept="application/pdf"
       />
-
       <Button fullWidth onClick={handlePublish} color="blue">
         Publicera
       </Button>

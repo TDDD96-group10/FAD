@@ -68,6 +68,93 @@ export interface MessageResponse {
   message: string;
 }
 
+export interface TextPost {
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Text
+   * @minLength 1
+   */
+  text: string;
+  /**
+   * Start time
+   * @format date-time
+   */
+  start_time?: string | null;
+}
+
+export interface SharePdf {
+  /**
+   * File name
+   * @minLength 1
+   * @maxLength 100
+   */
+  file_name: string;
+  /**
+   * Pdf
+   * @format uri
+   */
+  pdf?: string;
+}
+
+
+  /**
+   * User id
+   * @minLength 1
+   */
+
+  user_id: string;
+  /**
+   * Name
+   * @minLength 1
+   */
+  name: string;
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   */
+  email: string;
+  /**
+   * Phone number
+   * @minLength 1
+   */
+  phone_number: string;
+}
+
+export interface Tags {
+  fadder_tags: string[];
+  custom_free_text: string[];
+  /** Tag groups */
+  tag_groups: Record<string, string[]>;
+}
+
+export interface Overview {
+  users: UserTags[];
+  tags: Tags;
+  table_head: string[];
+  /** Tagvalues multivalue name */
+  tagvalues_multivalue_name: Record<string, string[]>;
+}
+
+export interface FileNames {
+  /** Id */
+  id?: number;
+
+  /**
+   * File name
+   * @minLength 1
+   * @maxLength 100
+   */
+  file_name: string;
+}
+
 export interface User {
   /** Id */
   id: number;
@@ -116,33 +203,6 @@ export interface Post {
   start_time?: string | null;
 }
 
-export interface PostLink {
-  /** Author */
-  author: string;
-  /** Program */
-  program?: number | null;
-  /** Send notifcation */
-  send_notifcation?: boolean;
-  /**
-   * Title
-   * @minLength 1
-   * @maxLength 200
-   */
-  title: string;
-  /**
-   * Text
-   * @minLength 1
-   */
-  text: string;
-  /**
-   * Link
-   * @format uri
-   * @minLength 1
-   * @maxLength 200
-   */
-  link: string;
-}
-
 export interface ProgramSerializer {
   /** ID */
   id?: number;
@@ -184,6 +244,59 @@ export interface UserSerializer {
   group?: GroupSerializer;
   /** Attributes */
   attributes: object;
+  /**
+   * First name
+   * @minLength 1
+   * @maxLength 50
+   */
+  first_name?: string;
+  /**
+   * Last name
+   * @minLength 1
+   * @maxLength 50
+   */
+  last_name?: string;
+  /**
+   * Phone number
+   * @minLength 1
+   * @maxLength 20
+   */
+  phone_number?: string;
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   * @maxLength 254
+   */
+  email?: string | null;
+}
+
+export interface PostLink {
+  /** Author */
+  author: string;
+  /** Program */
+  program?: number | null;
+  /** Send notifcation */
+  send_notifcation?: boolean;
+  /**
+   * Title
+   * @minLength 1
+   * @default "Default Title"
+   */
+  title?: string;
+  /**
+   * Text
+   * @minLength 1
+   * @default "Default Text"
+   */
+  text?: string;
+  /**
+   * Link
+   * @format uri
+   * @minLength 1
+   * @maxLength 200
+   */
+  link: string;
 }
 
 export interface PostSerializer {
@@ -207,6 +320,7 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
+
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -530,6 +644,225 @@ export class Api<
      * No description
      *
      * @tags portal
+     * @name PortalShareInfoCreate
+     * @request POST:/portal/Share_info
+     * @secure
+     */
+    portalShareInfoCreate: (data: TextPost, params: RequestParams = {}) =>
+      this.request<TextPost, any>({
+        path: `/portal/Share_info`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalSharePdfCreate
+     * @request POST:/portal/Share_pdf
+     * @secure
+     */
+    portalSharePdfCreate: (
+      data: {
+        /**
+         * @minLength 1
+         * @maxLength 100
+         */
+        file_name: string;
+        /** @format binary */
+        pdf: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SharePdf, any>({
+        path: `/portal/Share_pdf`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalAddAtributeCreate
+     * @request POST:/portal/add-atribute
+     * @secure
+     */
+    portalAddAtributeCreate: (
+      data: AddAtributeText,
+      params: RequestParams = {},
+    ) =>
+      this.request<AddAtributeText, any>({
+        path: `/portal/add-atribute`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalAddMutivalueFiledsCreate
+     * @request POST:/portal/add-mutivalue-fileds
+     * @secure
+     */
+    portalAddMutivalueFiledsCreate: (
+      data: AddCustomFileds,
+      params: RequestParams = {},
+    ) =>
+      this.request<AddCustomFileds, any>({
+        path: `/portal/add-mutivalue-fileds`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderOverviewRead
+     * @request GET:/portal/fadder-overview/{filter}
+     * @secure
+     */
+    portalFadderOverviewRead: (filter: string, params: RequestParams = {}) =>
+      this.request<Overview, any>({
+        path: `/portal/fadder-overview/${filter}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderTagsList
+     * @request GET:/portal/fadder-tags
+     * @secure
+     */
+    portalFadderTagsList: (params: RequestParams = {}) =>
+      this.request<Tags, any>({
+        path: `/portal/fadder-tags`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderTagsCreate
+     * @request POST:/portal/fadder-tags
+     * @secure
+     */
+    portalFadderTagsCreate: (
+      data: AddAtributeText,
+      params: RequestParams = {},
+    ) =>
+      this.request<AddAtributeText, any>({
+        path: `/portal/fadder-tags`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderTagsDelete
+     * @request DELETE:/portal/fadder-tags
+     * @secure
+     */
+    portalFadderTagsDelete: (
+      data: AddAtributeText,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/portal/fadder-tags`,
+        method: "DELETE",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderCreate
+     * @request POST:/portal/fadder/{liu_id}
+     * @secure
+     */
+    portalFadderCreate: (liuId: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/fadder/${liuId}`,
+        method: "POST",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFilesList
+     * @request GET:/portal/files
+     * @secure
+     */
+    portalFilesList: (params: RequestParams = {}) =>
+      this.request<FileNames[], any>({
+        path: `/portal/files`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFilesDelete
+     * @request DELETE:/portal/files
+     * @secure
+     */
+    portalFilesDelete: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/files`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
      * @name PortalHelloWorldList
      * @request GET:/portal/hello-world
      * @secure
@@ -605,6 +938,7 @@ export class Api<
 
     /**
      * No description
+
      *
      * @tags portal
      * @name PortalPostLinkCreate
@@ -623,6 +957,42 @@ export class Api<
       }),
 
     /**
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalPostRead
+     * @request GET:/portal/post/{id}
+     * @secure
+     */
+    portalPostRead: (id: string, params: RequestParams = {}) =>
+      this.request<PostSerializer, any>({
+        path: `/portal/post/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalPostDelete
+     * @request DELETE:/portal/post/{id}
+     * @secure
+     */
+    portalPostDelete: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/post/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+
      * No description
      *
      * @tags portal
@@ -635,6 +1005,46 @@ export class Api<
         path: `/portal/posts`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalProfileMetaDataList
+     * @request GET:/portal/profile-meta-data
+     * @secure
+     */
+    portalProfileMetaDataList: (params: RequestParams = {}) =>
+      this.request<UserSerializer, any>({
+        path: `/portal/profile-meta-data`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update user profile information.
+     *
+     * @tags portal
+     * @name PortalProfileMetaDataUpdate
+     * @summary Update user fields (first name, last name, phone number, email)
+     * @request PUT:/portal/profile-meta-data
+     * @secure
+     */
+    portalProfileMetaDataUpdate: (
+      data: UserSerializer,
+      params: RequestParams = {},
+    ) =>
+      this.request<UserSerializer, void>({
+        path: `/portal/profile-meta-data`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
