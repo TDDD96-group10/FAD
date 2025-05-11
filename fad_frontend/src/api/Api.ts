@@ -122,11 +122,46 @@ export interface AddCustomFileds {
   Key_value: string[];
 }
 
+export interface UserTags {
+  tagvalues_free_text: string[];
+  tagvalues_multivalue: string[][];
+  tags: string[];
+  /**
+   * User id
+   * @minLength 1
+   */
+  user_id: string;
+  /**
+   * Name
+   * @minLength 1
+   */
+  name: string;
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   */
+  email: string;
+  /**
+   * Phone number
+   * @minLength 1
+   */
+  phone_number: string;
+}
+
 export interface Tags {
   fadder_tags: string[];
   custom_free_text: string[];
   /** Tag groups */
   tag_groups: Record<string, string[]>;
+}
+
+export interface Overview {
+  users: UserTags[];
+  tags: Tags;
+  table_head: string[];
+  /** Tagvalues multivalue name */
+  tagvalues_multivalue_name: Record<string, string[]>;
 }
 
 export interface FileNames {
@@ -266,14 +301,15 @@ export interface PostLink {
   /**
    * Title
    * @minLength 1
-   * @maxLength 200
+   * @default "Default Title"
    */
-  title: string;
+  title?: string;
   /**
    * Text
    * @minLength 1
+   * @default "Default Text"
    */
-  text: string;
+  text?: string;
   /**
    * Link
    * @format uri
@@ -304,34 +340,8 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
-}
-
-export interface EditableUser {
-  /**
-   * First name
-   * @minLength 1
-   * @maxLength 50
-   */
-  first_name?: string;
-  /**
-   * Last name
-   * @minLength 1
-   * @maxLength 50
-   */
-  last_name?: string;
-  /**
-   * Phone number
-   * @minLength 1
-   * @maxLength 20
-   */
-  phone_number?: string;
-  /**
-   * Email
-   * @format email
-   * @minLength 1
-   * @maxLength 254
-   */
-  email?: string | null;
+  /** Can delete */
+  can_delete?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -748,6 +758,23 @@ export class Api<
      * No description
      *
      * @tags portal
+     * @name PortalFadderOverviewRead
+     * @request GET:/portal/fadder-overview/{filter}
+     * @secure
+     */
+    portalFadderOverviewRead: (filter: string, params: RequestParams = {}) =>
+      this.request<Overview, any>({
+        path: `/portal/fadder-overview/${filter}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
      * @name PortalFadderTagsList
      * @request GET:/portal/fadder-tags
      * @secure
@@ -801,6 +828,22 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalFadderCreate
+     * @request POST:/portal/fadder/{liu_id}
+     * @secure
+     */
+    portalFadderCreate: (liuId: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/fadder/${liuId}`,
+        method: "POST",
+        secure: true,
         ...params,
       }),
 
@@ -935,6 +978,22 @@ export class Api<
      * No description
      *
      * @tags portal
+     * @name PortalPdfViewDelete
+     * @request DELETE:/portal/pdf_view/{pdf_id}
+     * @secure
+     */
+    portalPdfViewDelete: (pdfId: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/pdf_view/${pdfId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
      * @name PortalPostLinkCreate
      * @request POST:/portal/post-link
      * @secure
@@ -947,6 +1006,39 @@ export class Api<
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalPostRead
+     * @request GET:/portal/post/{id}
+     * @secure
+     */
+    portalPostRead: (id: string, params: RequestParams = {}) =>
+      this.request<PostSerializer, any>({
+        path: `/portal/post/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalPostDelete
+     * @request DELETE:/portal/post/{id}
+     * @secure
+     */
+    portalPostDelete: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/post/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 
@@ -994,10 +1086,10 @@ export class Api<
      * @secure
      */
     portalProfileMetaDataUpdate: (
-      data: EditableUser,
+      data: UserSerializer,
       params: RequestParams = {},
     ) =>
-      this.request<EditableUser, void>({
+      this.request<UserSerializer, void>({
         path: `/portal/profile-meta-data`,
         method: "PUT",
         body: data,

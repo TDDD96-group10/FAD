@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Paper, Title, List, Anchor, Divider } from '@mantine/core';
 import { useApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
-import '../styles/pages/FadderInformation.css';
+
 
 
 
@@ -12,8 +12,8 @@ type Link = {
   url: string;
 };
 
-const FadderDocuments: React.FC = () => {
-  const { data, loading, error } = useApi(() => apiClient.portal.portalFilesList());
+const FadderDocumentsPage: React.FC = () => {
+  const { data, loading } = useApi(() => apiClient.portal.portalFilesList());
   const [links, setLinks] = useState<Link[]>([]);
 
   useEffect(() => {
@@ -63,4 +63,4 @@ const FadderDocuments: React.FC = () => {
   );
 };
 
-export default FadderDocuments;
+export default FadderDocumentsPage;

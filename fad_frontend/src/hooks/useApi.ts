@@ -64,7 +64,8 @@ export  function callApi<T> (
 export function useApi<T> (
   fetchFunction: () => Promise<{ data: T ,status: number}>,
   navigateTo?: string,
-  defaultValue : T | null = null
+  defaultValue : T | null = null,
+  useEffectVaribale : string | number | null = null
   ): UseApiReturn<T> {
     const [data, setField, setValue] = useSmartState<T | null>(defaultValue) 
     const [loading, setLoading] = useState<boolean>(true)
@@ -96,6 +97,6 @@ export function useApi<T> (
               }
         };
         fetchData();
-    }, []) 
+    }, [useEffectVaribale]) 
     return { data, loading, error, setField, setValue};
 }

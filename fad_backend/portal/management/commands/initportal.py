@@ -9,13 +9,13 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         program, _ = Program.objects.get_or_create(
             name="Default Program",
-            attributes={"size": ["s", "m", "l"], "age": "ALL", "deaite_list":["vegan", "laktos","Fish"]}
+            attributes={"size": ["s", "m", "l"], "age": "ALL", "deaite_list": ["vegan", "laktos", "Fish"]}
         )
         group, _ = Group.objects.get_or_create(name="Default")
 
         user, _ = User.objects.get_or_create(
             user_id="teste112",
-            attributes={"size": "m","age": "22","deaite_list":["laktos","Fish"]},
+            attributes={"size": "m", "age": "22", "deaite_list":["laktos", "Fish"]},
             role="Default",
             program=program,
             group=group

@@ -45,18 +45,17 @@ class ImportUsersView(APIView):
         io_string = io.StringIO(decoded_file)
         reader = csv.DictReader(io_string)
 
+        program = Program.objects.first()
+
         for row in reader:
             try:
                 # Creates and saves user objects in the data base
                 cleaned_row = {k.strip(): v for k, v in row.items()}
                 User.objects.create(
                     user_id=cleaned_row['user_id'],
-                    role=cleaned_row['role'],
-                    program=Program.objects.create(
-                        name=self.extract_before_comma(cleaned_row['program']),
-                        attributes=self.create_dict_from_string(cleaned_row['program'])),
-                    group=Group.objects.get_or_create(name=cleaned_row['group'].strip()),
-                    attributes=cleaned_row['attributes']
+                    program=program,
+                    email=f"{cleaned_row['user_id']}@student.liu.se",
+                    attributes={}
                 )
             except Exception as e:
                 print(f"Error on row: {row} - {e}")
@@ -68,15 +67,15 @@ class ImportUsersView(APIView):
             "Number of imported Users": len(users)
         }, status=status.HTTP_200_OK)
 
-    @classmethod
-    def extract_before_comma(input_string):
+
+    def extract_before_comma(self, input_string):
         """Returns the part of the string that appears before the first comma"""
         if input_string.startswith('"'):
             input_string = input_string[1:]
         return input_string.split(",", 1)[0].strip()
 
-    @classmethod
-    def create_dict_from_string(input_string):
+   
+    def create_dict_from_string(self, input_string):
         """Returns a dictionary parsed from the JSON portion of the input string"""
         if input_string.startswith('"'):
             input_string = input_string[1:]

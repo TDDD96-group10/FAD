@@ -6,17 +6,11 @@ import { apiClient } from "../api/ApiClient";
 import { useSmartState } from "../hooks/useSmartState";
 import {AddAtributeText, AddCustomFileds} from "../api/Api";
 
-import FADheader from "../components/header";
-
-import AddTagModal from "../components/TagsModal";
+import FADheader from "../components/Header";
 import ProfileModals from "../components/ProfileModals";
-import TagsModal from "../components/TagsModal";
 
 
-type tagProps = {
-  name: string;
-  color: string;
-}
+
 
 
 type profileProps =  {
@@ -27,7 +21,7 @@ type profileProps =  {
   mandatory: boolean;
 }
 
-const Configure: React.FC = () => {
+const ConfigurePage: React.FC = () => {
   const { data, loading, error } = useApi(() => apiClient.portal.portalFadderTagsList());
 
   const [freeText, setFreeText] = useState<AddAtributeText>({key_name:""});
@@ -71,14 +65,7 @@ const Configure: React.FC = () => {
       
   }
 
-  function addTag(data: tagProps){
-    console.log("We are addnig tag")
-    console.log(data)
-    setFreeText({key_name:data.name});
-    console.log("We are addnig tag")
-    triggerApi()
-    stack.closeAll();
-  }
+
 
   function changeWindow(changeModalWindow: string){
     stack.open(changeModalWindow as 'create-tag' | 'edit-tag' | 'delete-tag' | 'create-profile-field' | 'edit-profile-field' | 'delete-profile-field' | "view-tags" |"delete-free-text" | "view-tags-multi" | "fadder-atribute")
@@ -203,6 +190,6 @@ const Configure: React.FC = () => {
   );
 }
 
-export default Configure;
+export default ConfigurePage;
 
 

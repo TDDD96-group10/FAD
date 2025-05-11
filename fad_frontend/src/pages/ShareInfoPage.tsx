@@ -10,7 +10,7 @@ import {
   Anchor,
   TextInput
 } from '@mantine/core';
-import FADheader from '../components/header';
+import FADheader from '../components/Header';
 import AddFileFormCard from '../components/AddFileFormCard';
 import { useApi, callApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
@@ -58,7 +58,8 @@ const ShareInfoPage: React.FC = () => {
           
           </Paper>
   }
-
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error} {JSON.stringify(data, null, 2)}</p>;
 
 
   return (
@@ -95,13 +96,13 @@ const ShareInfoPage: React.FC = () => {
                       📄 {doc.file_name}
                     </Anchor>
 
-                    <button
-                      onClick={() => handleDelete(doc.id)}
+                    <Button
+                      // onClick={() => handleDelete(doc.id)}
                       style={{ marginLeft: "1rem", background: "transparent", border: "none", cursor: "pointer", color: "red" }}
                       title="Delete"
                     >
                       ❌
-                    </button>
+                    </Button>
                   </List.Item>
                 ))}
               </List>

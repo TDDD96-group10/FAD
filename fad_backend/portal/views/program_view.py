@@ -8,15 +8,11 @@ class ProgramView(APIView):
     @swagger_auto_schema(request_body=AddAtributeTextSerializer)
     def post(self, request):
         serializer = AddAtributeTextSerializer(data=request.data)
-        print("we are vaild")
         if serializer.is_valid():
-            print("we are vaild")
             key_name = serializer.validated_data['key_name']
             program = Program.objects.first()
             if not program:
                 return Response({"error": "No Program found"}, status=status.HTTP_404_NOT_FOUND)
-            
-            print( program.attributes)
             free_text = program.attributes.get("custom_free_text")
             if free_text is None:
                 program.attributes["custom_free_text"] = [key_name]
@@ -24,5 +20,4 @@ class ProgramView(APIView):
                  free_text.append(key_name)
             program.save()
             return Response({"message": f"Key '{key_name}' added."}, status=status.HTTP_200_OK)
-        print("we are not vaild")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

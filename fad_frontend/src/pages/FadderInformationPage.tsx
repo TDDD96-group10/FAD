@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Button,
   Container,
@@ -12,18 +12,20 @@ import {
   Badge,
 
 } from '@mantine/core';
-import { useApi } from "../hooks/useApi";
+import { useApi,callApi } from "../hooks/useApi";
 import { apiClient } from "../api/ApiClient";
-import {UserSerializer} from "../api/Api";
-import { useSmartState } from "../hooks/useSmartState";
 
-import '../styles/pages/FadderInformation.css';
-import { data } from 'react-router-dom';
 
-const FadderInformation: React.FC = () => {
 
-  const { data: user, loading, error, setField, setValue } = useApi(() => apiClient.portal.portalProfileMetaDataList());
+const FadderInformationPage: React.FC = () => {
 
+  const { data: user, loading, error, setField } = useApi(() => apiClient.portal.portalProfileMetaDataList());
+  const { callApi: updatedProfile } = callApi(() => {
+    if (!user) {
+      throw new Error("User is not defined");
+    }
+    return apiClient.portal.portalProfileMetaDataUpdate(user);
+  });
   
 
   if (loading) return <p>Loading...</p>;
@@ -38,7 +40,7 @@ const FadderInformation: React.FC = () => {
     return <Stack>
       <Text>Mina taggar</Text>
       <Group>
-      {tags.map((value, index) => (
+      {tags.map((value:string, index:number) => (
       
           <Badge key={index}>{value}</Badge>
       ))}
@@ -50,7 +52,7 @@ const FadderInformation: React.FC = () => {
   function getCustomTextInput() {
     const jsonString = JSON.parse(JSON.stringify(user?.program?.attributes));
     const custom_text_input = jsonString["custom_free_text"]
-    return custom_text_input.map((key) => {
+    return custom_text_input.map((key:string) => {
       return <TextInput
       label={key}
       placeholder=""
@@ -144,7 +146,7 @@ const FadderInformation: React.FC = () => {
         {getInputType()}
      
         <Group justify="center" mt="xl">
-          <Button onClick={() => console.log("push")} size="md">
+          <Button onClick={() => updatedProfile() } size="md">
             Spara
           </Button>
         </Group>
@@ -153,4 +155,4 @@ const FadderInformation: React.FC = () => {
   );
 };
 
-export default FadderInformation;
+export default FadderInformationPage;

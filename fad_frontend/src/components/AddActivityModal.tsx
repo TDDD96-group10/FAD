@@ -20,14 +20,6 @@ const AddActivityModal = ({ opened, onClose }: AddActivityModalProps) => {
       apiClient.portal.portalShareInfoCreate(post)
     );
 
- 
-  const handleAdd = () => {
-    
-    triggerApi()
-  
-    //onClose(); 
-  };
-
   return (
     <Modal opened={opened} onClose={onClose} title="Lägg till event"  >
   
@@ -41,7 +33,7 @@ const AddActivityModal = ({ opened, onClose }: AddActivityModalProps) => {
             >
               {post.send_notifcation ? "Skicka notifikation: Ja" : "Skicka notifikation: Nej"}
             </Button>
-              <Button variant="default" onClick={handleAdd}>Publicera</Button>
+              <Button variant="default" onClick={()=> triggerApi()}>Publicera</Button>
             </Stack>
           </Modal>
   );

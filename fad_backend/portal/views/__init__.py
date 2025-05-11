@@ -11,4 +11,7 @@ from .program_view import ProgramView
 from .tag_view import TagView
 from .custom_multi_tags import CustomMultiTagsView
 from .files_view import FilesView
+from .overview_view import OverviewView
+from .post_view import PostView
+from .fadder_view import FadderView
 

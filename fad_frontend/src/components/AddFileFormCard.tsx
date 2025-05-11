@@ -27,7 +27,6 @@ const AddFileFormCard = () => {
 
   const handlePublish = () => {
     if (file.name === "empty.pdf" && file.size === 0) {
-      console.error("Still default file");
       return;
     }
 

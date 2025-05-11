@@ -21,8 +21,10 @@ export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
                 breakpoint: 'sm',
                 collapsed: { mobile: !opened },
         }}
-        padding="md">
-          <AppShell.Header>
+        padding="md"
+        
+        >
+          <AppShell.Header >
             <Burger
               opened={opened}
               onClick={toggle}
@@ -38,8 +40,12 @@ export const FADheader:  React.FC<FADLayoutProps> = ({ children }) => {
 
             <NavLink label ="Home" href='/demo'></NavLink>
             <NavLink label ="Shareinfo" href='/shareinfo'></NavLink>
-            <NavLink label ="Contact" href='/home'></NavLink>
+
+            <NavLink label ="Overview" href='/overview'></NavLink>
+            <NavLink label ="Contact (#)" href='/home'></NavLink>
+
             <NavLink label ="Configure" href='/configure'></NavLink>
+
             <NavLink label ="Start" href='/'></NavLink>
             <NavLink label ="Logout" href='/'></NavLink>
 

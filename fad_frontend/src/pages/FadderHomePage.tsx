@@ -24,23 +24,13 @@ interface Task {
 
 const FadderHomePage: React.FC = () => {
     const navigate = useNavigate();
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [useSampleData, setUseSampleData] = useState<boolean>(false); // Toggle for sample data
+  
     const { data, loading, error } = useApi(() => apiClient.portal.portalPostsList());
 
  
-
-    if (loading && !useSampleData) {
-        return <Text>Loading...</Text>;
-    }
-
-    if (error && !useSampleData) {
-        return (
-            <Text color="red">
-                Error: {error || 'Failed to fetch posts'}
-            </Text>
-        );
-    }
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p style={{ color: 'red' }}>Error: {error} {JSON.stringify(data, null, 2)}</p>;
+  
 
 
     const formatDateTime = (dateTime: string) => {
@@ -58,14 +48,11 @@ const FadderHomePage: React.FC = () => {
 
     return (
         <ScrollArea style={{ height: '100vh', overflow: 'auto' }} p="md">
-            <Stack spacing="lg">
+            <Stack >
                 {/* Three vertically stacked buttons with increased spacing */}
-                <Stack spacing="xl" pt="md" pl="lg" pr="lg">
-                    <Button variant="filled" color="blue" size="lg">
+                <Stack  pt="md" pl="lg" pr="lg">
+                    <Button variant="filled" color="blue" size="lg" onClick={() => navigate("/FadderDocuments")}>
                         Dokument
-                    </Button>
-                    <Button variant="filled" color="blue" size="lg">
-                        Fadderjobb
                     </Button>
                     <Button variant="filled" color="blue" size="lg">
                         Schema
@@ -73,7 +60,7 @@ const FadderHomePage: React.FC = () => {
                 </Stack>
 
                 {/* Text component with padding only on top, left, and right */}
-                <Text size="xl" weight={500} pt="md" pl="md" pr="md">
+                <Text size="xl" pt="md" pl="md" pr="md">
                     Senaste Nytt!
                 </Text>
 
@@ -85,7 +72,7 @@ const FadderHomePage: React.FC = () => {
                     pb="md"
                 >
                     {/* Bullet list with data */}
-                    <Stack spacing="sm">
+                    <Stack >
                         {data?.map((task, index) => (
                             <Paper
                                 key={task.id}
@@ -96,28 +83,28 @@ const FadderHomePage: React.FC = () => {
                                     borderRadius: '4px',
                                     minHeight: '80px',
                                 }}
+                                onClick={() => navigate(`/fadder/post/${task.id}`)}
                             >
-                                <Stack spacing="xs">
+                                <Stack >
                                     <Text
                                         size="md"
-                                        weight={700}
-                                        color="white"
+                                        c="white"
                                         style={{ listStyle: 'none' }}
                                     >
                                         {task.title}
                                     </Text>
                                     <Text
                                         size="sm"
-                                        color="white"
+                                        c="white"
                                         style={{ listStyle: 'none' }}
                                     >
                                         {task.text}
                                     </Text>
-                                    <Group spacing="xs" style={{ marginTop: '4px' }}>
-                                        <Text size="xs" color="dimmed">
+                                    <Group style={{ marginTop: '4px' }}>
+                                        <Text size="xs" c="dimmed">
                                             {task.author.first_name}
                                         </Text>
-                                        <Text size="xs" color="dimmed">
+                                        <Text size="xs" c="dimmed">
                                             {formatDateTime(task.created_at ?? "")}
                                         </Text>
                                     </Group>

@@ -8,7 +8,7 @@ from .views import PDFView
 
 from portal.views.import_users_view import ImportUsersView
 from django.urls import path
-from .views import HelloWorldView, HomeView,  ShareView, SharePDFView, ProgramView, TagView, CustomMultiTagsView, FilesView, PDFView, UserProfileView
+from .views import HelloWorldView, HomeView,  ShareView, SharePDFView, ProgramView, TagView, CustomMultiTagsView, FilesView, PDFView, UserProfileView, OverviewView, PostView, FadderView 
 
 urlpatterns = [
     path("home", HomeView.as_view(), name="Home"),
@@ -25,5 +25,8 @@ urlpatterns = [
     path("add-mutivalue-fileds", CustomMultiTagsView.as_view(), name="multi-value"),
     path("files", FilesView.as_view(), name="files"),
     path("pdf_view/<int:pdf_id>", PDFView.as_view(), name="pdf view"),
-    path("profile-meta-data", UserProfileView.as_view(), name="profile-meta-data")
+    path("profile-meta-data", UserProfileView.as_view(), name="profile-meta-data"),
+    path("fadder-overview/<str:filter>", OverviewView.as_view(), name="fadder-profile-overview"),
+    path("post/<int:id>", PostView.as_view(), name="post"),
+    path("fadder/<str:liu_id>",FadderView.as_view(), name="fadder" )
 ]

@@ -5,3 +5,5 @@ from .post_link_serializer import PostLinkSerializer
 from .add_atribute_text_serializer import AddAtributeTextSerializer
 from .tags_serializer import TagsSerializer
 from .add_custom_feilds import AddCustomFiledsSerializer
+from .overview_serializer import OverviewSerializer
+from .user_serializer import UserSerializer

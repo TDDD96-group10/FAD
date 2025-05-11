@@ -1,3 +1,4 @@
 from .username_serializer import UsernameSerializer
 from .code_submit_serializer import CodeSubmitSerializer
 from .message_response_serializer import MessageResponseSerializer
+from .custom_token_serializer import CustomObtainPairSerializer

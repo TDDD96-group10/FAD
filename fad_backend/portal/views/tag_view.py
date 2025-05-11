@@ -30,7 +30,6 @@ class TagView(APIView):
         data = {"fadder_tags": tags, 
                 "custom_free_text" : self.getFreeTextags(program.attributes), 
                 "tag_groups":self.getMultivalueTags(program.attributes)}
-        print(data)
         serializer = TagsSerializer(instance=data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
