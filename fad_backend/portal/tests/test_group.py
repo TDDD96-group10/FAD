@@ -27,3 +27,14 @@ class GroupModelTest(TestCase):
         User.objects.create(user_id="belba438", role="admin", program=program, attributes={'size': "m"}, group=group)
 
         self.assertEqual(len(group.users.all()), 3)
+
+    def test_max_length_name(self):
+        name = "a" * 200
+        group = Group.objects.create(name=name, atrributes=self.valid_attributes)
+        self.assertEqual(group.name, name)
+        self.assertEqual(len(group.name), 200)
+
+    def test_max_length_name_exceed(self):
+        name = "a" * 201
+        with self.assertRaises(Exception):
+            Group.objects.create(name=name, atrributes=self.valid_attributes)
