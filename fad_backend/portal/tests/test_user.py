@@ -20,6 +20,8 @@ class UserModelTest(TestCase):
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
+
         )
         self.assertEqual(user.user_id, "abcde000")
         self.assertEqual(user.role, "admin")
@@ -32,18 +34,21 @@ class UserModelTest(TestCase):
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test1@gmail.com"
         )
         User.objects.create(
             user_id="abcde001",
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test2@gmail.com"
         )
         User.objects.create(
             user_id="abcde002",
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test3@gmail.com"
         )
         self.assertEqual(self.program.users.count(), 3)
 
@@ -53,6 +58,7 @@ class UserModelTest(TestCase):
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test1@gmail.com"
         )
         user1.full_clean()
         user1.save()
@@ -62,6 +68,7 @@ class UserModelTest(TestCase):
                 role="admin",
                 program=self.program,
                 attributes={"size": "m"},
+                email="test2@gmail.com"
             )
             user2.full_clean()
 
@@ -71,6 +78,7 @@ class UserModelTest(TestCase):
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -81,6 +89,7 @@ class UserModelTest(TestCase):
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -91,6 +100,7 @@ class UserModelTest(TestCase):
             role="admin",
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -101,6 +111,7 @@ class UserModelTest(TestCase):
             role="a" * 100,  # Max length role
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         user.full_clean()  # Should not raise ValidationError
         user.save()
@@ -112,6 +123,7 @@ class UserModelTest(TestCase):
             role="a" * 101,  # Assuming max_length is 100
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -122,6 +134,7 @@ class UserModelTest(TestCase):
             role="",
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         retrieved_user = User.objects.get(user_id="abcde000")
         self.assertEqual(retrieved_user.role, "")
@@ -133,6 +146,7 @@ class UserModelTest(TestCase):
             role=None,
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -144,6 +158,7 @@ class UserModelTest(TestCase):
             program=self.program,
             group=self.group,
             attributes={"size": "s"},
+            email="test@gmail.com"
         )
         self.assertEqual(user.group, self.group)
         self.assertEqual(self.group.users.count(), 1)
@@ -155,6 +170,7 @@ class UserModelTest(TestCase):
             program=self.program,
             attributes={"size": "l"},
             group=None,
+            email="test@gmail.com"
         )
         self.assertIsNone(user.group)
         self.assertEqual(self.group.users.count(), 0)
@@ -165,6 +181,7 @@ class UserModelTest(TestCase):
             role="member",
             program=self.program,
             attributes={"size": "invalid"},  # Invalid size
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -175,6 +192,7 @@ class UserModelTest(TestCase):
             role="member",
             program=self.program,
             attributes={},  # Missing required attributes
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -185,6 +203,7 @@ class UserModelTest(TestCase):
             role="member",
             program=self.program,
             attributes=None,
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -195,6 +214,7 @@ class UserModelTest(TestCase):
             role="member",
             program=self.program,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         self.program.delete()
         self.assertFalse(User.objects.filter(user_id="abcde000").exists())
@@ -206,6 +226,7 @@ class UserModelTest(TestCase):
             program=self.program,
             group=self.group,
             attributes={"size": "m"},
+            email="test@gmail.com"
         )
         self.assertTrue(User.objects.filter(user_id="abcde000").exists())
         self.group.delete()
@@ -217,6 +238,7 @@ class UserModelTest(TestCase):
             role="member",
             program=self.program,
             attributes={"size": "invalid"},  # Invalid size
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
@@ -227,6 +249,7 @@ class UserModelTest(TestCase):
             role="member",
             program=self.program,
             attributes=["invalid"],  # Invalid JSON structure
+            email="test@gmail.com"
         )
         with self.assertRaises(ValidationError):
             user.full_clean()

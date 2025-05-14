@@ -80,10 +80,33 @@ services:
   tests:
     container_name: tests
     working_dir: /app/fad_backend
-    command: python manage.py test 
+    command: >
+      sh -c '
+        echo "Starting tests...";
+        export PYTHONUNBUFFERED=0;
+        if [ "$$USE_COVERAGE" = "1" ]; then
+          coverage run \
+            --source=portal \
+            --omit=portal/migrations/*,portal/tests/*,portal/__init__.py \
+            manage.py test portal.tests -v 2 &&
+          echo "Generating coverage report..." &&
+          coverage report -m;
+        else
+          python manage.py test portal.tests -v 2;
+        fi
+      '
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=fad_backend.settings
+    volumes:
+      - ./fad_backend:/app/fad_backend
+      - ./coverage:/app/fad_backend/htmlcov
+    logging:
+      driver: "none"
     profiles:
       - tests
     <<: *common-config
+
     
   
     
