@@ -103,12 +103,33 @@ export interface SharePdf {
   pdf?: string;
 }
 
+export interface AddAtributeText {
+  /**
+   * Key name
+   * @minLength 1
+   * @maxLength 100
+   */
+  key_name: string;
+}
 
+export interface AddCustomFileds {
+  /**
+   * Key name
+   * @minLength 1
+   * @maxLength 100
+   */
+  key_name: string;
+  Key_value: string[];
+}
+
+export interface UserTags {
+  tagvalues_free_text: string[];
+  tagvalues_multivalue: string[][];
+  tags: string[];
   /**
    * User id
    * @minLength 1
    */
-
   user_id: string;
   /**
    * Name
@@ -146,7 +167,6 @@ export interface Overview {
 export interface FileNames {
   /** Id */
   id?: number;
-
   /**
    * File name
    * @minLength 1
@@ -320,7 +340,8 @@ export interface PostSerializer {
   created_at?: string;
   author: UserSerializer;
   program: ProgramSerializer;
-
+  /** Can delete */
+  can_delete?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -938,7 +959,39 @@ export class Api<
 
     /**
      * No description
+     *
+     * @tags portal
+     * @name PortalPdfViewRead
+     * @request GET:/portal/pdf_view/{pdf_id}
+     * @secure
+     */
+    portalPdfViewRead: (pdfId: string, params: RequestParams = {}) =>
+      this.request<UserSerializer, any>({
+        path: `/portal/pdf_view/${pdfId}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
 
+    /**
+     * No description
+     *
+     * @tags portal
+     * @name PortalPdfViewDelete
+     * @request DELETE:/portal/pdf_view/{pdf_id}
+     * @secure
+     */
+    portalPdfViewDelete: (pdfId: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/portal/pdf_view/${pdfId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
      *
      * @tags portal
      * @name PortalPostLinkCreate
@@ -955,8 +1008,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-
-    /**
 
     /**
      * No description
@@ -992,7 +1043,6 @@ export class Api<
       }),
 
     /**
-
      * No description
      *
      * @tags portal
