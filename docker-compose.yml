@@ -96,7 +96,7 @@ services:
       POSTGRES_USER: django_user         
       POSTGRES_PASSWORD: django_password 
       TZ: Europe/Stockholm  
-      POSTGRES_INITDB_ARGS: "--timezone=Europe/Stockholm"
+      #POSTGRES_INITDB_ARGS: "--timezone=Europe/Stockholm"
     ports:
       - "5432:5432"
     volumes:

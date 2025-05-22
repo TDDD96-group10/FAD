@@ -1,5 +1,9 @@
 import { Api} from "./Api";
 
+/**
+ * TODO: Make the API base url easier to change
+ */
+
 export const apiClient = new Api({ securityWorker: () => {
     const token = undefined// localStorage.getItem("access");
     return token
@@ -10,5 +14,6 @@ export const apiClient = new Api({ securityWorker: () => {
       }
     : {};
   },
-  baseUrl: "http://127.0.0.1:8000",
+  
+  baseUrl: "http://192.168.1.177:8000",
  });

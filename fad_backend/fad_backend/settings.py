@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-wm6az83a6c!msk!mw3e7hve5crl&g+5_xo9q99k)4t09qd7adt
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "web"]
+# the 192 ip is local to Axels network and only the for the demo
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "web", "192.168.1.177"]
 
 
 # Application definition
@@ -60,7 +60,7 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000", "http://192.168.1.177:3000"]
 
 
 REST_FRAMEWORK = {

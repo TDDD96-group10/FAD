@@ -20,7 +20,7 @@ const ImportFadder : React.FC  = () =>{
         <Group>
             <Button onClick={() => triggerApi()}>Importera faddrar</Button>
             <FileInput
-                label="Fil (PDF)"
+                label="Fil (CSV)"
                 placeholder="Välj en CSV fill"
                 value={file}
                 onChange={(value) => {

@@ -26,6 +26,11 @@ const FadderDocumentsPage: React.FC = () => {
 
   if (loading) return <p>Loading...</p>;
 
+  /**
+   * 
+   * TODO: fix the links to be dynamic to base api url
+   */
+
   return (
     <Container size="xs" my="md">
       <Title ta="center" mb="md" order={2}>
@@ -37,6 +42,7 @@ const FadderDocumentsPage: React.FC = () => {
         <List spacing="sm">
           {data?.map((doc) => (
             <List.Item key={doc.id}>
+              
               <Anchor href={"http://127.0.0.1:8000/portal/pdf_view/"+ doc.id} target="_blank" rel="noopener noreferrer">
                 📄 {doc.file_name}
               </Anchor>
