@@ -3,6 +3,7 @@ from django.test import TestCase
 from ..models.group import Group
 from ..models.user import User
 from ..models.program import Program
+from django.core.exceptions import ValidationError
 
 
 class GroupModelTest(TestCase):
@@ -30,11 +31,12 @@ class GroupModelTest(TestCase):
 
     def test_max_length_name(self):
         name = "a" * 200
-        group = Group.objects.create(name=name, atrributes=self.valid_attributes)
+        group = Group.objects.create(name=name)
         self.assertEqual(group.name, name)
         self.assertEqual(len(group.name), 200)
 
     def test_max_length_name_exceed(self):
         name = "a" * 201
-        with self.assertRaises(Exception):
-            Group.objects.create(name=name, atrributes=self.valid_attributes)
+        with self.assertRaises(ValidationError):
+            group = Group(name=name)
+            group.full_clean()
